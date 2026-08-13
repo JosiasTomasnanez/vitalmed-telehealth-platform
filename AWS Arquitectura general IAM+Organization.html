@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VitalMed - Gobierno de IAM, SSO y Cuentas AWS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active {
+      border-bottom: 2px solid #6366f1;
+      color: #ffffff;
+      background-color: rgba(99, 102, 241, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+  <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
+    <div class="max-w-7xl mx-auto flex flex-row justify-between items-center gap-2">
+      <div>
+        <div class="flex items-center gap-2 mb-0.5">
+          <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+            Arquitectura Multi-Cuenta & IAM
+          </span>
+          <span class="text-slate-400 text-[11px] hidden sm:inline">• VitalMed Cloud Platform</span>
+        </div>
+        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Panel Governance de Seguridad y Accesos</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="hidden sm:inline">Estrategia</span> PoLP (Mínimo Privilegio)
+        </span>
+      </div>
+    </div>
+
+    <nav class="max-w-7xl mx-auto mt-2 flex overflow-x-auto border-b border-slate-800 gap-1 text-xs font-medium text-slate-400">
+      <button onclick="switchTab('tab-ou')" id="btn-tab-ou" class="tab-btn tab-active px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>📂</span> 1. OUs y Cuentas
+      </button>
+      <button onclick="switchTab('tab-users')" id="btn-tab-users" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>👥</span> 2. Usuarios & SSO
+      </button>
+      <button onclick="switchTab('tab-roles')" id="btn-tab-roles" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>🤖</span> 3. Roles IAM
+      </button>
+      <button onclick="switchTab('tab-matrix')" id="btn-tab-matrix" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>🔗</span> 4. Matriz Relacional
+      </button>
+      <button onclick="switchTab('tab-docs')" id="btn-tab-docs" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 text-indigo-300 font-semibold border-indigo-500/30 whitespace-nowrap">
+        <span>📘</span> 5. Decisiones & Criterios
+      </button>
+    </nav>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-4 sm:p-6 flex-grow w-full space-y-8">
+
+    <!-- Tab 1: OUs and Accounts -->
+    <section id="tab-ou" class="tab-content space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>🌳</span> AWS Organizations Structure & Service Control Policies (SCPs)
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Estructura jerárquica de Unidades Organizativas (OUs) y aislamiento de ambientes por cuenta de AWS.
+        </p>
+        <p class="text-[11px] text-slate-500 mt-2 flex items-center gap-1.5">
+          <span>🏗️</span> Landing zone provisionada y gobernada con <strong class="text-slate-300">AWS Control Tower</strong> — el alta de un 5º país se resuelve desde el Account Factory con los guardrails ya aplicados, sin configurar nada a mano.
+        </p>
+      </div>
+
+      <!-- Root Container -->
+      <div class="border-2 border-indigo-500/30 bg-slate-900/40 rounded-2xl p-6 relative">
+        <div class="absolute -top-3 left-6 bg-indigo-600 text-white text-xs px-3 py-0.5 rounded-full font-bold uppercase tracking-wider">
+          AWS Organization Root (r-vitalmed)
+        </div>
+
+        <!-- Global SCP Banner -->
+        <div class="mt-2 bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-xs text-amber-200 flex items-center gap-3">
+          <span class="text-base">🛡️</span>
+          <div>
+            <strong>Root Service Control Policies (SCP):</strong> Restricción estricta para prevenir la desactivación de CloudTrail, denegar la creación de recursos fuera de <code>us-east-1</code> (aislamiento lógico mono-región, ver ADR-005) y bloquear la creación de usuarios IAM estáticos con llaves de acceso.
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+
+          <!-- Core OU -->
+          <div class="bg-slate-900/90 border border-cyan-500/40 rounded-xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">📂</span>
+                <div>
+                  <h3 class="font-bold text-white text-base">Core OU</h3>
+                  <p class="text-[11px] text-slate-400">Servicios compartidos de infraestructura, seguridad y auditoría.</p>
+                </div>
+              </div>
+              <span class="bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-[10px] px-2 py-0.5 rounded-full font-mono">OU ID: ou-core-01</span>
+            </div>
+
+            <div class="space-y-3">
+              <!-- Log Archive -->
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 hover:border-cyan-500/50 transition cursor-pointer" onclick="selectRelation('log-archive')">
+                <div class="flex justify-between items-start">
+                  <span class="font-semibold text-xs text-white flex items-center gap-2">
+                    <span>📜</span> Log Archive Account
+                  </span>
+                  <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">S3 Bucket Central</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Almacenamiento inmutable WORM de logs de CloudTrail, VPC Flow Logs y GuardDuty.</p>
+              </div>
+
+              <!-- Security Account -->
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 hover:border-cyan-500/50 transition cursor-pointer" onclick="selectRelation('security-account')">
+                <div class="flex justify-between items-start">
+                  <span class="font-semibold text-xs text-white flex items-center gap-2">
+                    <span>🛡️</span> Security Account
+                  </span>
+                  <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">SecOps</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Gestión centralizada de SecurityHub, GuardDuty, IAM Access Analyzer e Inspectores. AWS Config (delegated administrator) audita compliance en las 4 cuentas de país sin revisión manual.</p>
+              </div>
+
+              <!-- Shared Services -->
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 hover:border-cyan-500/50 transition cursor-pointer" onclick="selectRelation('shared-services')">
+                <div class="flex justify-between items-start">
+                  <span class="font-semibold text-xs text-white flex items-center gap-2">
+                    <span>🌐</span> Shared Services Account
+                  </span>
+                  <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">ECR & CI/CD</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Repositorio privado de imágenes Docker (ECR), artefactos de CI/CD y DNS Central.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Workloads OU -->
+          <div class="bg-slate-900/90 border border-indigo-500/40 rounded-xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">📂</span>
+                <div>
+                  <h3 class="font-bold text-white text-base">Workloads OU</h3>
+                  <p class="text-[11px] text-slate-400">Ambientes de aplicación segregados por país para dar servicio a clínicas.</p>
+                </div>
+              </div>
+              <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-[10px] px-2 py-0.5 rounded-full font-mono">OU ID: ou-workloads-02</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 hover:border-indigo-500/50 transition cursor-pointer" onclick="selectRelation('arg-account')">
+                <div class="font-semibold text-xs text-white flex items-center gap-2">
+                  <span>🇦🇷</span> Argentina Workload
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">ECS Fargate Cluster + Aurora Postgres (AR).</p>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 hover:border-indigo-500/50 transition cursor-pointer" onclick="selectRelation('chl-account')">
+                <div class="font-semibold text-xs text-white flex items-center gap-2">
+                  <span>🇨🇱</span> Chile Workload
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">ECS Fargate Cluster + Aurora Postgres (CL).</p>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 hover:border-indigo-500/50 transition cursor-pointer" onclick="selectRelation('col-account')">
+                <div class="font-semibold text-xs text-white flex items-center gap-2">
+                  <span>🇨🇴</span> Colombia Workload
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">ECS Fargate Cluster + Aurora Postgres (CO).</p>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 hover:border-indigo-500/50 transition cursor-pointer" onclick="selectRelation('mex-account')">
+                <div class="font-semibold text-xs text-white flex items-center gap-2">
+                  <span>🇲🇽</span> México Workload
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">ECS Fargate Cluster + Aurora Postgres (MX).</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-users" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+            <span>👥</span> AWS IAM Identity Center (SSO) - Gestión de Personas
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Control de acceso basado en roles (RBAC) para los 12 integrantes del equipo técnico y auditoría.
+          </p>
+        </div>
+        <span class="text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-lg">
+          MFA Obligatorio Integrado
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- DevOps Group -->
+        <div class="bg-slate-900 border border-indigo-500/30 rounded-2xl p-5 flex flex-col justify-between hover:border-indigo-500 transition">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-xs bg-indigo-500/20 text-indigo-300 font-semibold px-2.5 py-1 rounded-full">2 Miembros</span>
+              <span class="text-xs text-slate-500">SSO Group</span>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <span>🛠️</span> DevOps-Admins
+              </h3>
+              <p class="text-xs text-slate-400 mt-2">
+                Ingenieros responsables de mantener las plantillas IaC (Terraform) y la gobernanza de la Organization. Los despliegues a producción los aplica el pipeline de CI, no un humano con sesión abierta.
+              </p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-1">
+              <div class="text-slate-400 font-medium">Permission Set Asignado:</div>
+              <div class="text-indigo-400 font-semibold font-mono">AdministratorAccess (Shared Services + Non-Prod)</div>
+              <div class="text-slate-500 text-[10px] pt-1">Prod: solo break-glass temporal (sesión ≤1h, requiere justificación)</div>
+            </div>
+          </div>
+          <button onclick="selectRelation('devops')" class="mt-6 w-full py-2 bg-indigo-600/20 border border-indigo-500/40 hover:bg-indigo-600 hover:text-white text-indigo-300 text-xs rounded-xl font-medium transition">
+            Ver Trazabilidad de Accesos ➔
+          </button>
+        </div>
+
+        <!-- Developers Group -->
+        <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-5 flex flex-col justify-between hover:border-cyan-500 transition">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-xs bg-cyan-500/20 text-cyan-300 font-semibold px-2.5 py-1 rounded-full">8 Miembros</span>
+              <span class="text-xs text-slate-500">SSO Group</span>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <span>💻</span> Developers
+              </h3>
+              <p class="text-xs text-slate-400 mt-2">
+                Desarrolladores backend/frontend desplegando microservicios en Fargate. Cada persona se asigna en Identity Center solo a la(s) cuenta(s)-país en las que trabaja, nunca a las 4 por defecto.
+              </p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-1">
+              <div class="text-slate-400 font-medium">Permission Set Asignado:</div>
+              <div class="text-cyan-400 font-semibold font-mono">AppDeveloper (acotado, sin IAM/Org)</div>
+              <div class="text-slate-500 text-[10px] pt-1">Asignación por cuenta — no es PowerUserAccess global a AR/CL/CO/MX</div>
+            </div>
+          </div>
+          <button onclick="selectRelation('devs')" class="mt-6 w-full py-2 bg-cyan-600/20 border border-cyan-500/40 hover:bg-cyan-600 hover:text-white text-cyan-300 text-xs rounded-xl font-medium transition">
+            Ver Trazabilidad de Accesos ➔
+          </button>
+        </div>
+
+        <!-- Auditors Group -->
+        <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-500 transition">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-xs bg-amber-500/20 text-amber-300 font-semibold px-2.5 py-1 rounded-full">2 Miembros</span>
+              <span class="text-xs text-slate-500">SSO Group</span>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <span>📜</span> Auditors / Security
+              </h3>
+              <p class="text-xs text-slate-400 mt-2">
+                Equipo legal, médico y auditoría técnica encargados de revisar registros de accesos a datos sensibles de pacientes.
+              </p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-1">
+              <div class="text-slate-400 font-medium">Permission Set Asignado:</div>
+              <div class="text-amber-400 font-semibold font-mono">SecurityAudit + ReadOnly</div>
+            </div>
+          </div>
+          <button onclick="selectRelation('auditors')" class="mt-6 w-full py-2 bg-amber-600/20 border border-amber-500/40 hover:bg-amber-600 hover:text-white text-amber-300 text-xs rounded-xl font-medium transition">
+            Ver Trazabilidad de Accesos ➔
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="tab-roles" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>🤖</span> Roles de Servicio e Integración de Máquina a Máquina (IAM Roles)
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Identidades no humanas (Workload Identities) configuradas bajo el estándar estricto de no usar claves permanentes.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Role GitHub Actions -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-700 transition">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] bg-purple-500/20 text-purple-300 px-2.5 py-0.5 rounded font-mono">OIDC Identity Provider</span>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <span>⚙️</span> GitHubActions-CI-Role
+              </h3>
+              <p class="text-xs text-slate-400 mt-2">
+                Asume un token temporal JWT desde los pipelines de GitHub sin almacenar AWS Access Keys en el repositorio.
+              </p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-slate-300 space-y-1">
+              <div class="text-slate-500">// Scope de Acción:</div>
+              <div class="text-purple-400">ecr:PutImage, ecr:BatchCheckLayerAvailability</div>
+              <div class="text-slate-500">// Target Account:</div>
+              <div class="text-slate-300">Shared Services Account</div>
+            </div>
+          </div>
+          <button onclick="selectRelation('role-github')" class="mt-6 w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-xl font-medium transition">
+            Ver Trazabilidad de Accesos ➔
+          </button>
+        </div>
+
+        <!-- Role ECS Execution -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-700 transition">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] bg-blue-500/20 text-blue-300 px-2.5 py-0.5 rounded font-mono">AWS Service Trust</span>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <span>🐳</span> ECS-ExecutionRole
+              </h3>
+              <p class="text-xs text-slate-400 mt-2">
+                Utilizado internamente por el Agente de AWS ECS Fargate para bootstrap del contenedor.
+              </p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-slate-300 space-y-1">
+              <div class="text-slate-500">// Scope de Acción:</div>
+              <div class="text-blue-400">ecr:GetDownloadUrlForLayer, logs:CreateLogStream</div>
+              <div class="text-slate-500">// Target Account:</div>
+              <div class="text-slate-300">Cuentas por País (AR, CL, CO, MX)</div>
+            </div>
+          </div>
+          <button onclick="selectRelation('role-ecs-exec')" class="mt-6 w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-xl font-medium transition">
+            Ver Trazabilidad de Accesos ➔
+          </button>
+        </div>
+
+        <!-- Role ECS App Task -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-700 transition">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded font-mono">App Level Role</span>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <span>🔐</span> ECS-AppTaskRole
+              </h3>
+              <p class="text-xs text-slate-400 mt-2">
+                Permisos consumidos por el código Node.js/Python dentro de los contenedores en ejecución.
+              </p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-slate-300 space-y-1">
+              <div class="text-slate-500">// Scope de Acción:</div>
+              <div class="text-emerald-400">secretsmanager:GetSecretValue, rds-db:connect</div>
+              <div class="text-slate-500">// Target Account:</div>
+              <div class="text-slate-300">Aurora DB Local del País</div>
+            </div>
+          </div>
+          <button onclick="selectRelation('role-ecs-task')" class="mt-6 w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-xl font-medium transition">
+            Ver Trazabilidad de Accesos ➔
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="tab-matrix" class="tab-content hidden space-y-6">
+      <div class="bg-indigo-950/40 border border-indigo-500/30 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>🔗</span> Matriz de Relaciones Interactivas
+        </h2>
+        <p class="text-xs text-indigo-200 mt-1">
+          Seleccioná un elemento de la lista para ver cómo se vinculan los Usuarios/Roles con sus políticas y cuentas de destino.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Selector List -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+          <h3 class="text-xs font-semibold uppercase text-slate-400 tracking-wider px-1">Seleccionar Entidad / Recurso</h3>
+
+          <div class="space-y-1">
+            <div class="text-[10px] uppercase font-bold text-indigo-400 px-2 pt-2">Grupos Humanos (SSO)</div>
+            <button onclick="updateInspector('devops')" id="selector-devops" class="rel-selector-btn w-full text-left p-2.5 rounded-xl text-xs flex items-center justify-between hover:bg-slate-800 transition">
+              <span>🛠️ DevOps-Admins</span>
+              <span class="text-[10px] text-slate-500">2 personas</span>
+            </button>
+            <button onclick="updateInspector('devs')" id="selector-devs" class="rel-selector-btn w-full text-left p-2.5 rounded-xl text-xs flex items-center justify-between hover:bg-slate-800 transition">
+              <span>💻 Developers</span>
+              <span class="text-[10px] text-slate-500">8 personas</span>
+            </button>
+            <button onclick="updateInspector('auditors')" id="selector-auditors" class="rel-selector-btn w-full text-left p-2.5 rounded-xl text-xs flex items-center justify-between hover:bg-slate-800 transition">
+              <span>📜 Auditors / Compliance</span>
+              <span class="text-[10px] text-slate-500">2 personas</span>
+            </button>
+
+            <div class="text-[10px] uppercase font-bold text-purple-400 px-2 pt-3">Roles Automatizados (IAM)</div>
+            <button onclick="updateInspector('role-github')" id="selector-role-github" class="rel-selector-btn w-full text-left p-2.5 rounded-xl text-xs flex items-center justify-between hover:bg-slate-800 transition">
+              <span>⚙️ GitHubActions-CI-Role</span>
+              <span class="text-[10px] text-slate-500">CI/CD Pipeline</span>
+            </button>
+            <button onclick="updateInspector('role-ecs-exec')" id="selector-role-ecs-exec" class="rel-selector-btn w-full text-left p-2.5 rounded-xl text-xs flex items-center justify-between hover:bg-slate-800 transition">
+              <span>🐳 ECS-ExecutionRole</span>
+              <span class="text-[10px] text-slate-500">Fargate Infrastructure</span>
+            </button>
+            <button onclick="updateInspector('role-ecs-task')" id="selector-role-ecs-task" class="rel-selector-btn w-full text-left p-2.5 rounded-xl text-xs flex items-center justify-between hover:bg-slate-800 transition">
+              <span>🔐 ECS-AppTaskRole</span>
+              <span class="text-[10px] text-slate-500">Application Code</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Relationship Inspector Details -->
+        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 relative flex flex-col justify-between" id="inspector-card">
+          <!-- Dynamic Content Rendered via JS -->
+          <div class="text-center py-12 text-slate-500 text-sm">
+            Seleccioná una entidad de la lista para inspeccionar la relación de accesos.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="tab-docs" class="tab-content hidden space-y-6">
+      <div class="bg-indigo-950/40 border border-indigo-500/30 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>📘</span> Criterios de Diseño, Racional de Gobernanza y Decisiones de Arquitectura
+        </h2>
+        <p class="text-xs text-indigo-200 mt-1">
+          Fundamentos técnicos y operacionales que justifican la topología multi-cuenta, gestión de identidades y controles de seguridad para VitalMed.
+        </p>
+      </div>
+
+      <!-- Context Banner -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+        <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+          <span>🏥</span> Contexto del Negocio y Regulaciones de Salud
+        </h3>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          VitalMed opera en múltiples jurisdicciones de Latinoamérica (Argentina, Chile, Colombia, México), procesando Datos Personales Sensibles y Historias Clínicas Electrónicas. Debido a las regulaciones de protección de datos de salud de cada país (p. ej., Ley 25.326 AR, Ley 1581 CO, equivalentes HIPAA / GDPR), era indispensable garantizar un <strong>aislamiento estricto de datos y blast radius reducido</strong> sin multiplicar la complejidad operativa del equipo técnico.
+        </p>
+      </div>
+
+      <!-- Decision Records Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- ADR 1 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-001</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Estructura Multi-Cuenta por País vs. Multi-Tenant Monolítico</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Reducción de radio de impacto (Blast Radius) y cumplimiento de residencia local de datos de clínicas.</p>
+            <p><strong>Decisión:</strong> Separar cada país en una cuenta AWS independiente bajo la OU <code>Workloads</code>, restringiendo la conectividad cruzada entre ellas.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Un compromiso o fallo en una cuenta (credenciales filtradas, error de despliegue) jamás compromete las bases de datos ni servicios de los demás países, aunque compartan la misma región física.</p>
+          </div>
+        </div>
+
+        <!-- ADR 2 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-002</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">IAM Identity Center (SSO) & Cero Claves Estáticas</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Prevención de fugas de credenciales en repositorios y trazabilidad unificada de auditoría.</p>
+            <p><strong>Decisión:</strong> Prohibir la creación de usuarios IAM locales con llaves de acceso estáticas (<code>Access Key ID / Secret Key</code>) mediante SCP a nivel Root.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Autenticación federada SSO con MFA obligatorio y credenciales temporales rotativas con validez limitada (max 1 a 8h).</p>
+          </div>
+        </div>
+
+        <!-- ADR 3 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-003</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Autenticación de CI/CD mediante OIDC Trust (GitHub Actions)</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Eliminación de secretos de AWS guardados en el proveedor de CI/CD externo.</p>
+            <p><strong>Decisión:</strong> Configurar OpenID Connect (OIDC) para que GitHub Actions solicite tokens de corta duración firmados criptográficamente.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Si un repositorio es vulnerado, no hay secretos expuestos para extraer ni reutilizar fuera de los despliegues autorizados.</p>
+          </div>
+        </div>
+
+        <!-- ADR 4 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-004</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Despliegue de Aplicaciones con ECS Task Roles Independientes</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Separación entre el runtime de infraestructura del contenedor y el código de negocio.</p>
+            <p><strong>Decisión:</strong> Utilizar <code>ExecutionRole</code> solo para tirar de la imagen Docker y enviar logs, y <code>TaskRole</code> exclusivo para consultas a la DB y Secrets.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: El código del microservicio sólo tiene los permisos estrictamente indispensables durante su tiempo de ejecución.</p>
+          </div>
+        </div>
+
+        <!-- ADR 5 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition md:col-span-2">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-005</span>
+            <span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded">Supuesto explícito</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Mono-Región (us-east-1) vs. Multirregión por País</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> AWS no tiene región propia en Argentina, Chile ni Colombia (la más cercana es sa-east-1, São Paulo); México sí cuenta con región propia desde 2025 (mx-central-1). Desplegar en múltiples regiones agrega latencia inter-región, replicación de KMS multi-región y costos de transferencia de datos que un equipo de 12 personas no puede sostener de forma sostenible.</p>
+            <p><strong>Decisión (supuesto):</strong> Se desestima la multirregión y se opta por <strong>una sola región (us-east-1)</strong>, resolviendo la separación regulatoria exigida por el caso exclusivamente vía <strong>aislamiento lógico por cuenta</strong> (Organizations + SCP + KMS por cuenta), no vía aislamiento geográfico.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: menor costo y complejidad operativa. ⚠️ Trade-off a documentar en la defensa: un incidente regional de AWS en us-east-1 afectaría a los 4 países simultáneamente (a diferencia de un esquema multirregión); se acepta ese riesgo a cambio de simplicidad operativa, dado el tamaño del equipo.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Governance Workflow Timeline -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+        <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+          <span>🔄</span> Flujo Operativo de Seguridad y Ciclo de Vida del Acceso
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <div class="text-xs font-bold text-indigo-400">Paso 1: Identificación</div>
+            <p class="text-[11px] text-slate-300">El usuario o servicio solicita acceso a través del portal de AWS Identity Center o token OIDC temporal.</p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <div class="text-xs font-bold text-indigo-400">Paso 2: Evaluación SCP</div>
+            <p class="text-[11px] text-slate-300">AWS verifica las Service Control Policies root (p. ej. región válida, acciones prohibidas como borrar audit logs).</p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <div class="text-xs font-bold text-indigo-400">Paso 3: Asunción PoLP</div>
+            <p class="text-[11px] text-slate-300">Se otorga únicamente el Permission Set o IAM Role correspondiente al perfil (DevOps, Dev, Security Auditor).</p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <div class="text-xs font-bold text-indigo-400">Paso 4: Auditoría WORM</div>
+            <p class="text-[11px] text-slate-300">Toda llamada a API se centraliza de manera inmutable en CloudTrail dentro de la cuenta Log Archive.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+    VitalMed Platform Governance Architecture • AWS Organizations & IAM Identity Center
+  </footer>
+
+  <script>
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('tab-active'));
+
+      document.getElementById(tabId).classList.remove('hidden');
+      document.getElementById('btn-' + tabId).classList.add('tab-active');
+    }
+
+    // Interactive Relationship Data Dictionary
+    const relations = {
+      'devops': {
+        title: '🛠️ DevOps-Admins (Grupo SSO)',
+        type: 'Grupo Humano (Identity Center)',
+        permissionSet: 'AdministratorAccess (Shared Services + Non-Prod) · Break-glass en Prod',
+        targetAccounts: ['Root Account', 'Core OU (Log Archive, Security, Shared Services)', 'Workloads OU (Argentina, Chile, Colombia, México) — solo vía elevación temporal'],
+        mechanism: 'MFA + AWS SSO SAML 2.0 Identity Provider',
+        scps: 'Afectado por SCPs de Root (No desactivar CloudTrail, denegar recursos fuera de us-east-1 — ver ADR-005). Cambios en cuentas de país se aplican por el pipeline de Terraform, no por sesión humana estándar.',
+        color: 'indigo'
+      },
+      'devs': {
+        title: '💻 Developers (Grupo SSO)',
+        type: 'Grupo Humano (Identity Center)',
+        permissionSet: 'AppDeveloper (custom, acotado — sin IAM/SCP/Org)',
+        targetAccounts: ['Cuenta(s)-país asignada(s) individualmente (no las 4 por defecto)', 'Shared Services (Solo Lectura, para ver imágenes en ECR)'],
+        mechanism: 'MFA + AWS SSO Cookie / CLI SSO Token',
+        scps: '🚫 Sin permisos para modificar IAM, SCPs ni VPC Routers, ni acceder a cuentas-país fuera de su asignación. Acceso delimitado a ECS, S3 y Aurora DBs de su(s) país(es).',
+        color: 'cyan'
+      },
+      'auditors': {
+        title: '📜 Auditors / Compliance (Grupo SSO)',
+        type: 'Grupo Humano (Identity Center)',
+        permissionSet: 'SecurityAudit & ReadOnlyAccess',
+        targetAccounts: ['Core OU -> Log Archive Account', 'Core OU -> Security Account'],
+        mechanism: 'MFA + AWS SSO Portal Access',
+        scps: 'Solo lectura. Denegada cualquier modificación de datos de salud o configuraciones.',
+        color: 'amber'
+      },
+      'role-github': {
+        title: '⚙️ GitHubActions-CI-Role (IAM Role)',
+        type: 'Identidad de Servicio (No Humana)',
+        permissionSet: 'Custom Policy: ECR-PushImage-Policy',
+        targetAccounts: ['Core OU -> Shared Services Account (ECR Repositories)'],
+        mechanism: 'OIDC Identity Provider Trust Relationship (GitHub token temporario de 1 hora)',
+        scps: 'Restringido exclusivamente a escribir en repositorios Docker de ECR.',
+        color: 'purple'
+      },
+      'role-ecs-exec': {
+        title: '🐳 ECS-ExecutionRole (IAM Role)',
+        type: 'Identidad de Servicio (AWS Fargate)',
+        permissionSet: 'AmazonECSTaskExecutionRolePolicy',
+        targetAccounts: ['Workloads OU (Todas las Cuentas por País)'],
+        mechanism: 'AWS Service Principal Trust (ecs-tasks.amazonaws.com)',
+        scps: 'Descarga imágenes de Shared Services y publica logs de CloudWatch.',
+        color: 'blue'
+      },
+      'role-ecs-task': {
+        title: '🔐 ECS-AppTaskRole (IAM Role)',
+        type: 'Identidad de Aplicación',
+        permissionSet: 'AppSecretsAndDatabasePolicy',
+        targetAccounts: ['Cuenta Local del País donde ejecuta el microservicio'],
+        mechanism: 'Fargate Container Credentials Provider',
+        scps: 'Acceso exclusivo a Secrets Manager y credenciales dinámicas de Aurora DB.',
+        color: 'emerald'
+      }
+    };
+
+    function selectRelation(key) {
+      switchTab('tab-matrix');
+      updateInspector(key);
+    }
+
+    function updateInspector(key) {
+      const data = relations[key];
+      if (!data) return;
+
+      // Update button highlights
+      document.querySelectorAll('.rel-selector-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600/20', 'border', 'border-indigo-500/40', 'text-indigo-200');
+      });
+      const selectedBtn = document.getElementById('selector-' + key);
+      if (selectedBtn) {
+        selectedBtn.classList.add('bg-indigo-600/20', 'border', 'border-indigo-500/40', 'text-indigo-200');
+      }
+
+      // Build target HTML
+      const html = `
+        <div class="space-y-6 animate-fadeIn">
+          <div class="flex justify-between items-start border-b border-slate-800 pb-4">
+            <div>
+              <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono">${data.type}</span>
+              <h3 class="text-xl font-bold text-white mt-1">${data.title}</h3>
+            </div>
+            <span class="text-xs px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-lg">
+              Inspección Activa
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <!-- Flow Step 1 -->
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <div class="text-[11px] font-semibold text-slate-400 flex items-center gap-1.5">
+                <span>🔑</span> PERMISOS (Permission Set / Policy)
+              </div>
+              <div class="text-sm font-bold text-indigo-300 font-mono">${data.permissionSet}</div>
+            </div>
+
+            <!-- Flow Step 2 -->
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <div class="text-[11px] font-semibold text-slate-400 flex items-center gap-1.5">
+                <span>🔐</span> AUTENTICACIÓN
+              </div>
+              <div class="text-xs text-slate-300">${data.mechanism}</div>
+            </div>
+
+          </div>
+
+          <!-- Flow Step 3 -->
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+            <div class="text-[11px] font-semibold text-slate-400 flex items-center gap-1.5">
+              <span>🎯</span> CUENTAS Y RECURSOS DE DESTINO ALCANZADOS
+            </div>
+            <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
+              ${data.targetAccounts.map(acc => `<li class="text-emerald-400">${acc}</li>`).join('')}
+            </ul>
+          </div>
+
+          <!-- Governance Guardrails -->
+          <div class="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl space-y-1">
+            <div class="text-xs font-semibold text-amber-300 flex items-center gap-1">
+              <span>🛡️</span> Reglas de Gobierno y SCPs Aplicadas
+            </div>
+            <p class="text-xs text-amber-200/80">${data.scps}</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('inspector-card').innerHTML = html;
+    }
+
+    // Default active view on tab matrix load
+    window.onload = function() {
+      updateInspector('devops');
+    };
+  </script>
+</body>
+</html>
