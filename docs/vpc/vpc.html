@@ -47,6 +47,12 @@
       <button onclick="switchTab('tab-country')" id="btn-tab-country" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
         <span>🌍</span> 3. Ruteo Multi-País (Route 53)
       </button>
+      <button onclick="switchTab('tab-diagram')" id="btn-tab-diagram" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 text-cyan-400 font-semibold border-cyan-500/30 whitespace-nowrap">
+        <span>🖼️</span> 4. Diagrama Visual
+      </button>
+      <button onclick="switchTab('tab-docs')" id="btn-tab-docs" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>📘</span> 5. Decisiones & Criterios
+      </button>
     </nav>
   </header>
 
@@ -191,6 +197,166 @@
             </p>
           </div>
 
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Diagrama Visual Embebido -->
+    <section id="tab-diagram" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+            <span>🖼️</span> Diagrama Completo de Arquitectura de Red y VPC
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Visualización general del diseño de red, flujos de tráfico e interconexión técnica.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="./diagramas/vitalmed_arquitectura_completa.jpg" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-cyan-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+            <span>🔗</span> Abrir en nueva pestaña
+          </a>
+        </div>
+      </div>
+
+      <!-- Image Viewer Wrapper -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center overflow-hidden flex flex-col items-center">
+        <div class="w-full overflow-auto max-h-[75vh] flex justify-center items-center bg-slate-950/80 rounded-xl p-2 border border-slate-800/50">
+          <img 
+            src="./diagramas/vitalmed_arquitectura_completa.jpg" 
+            alt="Arquitectura Completa VPC VitalMed" 
+            class="max-w-full h-auto object-contain rounded-lg shadow-2xl transition-transform duration-200"
+            id="architecture-img"
+          />
+        </div>
+        <span class="text-[11px] text-slate-500 mt-3 font-mono">
+          Ruta: docs/vpc/diagramas/vitalmed_arquitectura_completa.jpg
+        </span>
+      </div>
+    </section>
+
+    <!-- Tab 5: Decisions & Criteria (ADRs) -->
+    <section id="tab-docs" class="tab-content hidden space-y-6">
+      <div class="bg-cyan-950/40 border border-cyan-500/30 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>📘</span> Criterios de Diseño, Racional de Redes y Decisiones de Arquitectura (ADRs)
+        </h2>
+        <p class="text-xs text-cyan-200 mt-1">
+          Fundamentos técnicos, de costos y seguridad que justifican la topología de VPCs aisladas, capas de subredes e interconexión de red para VitalMed.
+        </p>
+      </div>
+
+      <!-- Context Banner -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+        <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+          <span>🏥</span> Requerimientos Operativos y Aislamiento Sanitario
+        </h3>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Para garantizar el cumplimiento de las normativas de datos de salud en Latinoamérica, se diseñó un esquema de red donde las <strong>bases de datos y datos sensibles nunca tocan la red pública</strong>. Cada entorno nacional opera sobre un espacio de direccionamiento IP segregado, previniendo el tráfico lateral no autorizado entre países y acotando el riesgo frente a eventuales ciberataques.
+        </p>
+      </div>
+
+      <!-- Decision Records Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- ADR VPC 1 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-NET-001</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Topología de 3 Capas (Pública, Privada, Aislada)</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Protección en profundidad para datos de historias clínicas electrónicas (HCE).</p>
+            <p><strong>Decisión:</strong> Separar subredes en Públicas (ALB/NAT), Privadas (Compute/ECS) y Aisladas (Bases de Datos Aurora/Cache) sin tabla de ruteo hacia internet para la capa aislada.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Imposibilidad matemática de acceso directo desde internet a la base de datos, cumpliendo normativas HIPAA/GDPR localizadas.</p>
+          </div>
+        </div>
+
+        <!-- ADR VPC 2 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-NET-002</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">VPC Endpoints (Privatelink) vs. Tráfico por NAT Gateway</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Reducción de costos por procesamiento de datos en NAT Gateway y mejora de la seguridad del tráfico interno.</p>
+            <p><strong>Decisión:</strong> Implementar Gateway Endpoints (S3) e Interface Endpoints (ECR, Secrets Manager, Logs) dentro de la VPC privada.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Las llamadas a los servicios gestionados de AWS no consumen ancho de banda de salida a internet y se mantienen dentro del backbone seguro de AWS.</p>
+          </div>
+        </div>
+
+        <!-- ADR VPC 3 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-NET-003</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Tráfico Multimedia Fuera de la VPC (Amazon Chime SDK)</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Prevención de saturación de NAT Gateways y costos elevados en llamadas de videoconferencia WebRTC.</p>
+            <p><strong>Decisión:</strong> Enrutar las videoconsultas en vivo directamente cliente-servidor mediante el SDK de Amazon Chime sin pasar por los contenedores ni la VPC.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Menor latencia en videollamadas y disminución drástica del costo por transferencia de datos en los cómputos de la VPC.</p>
+          </div>
+        </div>
+
+        <!-- ADR VPC 4 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-NET-004</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Ausencia de Peering Directo Entre VPCs de Trabajo (No Mesh)</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Prevención de movimientos laterales no autorizados y aislamiento estricto por cuenta-país.</p>
+            <p><strong>Decisión:</strong> Desestimar enlaces VPC Peering o Transit Gateway de interconexión directa entre las VPCs de Argentina, Chile, Colombia y México.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Garantiza la soberanía de los datos de cada nación sin riesgo de exposición cruzada ante un incidente de red en algún país.</p>
+          </div>
+        </div>
+
+        <!-- ADR VPC 5 (Supuesto Explícito Mono-Región) -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition md:col-span-2">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-NET-005</span>
+            <span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded">Supuesto explícito</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Despliegue Mono-Región (us-east-1) con Redes Separadas</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> AWS no cuenta con región propia en Argentina, Chile ni Colombia; México posee región reciente. Desplegar redes multi-región aumentaría drásticamente los costos de transferencia de datos inter-region y la complejidad operativa para el equipo técnico.</p>
+            <p><strong>Decisión (supuesto):</strong> Todas las VPCs se provisionan dentro de la región <strong>us-east-1</strong>, utilizando espacios CIDR diferenciados e independientes por cuenta de país, asegurando el aislamiento lógico y operativo.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Simplicidad de mantenimiento y optimización de presupuesto. ⚠️ Trade-off: Un evento de interrupción total en la región us-east-1 impactará globalmente a todas las VPCs.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Network Workflow Timeline -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+        <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+          <span>🔄</span> Flujo de Inspección y Tránsito de Red (Ingreso a Almacenamiento)
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <div class="text-xs font-bold text-cyan-400">Paso 1: Resolución y CDN</div>
+            <p class="text-[11px] text-slate-300">Route 53 geolocaliza la petición y la envía a la capa Edge de CloudFront con inspección WAF.</p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <div class="text-xs font-bold text-cyan-400">Paso 2: Entrada Pública</div>
+            <p class="text-[11px] text-slate-300">El Application Load Balancer (ALB) de la Subred Pública recibe el tráfico filtrado en la AZ correspondiente.</p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <div class="text-xs font-bold text-cyan-400">Paso 3: Cómputo Privado</div>
+            <p class="text-[11px] text-slate-300">El ALB reenvía la solicitud hacia los contenedores ECS Fargate ejecutándose en la Subred Privada.</p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <div class="text-xs font-bold text-cyan-400">Paso 4: Consulta Aislada</div>
+            <p class="text-[11px] text-slate-300">ECS realiza la consulta a la base de datos Aurora PostgreSQL en la Subred Aislada (sin salida a internet).</p>
+          </div>
         </div>
       </div>
     </section>
