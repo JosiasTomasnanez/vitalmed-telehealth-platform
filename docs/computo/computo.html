@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VitalMed - Arquitectura de Cómputo & Backend</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active {
+      border-bottom: 2px solid #818cf8;
+      color: #ffffff;
+      background-color: rgba(99, 102, 241, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
+
+  <!-- Header / Navbar Central -->
+  <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
+    <div class="max-w-7xl mx-auto flex flex-row justify-between items-center gap-2">
+      <div>
+        <div class="flex items-center gap-2 mb-0.5">
+          <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+            Arquitectura de Cómputo & Backend
+          </span>
+          <span class="text-slate-400 text-[11px] hidden sm:inline">• VitalMed Cloud Platform</span>
+        </div>
+        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Panel de Plataforma de Microservicios & Serverless</h1>
+      </div>
+
+      <!-- Acciones del Header -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="../index.html" 
+           class="text-xs bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white px-3 py-1.5 rounded-lg border border-indigo-500/30 transition flex items-center gap-1.5 font-semibold">
+          <span>⬅</span> 
+          <span>Volver al Hub</span>
+        </a>
+
+        <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700 hidden md:flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>AWS Fargate + EventBridge/SQS</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="max-w-7xl mx-auto mt-2 flex overflow-x-auto border-b border-slate-800 gap-1 text-xs font-medium text-slate-400">
+      <button onclick="switchTab('tab-services')" id="btn-tab-services" class="tab-btn tab-active px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>🐳</span> 1. Microservicios & ECS
+      </button>
+      <button onclick="switchTab('tab-scaling')" id="btn-tab-scaling" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>📈</span> 2. Auto-Escalado & Cold Start
+      </button>
+      <button onclick="switchTab('tab-async')" id="btn-tab-async" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>⚡</span> 3. Asincronismo
+      </button>
+      <button onclick="switchTab('tab-diagram')" id="btn-tab-diagram" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 text-indigo-300 font-semibold border-indigo-500/30 whitespace-nowrap">
+        <span>🖼️</span> 4. Diagrama Visual
+      </button>
+      <button onclick="switchTab('tab-cicd')" id="btn-tab-cicd" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>🔄</span> 5. Despliegue CI/CD & Rollbacks
+      </button>
+      <button onclick="switchTab('tab-docs')" id="btn-tab-docs" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>📘</span> 6. Decisiones & Criterios (ADRs)
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto p-4 sm:p-6 flex-grow w-full space-y-8">
+
+    <!-- Tab 1: Microservices & ECS -->
+    <section id="tab-services" class="tab-content space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>🐳</span> Catálogo de Microservicios en ECS Fargate
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">
+          El núcleo transaccional y la lógica de negocio de VitalMed residen en contenedores ejecutados de forma serverless sobre AWS Fargate, distribuidos en múltiples Zonas de Disponibilidad (Multi-AZ).
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Microservicio Auth & Usuarios -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ECS Service</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Síncrono / Crítico</span>
+          </div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>🔑</span> Auth & Identity Service
+          </h3>
+          <p class="text-xs text-slate-400">
+            Autenticación de pacientes, médicos y administrativos. Emisión y validación de tokens JWT y permisos de sesión.
+          </p>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 space-y-1">
+            <div class="text-slate-500">// Stack & Infra:</div>
+            <div class="text-indigo-400">Node.js / Express • ECS Task (0.5 vCPU / 1GB)</div>
+          </div>
+        </div>
+
+        <!-- Microservicio Turnos -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ECS Service</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Síncrono / I/O Intensivo</span>
+          </div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>📅</span> Turnos & Agendamiento
+          </h3>
+          <p class="text-xs text-slate-400">
+            Gestión de disponibilidad médica, reserva de citas, cancelación y reprogramación en tiempo real para clínicas y telesalud.
+          </p>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 space-y-1">
+            <div class="text-slate-500">// Stack & Infra:</div>
+            <div class="text-indigo-400">Python (FastAPI) • ECS Task (0.5 vCPU / 1GB)</div>
+          </div>
+        </div>
+
+        <!-- Microservicio HCE -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ECS Service</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Síncrono / Datos Sensibles</span>
+          </div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>🩺</span> Historia Clínica (HCE)
+          </h3>
+          <p class="text-xs text-slate-400">
+            Carga y consulta de fichas médicas, diagnósticos y antecedentes. Conexión cifrada a la base de datos Aurora del país local.
+          </p>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 space-y-1">
+            <div class="text-slate-500">// Stack & Infra:</div>
+            <div class="text-indigo-400">Python (FastAPI) • ECS Task (1 vCPU / 2GB)</div>
+          </div>
+        </div>
+
+        <!-- Microservicio Videoconsultas -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ECS Service</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Síncrono / WebRTC Signal</span>
+          </div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>📹</span> Sala de Telemedicina
+          </h3>
+          <p class="text-xs text-slate-400">
+            Orquestación y señalización de videollamadas. Al finalizar la consulta, emite el evento global a EventBridge para tareas pesadas.
+          </p>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 space-y-1">
+            <div class="text-slate-500">// Stack & Infra:</div>
+            <div class="text-indigo-400">Node.js (WebSockets) • ECS Task (1 vCPU / 2GB)</div>
+          </div>
+        </div>
+
+        <!-- Microservicio Recetas & Prescripciones -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ECS Service</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Síncrono / Validación</span>
+          </div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>💊</span> Prescripciones Médicas
+          </h3>
+          <p class="text-xs text-slate-400">
+            Emisión de recetas. Valida matrículas médicas y delega la firma digital/generación pesada de PDF al flujo asíncrono.
+          </p>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 space-y-1">
+            <div class="text-slate-500">// Stack & Infra:</div>
+            <div class="text-indigo-400">Python (FastAPI) • ECS Task (0.5 vCPU / 1GB)</div>
+          </div>
+        </div>
+
+        <!-- Microservicio Notificaciones & SMS -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ECS Service</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Híbrido / Event-Driven</span>
+          </div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>🔔</span> Centro de Notificaciones
+          </h3>
+          <p class="text-xs text-slate-400">
+            Envío de recordatorios de turnos, confirmaciones por WhatsApp/Email y alertas push. Consume mensajes de colas SQS deducidas.
+          </p>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 space-y-1">
+            <div class="text-slate-500">// Stack & Infra:</div>
+            <div class="text-indigo-400">Node.js • ECS Task / SQS Worker</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Auto-Scaling & Cold Start -->
+    <section id="tab-scaling" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>📈</span> Estrategia de Escalado Dinámico y Eliminación de Cold Starts
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Combinación de reglas reactivas por métricas mixtas y políticas programadas para garantizar la disponibilidad en horas pico y temporadas de alta demanda.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Target Tracking Multi-Métrica -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <h3 class="text-sm font-bold text-indigo-300 flex items-center gap-2">
+            <span>🎯</span> Escalado Reactivo por Métricas Mixtas
+          </h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Un solo parámetro no refleja la carga real. Por ello se combinan dos reglas de <strong>Target Tracking Scaling</strong> activas simultáneamente en ECS:
+          </p>
+
+          <div class="space-y-3 pt-2">
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-white">1. ALB Request Count Per Target</span>
+                <span class="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded font-mono">I/O Web</span>
+              </div>
+              <p class="text-[11px] text-slate-400">
+                Escala tareas inmediatamente al detectar un pico de solicitudes HTTP entrantes por Target Group, antes de que afecte el procesador.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-white">2. ECSServiceAverageCPUUtilization</span>
+                <span class="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded font-mono">Procesamiento</span>
+              </div>
+              <p class="text-[11px] text-slate-400">
+                Aumenta contenedores si el uso de CPU supera el 70% promedio (ej. cuando la carga incluye cifrado o validaciones complejas).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scheduled Scaling y Prevención de Cold Start -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <h3 class="text-sm font-bold text-indigo-300 flex items-center gap-2">
+            <span>⏰</span> Prevención de Cold Start (Scheduled Scaling)
+          </h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Para evitar demoras de arranque en frío cuando el personal médico inicia la atención a primera hora (07:00 hs) o durante epidemias estacionales:
+          </p>
+
+          <div class="space-y-3 pt-2">
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-white">Apertura Clínica Diaria (06:45 AM)</span>
+                <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-mono">Capacidad Mínima</span>
+              </div>
+              <p class="text-[11px] text-slate-400">
+                Una política de <code>Scheduled Scaling</code> eleva el piso mínimo (<em>Desired Count</em>) a 4 o 6 tareas vivas antes de las 07:00 AM. La infraestructura ya está lista y "caliente".
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-white">Picos Estacionales / Inviernos (4x)</span>
+                <span class="text-[10px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded font-mono">Overhead Preventivo</span>
+              </div>
+              <p class="text-[11px] text-slate-400">
+                Reajuste del mínimo garantizado mediante Terraform durante los meses de alta demanda epidemiológica para amortiguar picos de 4x sin sufrir por el aprovisionamiento.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Tab 3: Asynchronism & Lambdas -->
+    <section id="tab-async" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>⚡</span> Arquitectura Asíncrona Orientada a Eventos
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Las APIs síncronas en ECS delegan tareas pesadas o secundarias (generación de PDFs, sincronización de HCE, facturación) a EventBridge, SQS y Lambdas.
+        </p>
+      </div>
+
+      <!-- Workflow Diagram Box -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+        <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+          <span>🔄</span> Flujo de Procesamiento al Finalizar una Consulta
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+          
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2 py-0.5 rounded">1. Microservicio ECS</span>
+            <div class="text-xs font-bold text-white">Emisión del Evento</div>
+            <p class="text-[11px] text-slate-400">
+              La API de ECS finaliza la llamada y emite un evento JSON ligero a EventBridge sin esperar tareas secundarias.
+            </p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <span class="text-[10px] bg-purple-500/20 text-purple-300 font-mono px-2 py-0.5 rounded">2. EventBridge</span>
+            <div class="text-xs font-bold text-white">Enrutamiento Central</div>
+            <p class="text-[11px] text-slate-400">
+              Evalúa el mensaje y lo distribuye en paralelo hacia múltiples reglas (SQS, Lambdas o SNS) en milisegundos.
+            </p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <span class="text-[10px] bg-amber-500/20 text-amber-300 font-mono px-2 py-0.5 rounded">3. Colas SQS</span>
+            <div class="text-xs font-bold text-white">Amortiguador de Picos</div>
+            <p class="text-[11px] text-slate-400">
+              Retienen los mensajes de forma segura si los sistemas externos o generadores pesados sufren lentitud.
+            </p>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-mono px-2 py-0.5 rounded">4. AWS Lambdas</span>
+            <div class="text-xs font-bold text-white">Ejecución Severless</div>
+            <p class="text-[11px] text-slate-400">
+              Workers ligeros procesan la receta en PDF, sincronizan HCE y envían facturas sin saturar los ECS principales.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Diagrama Visual Embebido -->
+    <section id="tab-diagram" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+            <span>🖼️</span> Diagrama de Flujo de Cómputo & Backend
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Visualización del flujo de ejecución, orquestación de microservicios y procesamiento asíncrono.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="./diagramas/flujocomputo.png" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-indigo-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+            <span>🔗</span> Abrir en nueva pestaña
+          </a>
+        </div>
+      </div>
+
+      <!-- Contenedor del Visor de Imagen -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center overflow-hidden flex flex-col items-center">
+        <div class="w-full overflow-auto max-h-[75vh] flex justify-center items-center bg-slate-950/80 rounded-xl p-2 border border-slate-800/50">
+          <img 
+            src="./diagramas/flujocomputo.png" 
+            alt="Flujo de Cómputo VitalMed" 
+            class="max-w-full h-auto object-contain rounded-lg shadow-2xl transition-transform duration-200"
+            id="compute-architecture-img"
+          />
+        </div>
+        <span class="text-[11px] text-slate-500 mt-3 font-mono">
+          Ruta: docs/computo/diagramas/flujocomputo.png
+        </span>
+      </div>
+    </section>
+
+    <!-- Tab 5: CI/CD & Deployments -->
+    <section id="tab-cicd" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>🔄</span> Estrategia de Despliegues Progresivos (Rolling Update)
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Actualizaciones sin tiempo de inactividad con resguardo mediante Circuit Breakers automáticos.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <span>⚙️</span> Configuración de Rolling Update Nativo
+          </h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Se opta por el mecanismo nativo de despliegue progresivo de ECS Fargate para evitar mantener dos entornos productivos simultáneos activos como ocurriria con la estrategia Blue/Green, optimizando los recursos del equipo:
+          </p>
+          <ul class="space-y-2 text-xs text-slate-300 pt-2">
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><strong>Minimum Healthy Percent = 100%:</strong> La capacidad productiva actual se mantiene intacta durante todo el proceso de despliegue.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span><strong>Maximum Percent = 200%:</strong> ECS crea las nuevas tareas en paralelo. Una vez que superan los health checks, se retiran las viejas.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <span>🛡️</span> Rollback Automático con Deployment Circuit Breaker
+          </h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Gestión automática de errores durante nuevos despliegues de microservicios:
+          </p>
+          <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-2">
+            <p>
+              Si el nuevo código desplegado contiene un fallo no detectado y no responde a los <code>ALB Health Checks</code>, el <strong>Circuit Breaker de ECS</strong> cancela el despliegue automáticamente.
+            </p>
+            <p class="text-indigo-300 font-mono text-[11px]">
+              ➜ Rollback automático a la última versión estable conocida sin degradar el servicio ni requerir intervención humana.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 6: Decisions & Criteria (ADRs) -->
+    <section id="tab-docs" class="tab-content hidden space-y-6">
+      <div class="bg-indigo-950/40 border border-indigo-500/30 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>📘</span> Criterios de Diseño y Registro de Decisiones de Arquitectura (ADRs)
+        </h2>
+        <p class="text-xs text-indigo-200 mt-1">
+          Fundamentos técnicos y operacionales que justifican la elección de cómputo, auto-escalado y estrategia de despliegue para VitalMed.
+        </p>
+      </div>
+
+      <!-- Decision Records Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- ADR 1 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-COMP-001</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h3 class="text-sm font-bold text-white">AWS Fargate Serverless vs. Amazon EKS / EC2</h3>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Complejidad operativa y tamaño del equipo (12 personas para 4 países).</p>
+            <p><strong>Decisión:</strong> Adoptar ECS Fargate Serverless para todos los microservicios de la aplicación.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2.5 rounded border border-slate-800">
+              Se elimina por completo la gestión de servidores EC2, actualización de parches de SO y administración de clústeres de Kubernetes (EKS), enfocando 100% la capacidad del equipo en el desarrollo del producto médico.
+            </p>
+          </div>
+        </div>
+
+        <!-- ADR 2 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-COMP-002</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h3 class="text-sm font-bold text-white">Auto-Escalado Reactivo Mixto y Escalado Programado</h3>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Prevención de saturación por picos I/O y eliminación de demoras por Cold Start.</p>
+            <p><strong>Decisión:</strong> Combinar reglas Target Tracking (Peticiones ALB + CPU) con Scheduled Scaling matutino.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2.5 rounded border border-slate-800">
+              El escalado por peticiones responde velozmente a picos web, mientras que el escalado programado precarga capacidad antes del inicio del horario clínico (07:00 hs), evitando que los primeros usuarios sufran latencia de arranque.
+            </p>
+          </div>
+        </div>
+
+        <!-- ADR 3 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-COMP-003</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h3 class="text-sm font-bold text-white">Rolling Update con Circuit Breaker</h3>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Recuperacion automatica de errores.</p>
+            <p><strong>Decisión:</strong> Utilizar Rolling Update con ECS Deployment Circuit Breaker.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2.5 rounded border border-slate-800">
+              A diferencia de Blue/Green que requiere duplicar la capacidad productiva en cada despliegue. Rolling Update con Circuit Breaker ofrece rollback automático ante fallas sin duplicar costos ni requerir CodeDeploy complejo.
+            </p>
+          </div>
+        </div>
+
+        <!-- ADR 4 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-COMP-004</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h3 class="text-sm font-bold text-white">Desacoplamiento Asíncrono con EventBridge + SQS + Lambda</h3>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Resiliencia ante caídas de APIs de terceros (obras sociales) y aislamiento de procesos pesados.</p>
+            <p><strong>Decisión:</strong> Delegar generación de PDFs, facturación y sincronización HCE a buses de eventos y colas.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2.5 rounded border border-slate-800">
+              Mantiene los microservicios síncronos en ECS ultra-livianos y veloces, amortiguando picos estacionales de 4x a través del buffer de SQS.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+    VitalMed Platform Architecture • Compute & Backend Module (AWS Fargate)
+  </footer>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('tab-active'));
+
+      document.getElementById(tabId).classList.remove('hidden');
+      document.getElementById('btn-' + tabId).classList.add('tab-active');
+    }
+  </script>
+</body>
+</html>
