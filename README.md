@@ -60,7 +60,7 @@ Inspirados en el pilar de **Excelencia Operativa del AWS Well-Architected Framew
 | **Gobierno y Control** | AWS Organizations, Control Tower, SCPs, IAM Identity Center | Gobernanza centralizada multi-cuenta, acceso unificado (SSO) y reglas globales de cumplimiento. |
 | **Backend & APIs** | ALB, Amazon ECS Fargate, Amazon ECR | Microservicios (Turnos, HCE, Facturación) aislados en contenedores con autoscaling. |
 | **Procesos Asíncronos** | Amazon SQS, AWS Lambda | Procesamiento de recetas y notificaciones desvinculado del hilo principal del backend. |
-| **Persistencia de Datos**| Aurora Serverless v2, DynamoDB, S3 | Base de datos relacional para HCE que escala automáticamente, almacenamiento masivo de estudios cifrado con KMS por país. |
+| **Persistencia de Datos**| Aurora Serverless v2, ElastiCache, S3, Cloud Backup | Base de datos relacional para HCE que escala automáticamente, almacenamiento masivo de estudios cifrado con KMS por país. |
 | **Videollamadas** | Amazon Chime SDK | Consultas médicas en vivo sin sobrecargar la red interna. |
 | **Observabilidad & Auditoría**| CloudWatch, AWS X-Ray, CloudTrail, Security Hub | Trazabilidad de accesos (quién vio qué HCE), métricas en vivo y alertas en Slack/PagerDuty antes de impactar la atención. |
 

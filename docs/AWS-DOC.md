@@ -57,7 +57,7 @@ AWS no tiene región propia en Argentina, Chile ni Colombia (la más cercana es 
 | Servicio | Para qué sirve en VitalMed |
 |---|---|
 | **Amazon Aurora Serverless v2 (Multi-AZ)** | Base de datos relacional para la Historia Clínica Electrónica. Ajusta capacidad sola según demanda y replica en tiempo real entre zonas de disponibilidad. |
-| **Amazon DynamoDB** | Sesiones de usuario y estados temporales de facturación, con latencia de milisegundos y sin servidor que administrar. |
+| **Amazon ElastiCache** | Sesiones de usuario y estados temporales de facturación, con latencia de milisegundos y sin servidor que administrar. |
 | **Amazon S3** | Resultados de laboratorio, recetas firmadas y grabaciones de consultas (cuando el paciente autoriza), cifrados con la KMS del país correspondiente. |
 
 ## 📹 Media
@@ -76,7 +76,7 @@ AWS no tiene región propia en Argentina, Chile ni Colombia (la más cercana es 
 | **AWS CloudTrail** | Audita cada acceso a infraestructura y a datos ("qué rol leyó la tabla de HCE y cuándo") — lo que exige cualquier auditoría tipo HIPAA. |
 | **AWS Config + Conformance Packs** | Corre reglas de compliance en las 4 cuentas (ej. "ningún bucket S3 sin cifrado") y avisa si algo se desvía del estándar, sin revisión manual cuenta por cuenta. |
 | **Amazon GuardDuty + AWS Security Hub** | Detección de amenazas y tablero único de postura de seguridad, agregando las 4 cuentas de país desde la cuenta Security del Core OU. |
-| **AWS Backup** | Plan de backup centralizado con retención definida por política para Aurora, DynamoDB y S3, en vez de backups sueltos por servicio. |
+| **AWS Backup** | Plan de backup centralizado con retención definida por política para Aurora, ElastiCache y S3, en vez de backups sueltos por servicio. |
 | **AWS Systems Manager – Parameter Store** | Configuración no sensible (flags, endpoints) separada de Secrets Manager, para no depender de un único servicio para toda la config. |
 
 ## 🔧 CI/CD (fuera de AWS)
