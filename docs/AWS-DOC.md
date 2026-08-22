@@ -1,6 +1,6 @@
 # VitalMed Telesalud — Informe de Herramientas AWS
 
-**Grupo 10 · Diplomatura DevOps · Pilar: Excelencia Operativa**
+**Grupo 9 · Diplomatura DevOps · Pilar: Excelencia Operativa**
 
 Este documento detalla cada servicio AWS elegido para la arquitectura de VitalMed, explicando su función puntual dentro del proyecto. Complementa la Parte 1 de la consigna ("Diseño de la solución — Definición de Servicios") y la pestaña 5 del panel de gobierno de IAM/Organizations (que cubre en detalle solo la parte de cuentas, roles y accesos).
 
