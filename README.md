@@ -126,7 +126,7 @@ terraform test
 
 ---
 
-## 👥 Equipo de Desarrollo — Grupo 10
+## 👥 Equipo de Desarrollo — Grupo 9
 
 Proyecto desarrollado dentro del marco de la **Diplomatura DevOps**, enfocado en la aplicación práctica del **AWS Well-Architected Framework (Excelencia Operativa)**.
 
