@@ -156,6 +156,24 @@
           </div>
         </div>
 
+        <!-- Amazon Chime SDK: Videollamada real (no pasa por ECS) -->
+        <div class="bg-slate-900 border border-rose-500/30 rounded-2xl p-5 space-y-3 hover:border-rose-500/50 transition">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-rose-500/20 text-rose-300 font-mono px-2.5 py-0.5 rounded font-bold">Amazon Chime SDK</span>
+            <span class="text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded">Fuera de ECS/VPC</span>
+          </div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>🎥</span> Videoconsulta en Vivo (Media)
+          </h3>
+          <p class="text-xs text-slate-400">
+            Provee el video/audio real de la consulta médico-paciente vía WebRTC. La <strong>Sala de Telemedicina</strong> (arriba) solo orquesta y señaliza; el streaming de media no atraviesa la VPC ni carga a los contenedores de ECS.
+          </p>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 space-y-1">
+            <div class="text-slate-500">// Por qué así:</div>
+            <div class="text-rose-300">Desacopla el costo de CPU/ancho de banda del video de la capacidad de cómputo de los microservicios, evitando que un pico de videoconsultas sature el auto-escalado del resto de la plataforma.</div>
+          </div>
+        </div>
+
         <!-- Microservicio Recetas & Prescripciones -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
           <div class="flex justify-between items-center">
@@ -491,6 +509,22 @@
             <p><strong>Decisión:</strong> Delegar generación de PDFs, facturación y sincronización HCE a buses de eventos y colas.</p>
             <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2.5 rounded border border-slate-800">
               Mantiene los microservicios síncronos en ECS ultra-livianos y veloces, amortiguando picos estacionales de 4x a través del buffer de SQS.
+            </p>
+          </div>
+        </div>
+
+        <!-- ADR 5 (nuevo) -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition md:col-span-2">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-rose-500/20 text-rose-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-COMP-005</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h3 class="text-sm font-bold text-white">Media de Videoconsulta Fuera de la VPC (Amazon Chime SDK)</h3>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Criterio evaluado:</strong> Aislar el consumo de CPU/ancho de banda del video en vivo de la capacidad de cómputo de los microservicios de negocio.</p>
+            <p><strong>Decisión:</strong> El streaming WebRTC de la videoconsulta corre sobre Amazon Chime SDK, directo entre médico y paciente; el microservicio "Sala de Telemedicina" en ECS solo orquesta la señalización (crear/unirse a la sala), sin procesar el media en sí.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2.5 rounded border border-slate-800">
+              Beneficio: un pico de videoconsultas concurrentes no compite por CPU/memoria con el resto de los microservicios ni dispara auto-escalado de ECS, que sigue reaccionando solo a la carga real de la API.
             </p>
           </div>
         </div>

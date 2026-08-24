@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VitalMed - Seguridad y Auditoría</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active {
+      border-bottom: 2px solid #06b6d4;
+      color: #ffffff;
+      background-color: rgba(6, 182, 212, 0.1);
+    }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
+    <div class="max-w-7xl mx-auto flex flex-row justify-between items-center gap-2">
+      <div>
+        <div class="flex items-center gap-2 mb-0.5">
+          <span class="bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+            Security & Audit
+          </span>
+          <span class="text-slate-400 text-[11px] hidden sm:inline">• VitalMed Cloud Platform</span>
+        </div>
+        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Seguridad, Auditoría y Cumplimiento</h1>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="../index.html"
+           class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+          <span>🏠</span> Volver al Hub
+        </a>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="max-w-7xl mx-auto mt-2 flex overflow-x-auto border-b border-slate-800 gap-1 text-xs font-medium text-slate-400">
+      <button onclick="switchTab('tab-flow')" id="btn-tab-flow"
+              class="tab-btn tab-active px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>🛡️</span> 1. Flujo de Seguridad
+      </button>
+
+      <button onclick="switchTab('tab-services')" id="btn-tab-services"
+              class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>🔐</span> 2. Servicios y Controles
+      </button>
+
+      <button onclick="switchTab('tab-operations')" id="btn-tab-operations"
+              class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>⚙️</span> 3. Gobierno Automatizado
+      </button>
+
+      <button onclick="switchTab('tab-diagram')" id="btn-tab-diagram"
+              class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>🖼️</span> 4. Diagrama Visual
+      </button>
+
+      <button onclick="switchTab('tab-decisions')" id="btn-tab-decisions"
+              class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>📘</span> 5. Decisiones & Criterios
+      </button>
+    </nav>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-4 sm:p-6 flex-grow w-full space-y-8">
+
+    <!-- TAB 1 -->
+    <section id="tab-flow" class="tab-content space-y-6">
+
+      <div class="bg-slate-900/60 border border-purple-500/30 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>🛡️</span> Flujo de Seguridad y Auditoría de la Plataforma
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">
+          La seguridad se aplica antes, durante y después de una petición. El objetivo es que los controles preventivos,
+          la detección de amenazas y la evidencia de auditoría funcionen automáticamente en las cuatro cuentas de país.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        <!-- Prevent -->
+        <div class="bg-slate-900 border border-rose-500/30 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-sm font-bold text-rose-400 flex items-center gap-2">
+              <span>🚧</span> 01. PREVENIR
+            </span>
+            <span class="text-[10px] bg-rose-900/40 text-rose-300 px-2 py-0.5 rounded">ANTES</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3">
+              <div class="text-xs font-bold text-white">Amazon CloudFront</div>
+              <p class="text-[11px] text-slate-400 mt-1">Punto de entrada público de la aplicación.</p>
+            </div>
+
+            <div class="text-center text-slate-600">↓</div>
+
+            <div class="bg-slate-950 border border-rose-500/30 rounded-xl p-3">
+              <div class="text-xs font-bold text-rose-300">AWS WAF</div>
+              <p class="text-[11px] text-slate-400 mt-1">
+                Filtra solicitudes HTTP/HTTPS mediante Web ACL, reglas administradas y límites de tasa.
+              </p>
+            </div>
+
+            <div class="text-center text-slate-600">↓</div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3">
+              <div class="text-xs font-bold text-white">ALB → Microservicios</div>
+              <p class="text-[11px] text-slate-400 mt-1">Solo las peticiones que superan el control perimetral continúan hacia la aplicación.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detect -->
+        <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-sm font-bold text-amber-400 flex items-center gap-2">
+              <span>🔎</span> 02. DETECTAR
+            </span>
+            <span class="text-[10px] bg-amber-900/40 text-amber-300 px-2 py-0.5 rounded">DURANTE</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="bg-slate-950 border border-amber-500/30 rounded-xl p-3">
+              <div class="text-xs font-bold text-amber-300">AWS CloudTrail</div>
+              <p class="text-[11px] text-slate-400 mt-1">
+                Registra actividad de la cuenta y llamadas API, dejando evidencia de identidad, acción, recurso y momento.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 border border-amber-500/30 rounded-xl p-3">
+              <div class="text-xs font-bold text-amber-300">Amazon GuardDuty</div>
+              <p class="text-[11px] text-slate-400 mt-1">
+                Detecta comportamientos y amenazas sospechosas en las cuentas de AWS.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 border border-amber-500/30 rounded-xl p-3">
+              <div class="text-xs font-bold text-amber-300">AWS Config</div>
+              <p class="text-[11px] text-slate-400 mt-1">
+                Evalúa continuamente la configuración de los recursos contra reglas y Conformance Packs.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Respond -->
+        <div class="bg-slate-900 border border-purple-500/30 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-sm font-bold text-purple-400 flex items-center gap-2">
+              <span>🚨</span> 03. CENTRALIZAR
+            </span>
+            <span class="text-[10px] bg-purple-900/40 text-purple-300 px-2 py-0.5 rounded">DESPUÉS</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="bg-slate-950 border border-purple-500/30 rounded-xl p-3">
+              <div class="text-xs font-bold text-purple-300">AWS Security Hub</div>
+              <p class="text-[11px] text-slate-400 mt-1">
+                Consolida hallazgos y postura de seguridad para evitar revisar cuatro cuentas por separado.
+              </p>
+            </div>
+
+            <div class="text-center text-slate-600">↓</div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3">
+              <div class="text-xs font-bold text-white">Equipo de 12 personas</div>
+              <p class="text-[11px] text-slate-400 mt-1">
+                Recibe únicamente los eventos que requieren análisis o intervención, en lugar de revisar manualmente cada cuenta.
+              </p>
+            </div>
+
+            <div class="bg-purple-950/30 border border-purple-500/20 rounded-xl p-3">
+              <div class="text-[11px] font-semibold text-purple-200">Resultado operativo</div>
+              <p class="text-[11px] text-purple-300/80 mt-1">
+                Menos tareas manuales, evidencia trazable y una postura de seguridad homogénea.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+        <h3 class="text-sm font-bold text-cyan-400">Separación por país</h3>
+        <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+          Argentina, Chile, Colombia y México mantienen sus recursos y datos en cuentas AWS independientes.
+          Los controles de seguridad y compliance se gobiernan desde AWS Organizations, mientras que los hallazgos
+          pueden centralizarse operativamente sin mezclar las HCE entre países.
+        </p>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center text-xs">🇦🇷 Argentina<br><span class="text-slate-500">Cuenta país</span></div>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center text-xs">🇨🇱 Chile<br><span class="text-slate-500">Cuenta país</span></div>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center text-xs">🇨🇴 Colombia<br><span class="text-slate-500">Cuenta país</span></div>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center text-xs">🇲🇽 México<br><span class="text-slate-500">Cuenta país</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2 -->
+    <section id="tab-services" class="tab-content hidden space-y-6">
+
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>🔐</span> Servicios de Seguridad, Auditoría y Cumplimiento
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Cada servicio tiene una responsabilidad concreta. No se busca sumar herramientas, sino eliminar controles manuales
+          y generar evidencia verificable para una plataforma que maneja datos de salud.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="bg-slate-900 border border-rose-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="text-sm font-bold text-rose-400">AWS WAF</span>
+            <span class="text-[10px] bg-rose-900/50 text-rose-300 px-2 py-0.5 rounded">PREVENCIÓN</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Protección de las aplicaciones web antes de llegar al ALB. Permite aplicar reglas administradas, filtros
+            sobre las solicitudes y rate limiting.
+          </p>
+          <ul class="list-disc list-inside text-xs text-slate-400 space-y-1">
+            <li>Bloqueo de patrones de tráfico malicioso.</li>
+            <li>Reglas específicas para endpoints sensibles.</li>
+            <li>Rate-based rules para abuso o picos anómalos.</li>
+            <li>Configuración reproducible mediante Terraform.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="text-sm font-bold text-amber-400">AWS CloudTrail</span>
+            <span class="text-[10px] bg-amber-900/50 text-amber-300 px-2 py-0.5 rounded">AUDITORÍA</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Fuente de evidencia de actividad de las cuentas AWS. Permite investigar quién ejecutó una acción,
+            qué servicio utilizó y cuándo ocurrió.
+          </p>
+          <ul class="list-disc list-inside text-xs text-slate-400 space-y-1">
+            <li>Historial de actividad de las cuentas.</li>
+            <li>Management events para operaciones de administración.</li>
+            <li>Data events cuando se necesita mayor detalle sobre recursos compatibles.</li>
+            <li>La auditoría de acceso funcional a una HCE debe complementarse con eventos de aplicación cuando corresponda.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="text-sm font-bold text-cyan-400">AWS Config + Conformance Packs</span>
+            <span class="text-[10px] bg-cyan-900/50 text-cyan-300 px-2 py-0.5 rounded">COMPLIANCE</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Convierte requisitos de seguridad en reglas comprobables. Un Conformance Pack agrupa controles y puede
+            desplegarse de forma organizacional.
+          </p>
+          <ul class="list-disc list-inside text-xs text-slate-400 space-y-1">
+            <li>Reglas versionadas como YAML.</li>
+            <li>Aplicación homogénea a las cuentas de Argentina, Chile, Colombia y México.</li>
+            <li>Historial de compliance y detección de drift.</li>
+            <li>Posibilidad de incorporar remediation actions donde tenga sentido.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900 border border-orange-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="text-sm font-bold text-orange-400">Amazon GuardDuty</span>
+            <span class="text-[10px] bg-orange-900/50 text-orange-300 px-2 py-0.5 rounded">DETECCIÓN</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Detección administrada de actividad potencialmente maliciosa o anómala. Se integra con AWS Organizations
+            para administrar las cuentas miembro desde un administrador delegado.
+          </p>
+          <ul class="list-disc list-inside text-xs text-slate-400 space-y-1">
+            <li>Un punto operativo para revisar findings de las cuentas.</li>
+            <li>Auto-enable para nuevas cuentas de la organización.</li>
+            <li>Reduce la necesidad de revisar manualmente cada cuenta.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900 border border-purple-500/30 rounded-2xl p-5 space-y-3 md:col-span-2">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="text-sm font-bold text-purple-400">AWS Security Hub</span>
+            <span class="text-[10px] bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded">POSTURA CENTRAL</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Punto de consolidación de findings y controles de seguridad. Con configuración centralizada, un administrador
+            delegado puede aplicar políticas coherentes a cuentas y OUs.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+              <div class="text-xs font-semibold text-white">Un solo tablero</div>
+              <p class="text-[11px] text-slate-500 mt-1">Evita saltar entre cuatro cuentas para conocer la postura general.</p>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+              <div class="text-xs font-semibold text-white">Políticas centrales</div>
+              <p class="text-[11px] text-slate-500 mt-1">Estándares y controles definidos desde la cuenta administradora.</p>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+              <div class="text-xs font-semibold text-white">Menos drift</div>
+              <p class="text-[11px] text-slate-500 mt-1">Reduce configuraciones diferentes entre cuentas.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3 -->
+    <section id="tab-operations" class="tab-content hidden space-y-6">
+
+      <div class="bg-slate-900/60 border border-emerald-500/30 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>⚙️</span> Gobernanza Automatizada con Terraform
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Para un equipo de aproximadamente 12 personas, el valor principal no es tener más controles sino conseguir
+          que los controles sean repetibles, versionados y verificables.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+        <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-5">
+          <div class="text-2xl mb-2">📦</div>
+          <h3 class="text-sm font-bold text-emerald-400">Código como fuente de verdad</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            WAF, CloudTrail, Config, GuardDuty y Security Hub se modelan en Terraform cuando el recurso/configuración
+            es administrable como IaC. Los cambios pasan por Git, revisión y pipeline.
+          </p>
+        </div>
+
+        <div class="bg-slate-900 border border-blue-500/30 rounded-2xl p-5">
+          <div class="text-2xl mb-2">🔁</div>
+          <h3 class="text-sm font-bold text-blue-400">Mismo control en 4 cuentas</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Los módulos de Terraform evitan copiar configuraciones a mano. Se parametriza la cuenta/país y se reutiliza
+            la misma política de seguridad.
+          </p>
+        </div>
+
+        <div class="bg-slate-900 border border-purple-500/30 rounded-2xl p-5">
+          <div class="text-2xl mb-2">🧾</div>
+          <h3 class="text-sm font-bold text-purple-400">Evidencia auditable</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Git conserva quién cambió la configuración de infraestructura; AWS conserva la evidencia de actividad y
+            compliance. Se separan claramente ambas fuentes.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+        <h3 class="text-sm font-bold text-cyan-400 mb-4">Modelo operativo para el equipo</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-center">
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center">
+            <div class="text-lg">👨‍💻</div>
+            <div class="text-xs font-semibold">Developer</div>
+            <div class="text-[10px] text-slate-500">Propone cambio</div>
+          </div>
+
+          <div class="text-center text-slate-600">→</div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center">
+            <div class="text-lg">🔀</div>
+            <div class="text-xs font-semibold">Git + Review</div>
+            <div class="text-[10px] text-slate-500">Peer review</div>
+          </div>
+
+          <div class="text-center text-slate-600">→</div>
+
+          <div class="bg-slate-950 border border-emerald-500/30 rounded-xl p-3 text-center">
+            <div class="text-lg">🏗️</div>
+            <div class="text-xs font-semibold text-emerald-300">Terraform</div>
+            <div class="text-[10px] text-slate-500">Aplica IaC</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+          <div class="bg-cyan-950/30 border border-cyan-500/20 rounded-xl p-3">
+            <div class="text-xs font-bold text-cyan-300">AWS Config</div>
+            <p class="text-[11px] text-slate-400 mt-1">Comprueba que el estado real siga las reglas esperadas.</p>
+          </div>
+          <div class="bg-purple-950/30 border border-purple-500/20 rounded-xl p-3">
+            <div class="text-xs font-bold text-purple-300">Security Hub</div>
+            <p class="text-[11px] text-slate-400 mt-1">Consolida hallazgos y postura para priorizar.</p>
+          </div>
+          <div class="bg-amber-950/30 border border-amber-500/20 rounded-xl p-3">
+            <div class="text-xs font-bold text-amber-300">CloudTrail</div>
+            <p class="text-[11px] text-slate-400 mt-1">Conserva evidencia de actividad y cambios realizados en AWS.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5">
+        <h3 class="text-sm font-bold text-white">Principio operativo</h3>
+        <p class="text-xs text-cyan-300 mt-2 font-mono bg-slate-900 p-3 rounded-lg border border-slate-800">
+          "El equipo no debería descubrir manualmente que una cuenta quedó insegura."
+        </p>
+        <p class="text-xs text-slate-500 mt-3">
+          La infraestructura se declara en código, las configuraciones se evalúan automáticamente y los findings se
+          centralizan. La intervención humana queda reservada para excepciones, análisis y decisiones.
+        </p>
+      </div>
+    </section>
+
+    <!-- TAB 4 -->
+    <section id="tab-diagram" class="tab-content hidden space-y-6">
+
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+            <span>🖼️</span> Diagrama de Flujo de Seguridad y Auditoría
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Flujo previsto: petición → WAF → aplicación, mientras CloudTrail, Config y GuardDuty generan evidencia y
+            detecciones que convergen en Security Hub.
+          </p>
+        </div>
+
+        <a href="./diagramas/flujoauditoria.png" target="_blank"
+           class="text-xs bg-slate-800 hover:bg-slate-700 text-cyan-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+          <span>🔗</span> Abrir en nueva pestaña
+        </a>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center overflow-hidden flex flex-col items-center">
+        <div class="w-full overflow-auto max-h-[75vh] flex justify-center items-center bg-slate-950/80 rounded-xl p-2 border border-slate-800/50">
+          <img
+            src="./diagramas/flujoauditoria.png"
+            alt="Diagrama de Flujo de Seguridad y Auditoría VitalMed"
+            class="max-w-full h-auto object-contain rounded-lg shadow-2xl transition-transform duration-200"
+            onerror="this.onerror=null; this.src='https://via.placeholder.com/900x500/0f172a/38bdf8?text=Diagrama+flujoauditoria.png+Pendiente';"
+            id="architecture-img"
+          />
+        </div>
+
+        <span class="text-[11px] text-slate-500 mt-3 font-mono">
+          Ruta: docs/seguridad-auditoria/diagramas/flujoauditoria.png
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-slate-900 border border-rose-500/20 rounded-xl p-4">
+          <div class="text-xs font-bold text-rose-400">Prevención</div>
+          <p class="text-[11px] text-slate-500 mt-1">CloudFront + WAF detienen solicitudes no deseadas antes de la aplicación.</p>
+        </div>
+        <div class="bg-slate-900 border border-amber-500/20 rounded-xl p-4">
+          <div class="text-xs font-bold text-amber-400">Auditoría / Detección</div>
+          <p class="text-[11px] text-slate-500 mt-1">CloudTrail, Config y GuardDuty generan evidencia y findings.</p>
+        </div>
+        <div class="bg-slate-900 border border-purple-500/20 rounded-xl p-4">
+          <div class="text-xs font-bold text-purple-400">Gobierno</div>
+          <p class="text-[11px] text-slate-500 mt-1">Security Hub permite centralizar postura y priorizar acciones.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5 -->
+    <section id="tab-decisions" class="tab-content hidden space-y-6">
+
+      <div class="bg-cyan-950/40 border border-cyan-500/30 p-5 rounded-2xl">
+        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+          <span>📘</span> Decisiones de Arquitectura Asociadas (ADRs)
+        </h2>
+        <p class="text-xs text-cyan-200 mt-1">
+          Decisiones orientadas a seguridad, trazabilidad y reducción de carga operativa para un equipo reducido que opera
+          una plataforma sanitaria en cuatro países.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="bg-slate-900 border border-rose-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-rose-500/20 text-rose-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-SEC-001</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">WAF en el borde con CloudFront</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Decisión:</strong> Proteger el punto de entrada web mediante AWS WAF asociado al flujo de CloudFront.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">
+              ✓ Beneficio: el tráfico no deseado se filtra antes de alcanzar el ALB y los microservicios, reduciendo exposición y trabajo operativo.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-amber-500/20 text-amber-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-AUD-001</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">CloudTrail como evidencia central de actividad AWS</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Decisión:</strong> Mantener CloudTrail como fuente de auditoría de las operaciones de AWS y habilitar el nivel de eventos necesario para los recursos que requieran mayor trazabilidad.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">
+              ✓ Beneficio: ante una investigación, el equipo puede reconstruir actividad sin depender de memoria humana o registros manuales.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-CMP-001</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Compliance como código con AWS Config</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Decisión:</strong> Definir las reglas de compliance mediante AWS Config y Conformance Packs, gestionando su configuración de forma reproducible.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">
+              ✓ Beneficio: las cuatro cuentas se evalúan con una política común y los cambios pueden revisarse/versionarse como infraestructura.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-orange-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-orange-500/20 text-orange-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-SEC-002</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">GuardDuty administrado desde una cuenta delegada</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Decisión:</strong> Utilizar AWS Organizations para administrar GuardDuty en las cuentas miembro desde un administrador delegado.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">
+              ✓ Beneficio: se evita operar cuatro configuraciones independientes y se facilita incorporar nuevas cuentas de forma automática.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-purple-500/30 rounded-2xl p-5 space-y-3 md:col-span-2">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-purple-500/20 text-purple-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-SEC-003</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Security Hub como punto central de postura de seguridad</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Decisión:</strong> Centralizar la gestión de la postura y los findings de seguridad mediante Security Hub y una cuenta administradora delegada, manteniendo separadas las cuentas de país.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">
+              ✓ Beneficio: el equipo de 12 personas obtiene una visión operativa única sin eliminar el aislamiento de las cuentas ni de los datos de cada país.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-5 space-y-3 md:col-span-2">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-IAC-001</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Seguridad reproducible mediante Terraform</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Decisión:</strong> Tratar la configuración de seguridad administrable como IaC, con módulos reutilizables por país y cambios sujetos a Git/peer review.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">
+              ✓ Beneficio: evita configuraciones manuales divergentes y permite validar los cambios antes de aplicarlos. Esto es especialmente relevante para un equipo de 12 personas.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 md:col-span-2">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] bg-slate-700 text-slate-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-AUD-002</span>
+            <span class="text-[10px] bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-2 py-0.5 rounded">Supuesto / Validar</span>
+          </div>
+          <h4 class="text-sm font-bold text-white">Auditoría de acceso a la HCE a nivel de aplicación</h4>
+          <div class="text-xs text-slate-400 space-y-2">
+            <p><strong>Decisión:</strong> No considerar que CloudTrail por sí solo resuelve la trazabilidad funcional de "qué profesional vio qué HCE". La aplicación debe generar eventos de auditoría cuando se requiera ese nivel de detalle.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">
+              ✓ Beneficio: evita una falsa sensación de cumplimiento y separa correctamente la auditoría de AWS de la auditoría funcional del negocio sanitario.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+    VitalMed Platform • Security, Audit & Compliance Architecture
+  </footer>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('tab-active'));
+
+      document.getElementById(tabId).classList.remove('hidden');
+      document.getElementById('btn-' + tabId).classList.add('tab-active');
+    }
+  </script>
+
+</body>
+</html>

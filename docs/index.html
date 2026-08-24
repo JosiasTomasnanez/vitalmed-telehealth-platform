@@ -44,7 +44,7 @@
         Bienvenido a la Documentación Técnica de VitalMed Cloud
       </h2>
       <p class="text-sm text-slate-400 max-w-3xl leading-relaxed">
-        Plataforma multi-cuenta e infraestructura gobernada en AWS para operar la solución de telemedicina en Argentina, Chile, Colombia y México. Este portal consolida las decisiones de arquitectura (ADRs), cómputo serverless, redes, IAM, observabilidad y políticas organizacionales.
+        Plataforma multi-cuenta e infraestructura gobernada en AWS para operar la solución de telemedicina en Argentina, Chile, Colombia y México. Este portal consolida las decisiones de arquitectura (ADRs), cómputo serverless, redes, IAM, observabilidad, seguridad y políticas organizacionales.
       </p>
 
       <!-- Stats / Quick Info -->
@@ -74,10 +74,11 @@
         <span>📂</span> Módulos de Arquitectura
       </h3>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+      <!-- Grid ajustado a 3 columnas en pantallas grandes para balancear 2 filas de 3 módulos -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
         <!-- Card 1: IAM & Governance -->
-        <div class="bg-slate-900 border border-indigo-500/30 rounded-2xl p-5 flex flex-col justify-between hover:border-indigo-500 transition group relative">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-indigo-500/50 transition group relative">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
               <span class="text-2xl">🔐</span>
@@ -86,7 +87,7 @@
             <div>
               <h4 class="text-base font-bold text-white group-hover:text-indigo-400 transition">IAM & Policy</h4>
               <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                Estructura OUs, SCPs, SSO, Matriz de Roles de aplicación y ADRs.
+                Estructura OUs, SCPs, SSO, Matriz de Roles de aplicación y ADRs de control de accesos.
               </p>
             </div>
           </div>
@@ -122,7 +123,7 @@
           </div>
         </div>
 
-        <!-- Card 3: Compute & Microservices (NUEVO MÓDULO) -->
+        <!-- Card 3: Compute & Microservices -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-indigo-400/50 transition group relative">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
@@ -132,7 +133,7 @@
             <div>
               <h4 class="text-base font-bold text-white group-hover:text-indigo-300 transition">Cómputo & Backend</h4>
               <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                Microservicios en ECS, Auto-Scaling reactivo, tareas asíncronas y CI/CD.
+                Microservicios en ECS, Auto-Scaling reactivo, tareas asíncronas y pipeline CI/CD.
               </p>
             </div>
           </div>
@@ -145,7 +146,7 @@
           </div>
         </div>
 
-        <!-- Card: Persistencia & Datos -->
+        <!-- Card 4: Persistencia & Datos -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-cyan-400/50 transition group relative">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
@@ -168,7 +169,7 @@
           </div>
         </div>
 
-        <!-- Card 4: Observabilidad, Alertas & Runbook -->
+        <!-- Card 5: Observabilidad -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-purple-500/50 transition group relative">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
@@ -191,27 +192,48 @@
           </div>
         </div>
 
-        <!-- Card 5: Especificación General AWS-DOC -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-500/50 transition group relative">
+        <!-- Card 6: Seguridad & Auditoría (NUEVO MÓDULO) -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between hover:border-rose-500/50 transition group relative">
           <div class="space-y-3">
             <div class="flex justify-between items-center">
-              <span class="text-2xl">📘</span>
-              <span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-mono px-2 py-0.5 rounded font-bold uppercase">Doc Global</span>
+              <span class="text-2xl">🛡️</span>
+              <span class="text-[9px] bg-rose-500/20 text-rose-300 font-mono px-2 py-0.5 rounded font-bold uppercase">WAF & Audit</span>
             </div>
             <div>
-              <h4 class="text-base font-bold text-white group-hover:text-emerald-400 transition">Especificación AWS</h4>
+              <h4 class="text-base font-bold text-white group-hover:text-rose-400 transition">Seguridad & Auditoría</h4>
               <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
-                Documentación consolidada en Markdown y specs de infraestructura.
+                CloudTrail, GuardDuty, AWS Config, WAF, KMS y cumplimiento HIPAA/GDPR.
               </p>
             </div>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-800/80">
-            <button onclick="openMdModal()" 
-                    class="inline-flex items-center justify-between w-full text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition cursor-pointer">
-              <span>Ver Especificación</span>
-              <span>🔍</span>
-            </button>
+            <a href="./seguridad-auditoria/seguridad-auditoria.html" 
+               class="inline-flex items-center justify-between w-full text-xs font-semibold text-rose-400 hover:text-rose-300 transition">
+              <span>Explorar Seguridad</span>
+              <span>➔</span>
+            </a>
           </div>
+        </div>
+
+        <!-- Card 7: Especificación General AWS-DOC (Ocupa ancho completo al final) -->
+        <div class="bg-slate-900/80 border border-emerald-500/30 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-emerald-500/60 transition group lg:col-span-3">
+          <div class="flex items-center gap-4">
+            <span class="text-3xl bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20">📘</span>
+            <div>
+              <div class="flex items-center gap-2 mb-0.5">
+                <h4 class="text-base font-bold text-white group-hover:text-emerald-400 transition">Especificación Global AWS-DOC</h4>
+                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-mono px-2 py-0.5 rounded font-bold uppercase">Markdown Spec</span>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Documentación técnica consolidada completa, especificaciones de infraestructura y decisiones globales.
+              </p>
+            </div>
+          </div>
+          <button onclick="openMdModal()" 
+                  class="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition cursor-pointer">
+            <span>Ver Especificación Técnica</span>
+            <span>🔍</span>
+          </button>
         </div>
 
       </div>
@@ -255,6 +277,13 @@
            class="bg-slate-950 border border-slate-800 hover:border-cyan-500/50 px-4 py-2.5 rounded-xl text-slate-300 hover:text-white transition flex items-center gap-2">
           <span>🗄️</span>
           <span>Diagrama Flujo de Persistencia</span>
+          <span class="text-slate-500 text-[10px]">↗</span>
+        </a>
+
+        <a href="./seguridad-auditoria/diagramas/flujoauditoria.png" target="_blank"
+           class="bg-slate-950 border border-slate-800 hover:border-rose-500/50 px-4 py-2.5 rounded-xl text-slate-300 hover:text-white transition flex items-center gap-2">
+          <span>🛡️</span>
+          <span>Diagrama Seguridad & Auditoría</span>
           <span class="text-slate-500 text-[10px]">↗</span>
         </a>
       </div>
