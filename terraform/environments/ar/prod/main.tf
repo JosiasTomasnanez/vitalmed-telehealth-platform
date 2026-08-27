@@ -16,11 +16,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tp-diplodevops-tfstate-mgmt"
-    key            = "environments/ar/prod/terraform.tfstate"
-    region         = "us-east-1"
-    use_lockfile   = true
-    encrypt        = true
+    bucket       = "tp-diplodevops-tfstate-mgmt"
+    key          = "environments/ar/prod/terraform.tfstate"
+    region       = "us-east-1"
+    use_lockfile = true
+    encrypt      = true
   }
 }
 
@@ -44,7 +44,7 @@ provider "aws" {
 }
 
 module "network" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/network?ref=v1.0"
+  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/network"
 
   pais    = "ar"
   entorno = "prod"
@@ -58,16 +58,16 @@ module "network" {
 }
 
 module "edge_cert" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/edge-cert?ref=v1.0"
+  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/edge-cert"
 
-  pais             = "ar"
-  entorno          = "prod"
-  dominio          = "ar.miapp.com"
-  zona_route53_id  = var.zona_route53_id
+  pais            = "ar"
+  entorno         = "prod"
+  dominio         = "ar.miapp.com"
+  zona_route53_id = var.zona_route53_id
 }
 
 module "compute" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/compute?ref=v1.0"
+  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/compute"
 
   pais    = "ar"
   entorno = "prod"
@@ -80,18 +80,18 @@ module "compute" {
 }
 
 module "data" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/data?ref=v1.0"
+  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/data"
 
   pais    = "ar"
   entorno = "prod"
 
-  vpc_id                 = module.network.vpc_id
-  data_subnet_ids        = module.network.data_subnet_ids
-  ecs_security_group_id  = module.compute.ecs_security_group_id
+  vpc_id                = module.network.vpc_id
+  data_subnet_ids       = module.network.data_subnet_ids
+  ecs_security_group_id = module.compute.ecs_security_group_id
 }
 
 module "async" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/async?ref=v1.0"
+  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/async"
 
   pais        = "ar"
   entorno     = "prod"
@@ -99,7 +99,7 @@ module "async" {
 }
 
 module "edge" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/edge?ref=v1.0"
+  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/edge"
 
   pais    = "ar"
   entorno = "prod"
@@ -114,7 +114,7 @@ module "edge" {
 # Bucket S3 aparte para el build estático del frontend (no lleva datos de
 # pacientes, por eso no vive en modules/data junto a estudios/adjuntos).
 module "frontend_bucket" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/frontend-bucket?ref=v1.0"
+  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/frontend-bucket"
 
   pais    = "ar"
   entorno = "prod"
@@ -137,8 +137,8 @@ resource "aws_iam_role_policy" "ecs_task_permisos" {
         Resource = module.data.aurora_secret_arn
       },
       {
-        Effect   = "Allow"
-        Action   = ["s3:GetObject", "s3:PutObject", "s3:ListBucket"]
+        Effect = "Allow"
+        Action = ["s3:GetObject", "s3:PutObject", "s3:ListBucket"]
         Resource = concat(
           [for arn in module.data.s3_bucket_arns : arn],
           [for arn in module.data.s3_bucket_arns : "${arn}/*"]

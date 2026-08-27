@@ -24,7 +24,7 @@ resource "aws_sqs_queue" "this" {
 
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.dlq[each.key].arn
-    maxReceiveCount      = 3
+    maxReceiveCount     = 3
   })
 
   tags = { Pais = var.pais, Entorno = var.entorno }

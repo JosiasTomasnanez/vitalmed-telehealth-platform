@@ -2,7 +2,7 @@
 # Security group: solo ECS puede hablarle a Aurora, en el puerto de Postgres
 # -----------------------------------------------------------------------------
 resource "aws_security_group" "aurora" {
-  name   = "sg-aurora-${local.nombre}"
+  name   = "aurora-${local.nombre}"
   vpc_id = var.vpc_id
 
   ingress {
@@ -20,7 +20,7 @@ resource "aws_security_group" "aurora" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "sg-aurora-${local.nombre}" }
+  tags = { Name = "aurora-${local.nombre}" }
 }
 
 resource "aws_db_subnet_group" "aurora" {
@@ -75,12 +75,12 @@ resource "aws_rds_cluster" "this" {
   storage_encrypted = true
   kms_key_id        = aws_kms_key.this.arn
 
-  backup_retention_period      = var.backup_retention_days
-  preferred_backup_window      = "03:00-04:00"
-  copy_tags_to_snapshot        = true
-  deletion_protection          = var.entorno == "prod" ? true : false
-  skip_final_snapshot          = var.entorno == "prod" ? false : true
-  final_snapshot_identifier    = var.entorno == "prod" ? "aurora-${local.nombre}-final" : null
+  backup_retention_period   = var.backup_retention_days
+  preferred_backup_window   = "03:00-04:00"
+  copy_tags_to_snapshot     = true
+  deletion_protection       = var.entorno == "prod" ? true : false
+  skip_final_snapshot       = var.entorno == "prod" ? false : true
+  final_snapshot_identifier = var.entorno == "prod" ? "aurora-${local.nombre}-final" : null
 
   serverlessv2_scaling_configuration {
     min_capacity = var.aurora_min_acu

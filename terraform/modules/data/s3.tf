@@ -50,6 +50,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
     id     = "transicion-a-infrequent-access"
     status = "Enabled"
 
+    filter {
+      prefix = ""
+    }
+
     transition {
       days          = 90
       storage_class = "STANDARD_IA"

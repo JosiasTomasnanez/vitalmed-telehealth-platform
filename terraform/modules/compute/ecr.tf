@@ -16,9 +16,9 @@ resource "aws_ecr_repository" "this" {
   }
 
   tags = {
-    Pais      = var.pais
-    Entorno   = var.entorno
-    Servicio  = each.key
+    Pais     = var.pais
+    Entorno  = var.entorno
+    Servicio = each.key
   }
 }
 
