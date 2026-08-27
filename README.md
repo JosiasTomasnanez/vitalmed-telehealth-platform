@@ -2,7 +2,7 @@
 
 [![AWS Well-Architected](https://img.shields.io/badge/AWS-Well--Architected-orange?logo=amazon-aws)](https://aws.amazon.com/architecture/well-architected/)
 [![IaC-Terraform](https://img.shields.io/badge/IaC-Terraform-purple?logo=terraform)](https://www.terraform.io/)
-[![DevOps-Group](https://img.shields.io/badge/Grupo-10-blue)](#-equipo-de-desarrollo)
+[![DevOps-Group](https://img.shields.io/badge/Grupo-9-blue)](#-equipo-de-desarrollo)
 
 > **Solución de Infraestructura como Código (IaC) para la escala continental de VitalMed Telesalud, diseñada bajo el pilar de Excelencia Operativa para conectar a +180,000 pacientes y 4,500 profesionales de la salud en Argentina, Chile, Colombia y México.**
 
