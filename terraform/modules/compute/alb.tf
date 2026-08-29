@@ -2,7 +2,7 @@
 # Security Groups
 # -----------------------------------------------------------------------------
 resource "aws_security_group" "alb" {
-  name   = "sg-alb-${local.nombre}"
+  name   = "alb-${local.nombre}"
   vpc_id = var.vpc_id
 
   ingress {
