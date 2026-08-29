@@ -2,7 +2,7 @@
 # Security group: solo ECS puede hablarle a Aurora, en el puerto de Postgres
 # -----------------------------------------------------------------------------
 resource "aws_security_group" "aurora" {
-  name   = "sg-aurora-${local.nombre}"
+  name   = "aurora-${local.nombre}"
   vpc_id = var.vpc_id
 
   ingress {
