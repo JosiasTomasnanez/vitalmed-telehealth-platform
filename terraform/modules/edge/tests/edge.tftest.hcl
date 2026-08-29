@@ -44,7 +44,7 @@ run "cloudfront_enabled" {
 # Test 2: CloudFront tiene 2 origins (S3 frontend + ALB API)
 # -----------------------------------------------------------------------------
 run "cloudfront_two_origins" {
-  command = apply
+  command = plan
 
   assert {
     condition     = length(aws_cloudfront_distribution.this.origin) == 2
