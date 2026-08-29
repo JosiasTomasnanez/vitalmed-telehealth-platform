@@ -97,12 +97,12 @@ run "route53_record_created" {
   command = plan
 
   assert {
-    condition     = aws_route53_record.this.name != ""
+    condition     = aws_route53_record.cloudfront_a.name != ""
     error_message = "Route53 record debe ser creado"
   }
 
   assert {
-    condition     = aws_route53_record.this.type == "A"
+    condition     = aws_route53_record.cloudfront_a.type == "A"
     error_message = "Route53 record debe ser de tipo A (alias)"
   }
 }
