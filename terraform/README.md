@@ -58,13 +58,13 @@ Los tests se ejecutan localmente utilizando **MiniStack** como emulador de AWS.
 
 ```powershell
 # 1. Iniciar MiniStack
-.\scripts\start-ministack.ps1
+./scripts/start-ministack.sh
 
 # 2. Ejecutar todos los tests
-.\scripts\run-tests-ministack.ps1
+./scripts/run-tests-ministack.sh
 
 # 3. Ejecutar tests de un módulo específico
-.\scripts\run-tests-ministack.ps1 -Module network
+./scripts/run-tests-ministack.sh -Module network
 ```
 
 ### Qué validan los tests
@@ -114,7 +114,7 @@ docker run -d --name ministack -p 4566:4566 ministackorg/ministack
 curl http://localhost:4566/_ministack/health
 
 # Ejecutar validación completa
-.\scripts\validate-terraform.ps1
+./scripts/validate-terraform.sh
 ```
 
 ### Servicios emulados
@@ -167,9 +167,9 @@ terraform/
 │   ├── README.md                 # documentación de tests
 │   └── ministack-provider.tf     # provider para MiniStack
 └── scripts/
-    ├── start-ministack.ps1       # inicia MiniStack
-    ├── run-tests-ministack.ps1   # ejecuta tests
-    └── validate-terraform.ps1    # validación completa
+    ├── start-ministack.sh       # inicia MiniStack
+    ├── run-tests-ministack.sh   # ejecuta tests
+    └── validate-terraform.sh    # validación completa
 ```
 
 ## Comandos útiles
@@ -184,9 +184,9 @@ terraform init -backend=false
 terraform validate
 
 # Tests con MiniStack
-.\scripts\start-ministack.ps1
-.\scripts\run-tests-ministack.ps1
+./scripts/start-ministack.sh
+./scripts/run-tests-ministack.sh
 
 # Validación completa (sin credenciales AWS)
-.\scripts\validate-terraform.ps1
+./scripts/validate-terraform.sh
 ```

@@ -1258,8 +1258,8 @@ terraform init -backend=false
 terraform validate
 
 # 5. Ejecutar tests
-.\scripts\start-ministack.ps1
-.\scripts\run-tests-ministack.ps1
+./scripts/start-ministack.sh
+./scripts/run-tests-ministack.sh
 ```
 
 ### 17.3 Lecturas Recomendadas
