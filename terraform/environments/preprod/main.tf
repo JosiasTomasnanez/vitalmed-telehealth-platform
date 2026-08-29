@@ -16,11 +16,13 @@ terraform {
   }
 
   backend "s3" {
+    
     bucket       = "tp-diplodevops-tfstate-mgmt"
     key          = "environments/preprod/terraform.tfstate"
     region       = "us-east-1"
     use_lockfile = true
     encrypt      = true
+
   }
 }
 
@@ -64,6 +66,7 @@ module "edge_cert" {
   entorno         = "preprod"
   dominio         = "preprod.miapp.com"
   zona_route53_id = var.zona_route53_id
+
 }
 
 module "compute" {
@@ -88,6 +91,7 @@ module "data" {
   vpc_id                = module.network.vpc_id
   data_subnet_ids       = module.network.data_subnet_ids
   ecs_security_group_id = module.compute.ecs_security_group_id
+
 }
 
 module "async" {
@@ -137,8 +141,10 @@ resource "aws_iam_role_policy" "ecs_task_permisos" {
         Resource = module.data.aurora_secret_arn
       },
       {
+
         Effect = "Allow"
         Action = ["s3:GetObject", "s3:PutObject", "s3:ListBucket"]
+
         Resource = concat(
           [for arn in module.data.s3_bucket_arns : arn],
           [for arn in module.data.s3_bucket_arns : "${arn}/*"]
