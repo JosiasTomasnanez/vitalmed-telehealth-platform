@@ -1,13 +1,7 @@
 variable "paises" {
-  description = "Códigos de país donde se despliega la aplicación"
+  description = "Códigos de país donde se despliega la aplicación en producción"
   type        = list(string)
   default     = ["ar", "cl", "co", "mx"]
-}
-
-variable "entornos" {
-  description = "Entornos soportados por país"
-  type        = list(string)
-  default     = ["prod", "preprod"]
 }
 
 variable "email_alias_suffix" {

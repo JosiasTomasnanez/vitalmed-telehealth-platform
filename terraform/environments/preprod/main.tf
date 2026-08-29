@@ -17,7 +17,7 @@ terraform {
 
   backend "s3" {
     bucket       = "tp-diplodevops-tfstate-mgmt"
-    key          = "environments/mx/preprod/terraform.tfstate"
+    key          = "environments/preprod/terraform.tfstate"
     region       = "us-east-1"
     use_lockfile = true
     encrypt      = true
@@ -27,6 +27,9 @@ terraform {
 provider "aws" {
   region = "us-east-1"
 
+  # Terraform asume el rol OrganizationAccountAccessRole dentro de la
+  # cuenta AWS única de preprod (creada por /org). El account_id
+  # sale del output de ese stack (o se referencia con terraform_remote_state).
   assume_role {
     role_arn = "arn:aws:iam::${var.account_id}:role/OrganizationAccountAccessRole"
   }
@@ -34,7 +37,7 @@ provider "aws" {
   default_tags {
     tags = {
       Proyecto = "diplodevops-tp"
-      Pais     = "mx"
+      Pais     = "global"
       Entorno  = "preprod"
     }
   }
@@ -43,30 +46,30 @@ provider "aws" {
 module "network" {
   source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/network?ref=v1.0"
 
-  pais    = "mx"
+  pais    = "global"
   entorno = "preprod"
 
-  vpc_cidr             = "10.41.0.0/16"
-  public_subnet_cidrs  = ["10.41.0.0/24", "10.41.1.0/24"]
-  private_subnet_cidrs = ["10.41.10.0/24", "10.41.11.0/24"]
-  data_subnet_cidrs    = ["10.41.20.0/24", "10.41.21.0/24"]
+  vpc_cidr             = "10.99.0.0/16"
+  public_subnet_cidrs  = ["10.99.0.0/24", "10.99.1.0/24"]
+  private_subnet_cidrs = ["10.99.10.0/24", "10.99.11.0/24"]
+  data_subnet_cidrs    = ["10.99.20.0/24", "10.99.21.0/24"]
 
-  single_nat_gateway = true # preprod: 1 solo NAT (ahorro de costo)
+  single_nat_gateway = true # preprod: 1 solo NAT, ahorro de costo (entorno único, sin distinción de país)
 }
 
 module "edge_cert" {
   source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/edge-cert?ref=v1.0"
 
-  pais            = "mx"
+  pais            = "global"
   entorno         = "preprod"
-  dominio         = "preprod.mx.miapp.com"
+  dominio         = "preprod.miapp.com"
   zona_route53_id = var.zona_route53_id
 }
 
 module "compute" {
   source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/compute?ref=v1.0"
 
-  pais    = "mx"
+  pais    = "global"
   entorno = "preprod"
 
   vpc_id             = module.network.vpc_id
@@ -79,7 +82,7 @@ module "compute" {
 module "data" {
   source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/data?ref=v1.0"
 
-  pais    = "mx"
+  pais    = "global"
   entorno = "preprod"
 
   vpc_id                = module.network.vpc_id
@@ -90,31 +93,37 @@ module "data" {
 module "async" {
   source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/async?ref=v1.0"
 
-  pais        = "mx"
+  pais        = "global"
   entorno     = "preprod"
   kms_key_arn = module.data.kms_key_arn
-}
-
-module "frontend_bucket" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/frontend-bucket?ref=v1.0"
-
-  pais    = "mx"
-  entorno = "preprod"
 }
 
 module "edge" {
   source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/edge?ref=v1.0"
 
-  pais    = "mx"
+  pais    = "global"
   entorno = "preprod"
 
-  dominio                              = "preprod.mx.miapp.com"
+  dominio                              = "preprod.miapp.com"
   zona_route53_id                      = var.zona_route53_id
   alb_dns_name                         = module.compute.alb_dns_name
   frontend_bucket_regional_domain_name = module.frontend_bucket.bucket_regional_domain_name
   certificate_arn                      = module.edge_cert.certificate_arn
 }
 
+# Bucket S3 aparte para el build estático del frontend (no lleva datos de
+# pacientes, por eso no vive en modules/data junto a estudios/adjuntos).
+module "frontend_bucket" {
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/frontend-bucket?ref=v1.0"
+
+  pais    = "global"
+  entorno = "preprod"
+}
+
+# -----------------------------------------------------------------------------
+# Permisos del task role de ECS hacia los recursos de datos y async,
+# resueltos acá porque solo el root module conoce ambos lados.
+# -----------------------------------------------------------------------------
 resource "aws_iam_role_policy" "ecs_task_permisos" {
   name = "acceso-datos-y-colas"
   role = split("/", module.compute.ecs_task_role_arn)[1]
@@ -146,6 +155,8 @@ resource "aws_iam_role_policy" "ecs_task_permisos" {
         Resource = module.data.kms_key_arn
       },
       {
+        # Permiso para que el backend cree/gestione videollamadas con Chime SDK.
+        # Ver README: Chime SDK no tiene recursos declarativos, solo este permiso IAM.
         Effect   = "Allow"
         Action   = ["chime:CreateMeeting", "chime:DeleteMeeting", "chime:CreateAttendee"]
         Resource = "*"
