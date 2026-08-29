@@ -7,7 +7,7 @@ variable "entorno" {
 }
 
 variable "dominio" {
-  description = "Dominio completo para este país+entorno, ej: ar.miapp.com (prod) o preprod.ar.miapp.com"
+  description = "Dominio completo para este país+entorno, ej: ar.miapp.com (prod) o preprod.miapp.com (preprod general)"
   type        = string
 }
 

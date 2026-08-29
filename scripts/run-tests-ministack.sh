@@ -1,111 +1,113 @@
 #!/usr/bin/env bash
-# ==============================================================================
-# run-tests-ministack.sh — Ejecuta tests de Terraform con MiniStack
-# Uso: ./scripts/run-tests-ministack.sh [network|compute|data|edge|async]
-#      Sin argumento ejecuta todos los módulos.
-# Requisitos: terraform, MiniStack en http://localhost:4566
-# ==============================================================================
-set -euo pipefail
 
-GREEN='\033[0;32m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; CYAN='\033[0;36m'; GRAY='\033[0;90m'; NC='\033[0m'
+# Script para ejecutar tests de Terraform con MiniStack
+# Uso: ./test-ministack.sh [nombre_modulo|all]
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+MODULE="${1:-all}"
 
-MODULE_FILTER="${1:-all}"
+# Colores para la consola
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GRAY='\033[0;90m'
+NC='\033[0m' # Sin color
+
+# Detección dinámica del directorio raíz del proyecto
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ "$(basename "$SCRIPT_DIR")" == "scripts" ]]; then
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+else
+    PROJECT_ROOT="$SCRIPT_DIR"
+fi
 
 echo -e "${CYAN}=== Ejecutando tests de Terraform con MiniStack ===${NC}"
 
-# Verificar MiniStack
-if ! curl -sf http://localhost:4566/_ministack/health >/dev/null 2>&1; then
-  echo -e "${RED}Error: MiniStack no está ejecutándose${NC}"
-  echo -e "${YELLOW}Ejecuta primero: ./scripts/start-ministack.sh${NC}"
-  exit 1
+# Verificar que MiniStack está ejecutándose
+if curl -s -f "http://localhost:4566/_ministack/health" > /dev/null 2>&1; then
+    echo -e "${GREEN}MiniStack está ejecutándose${NC}"
+else
+    echo -e "${RED}Error: MiniStack no está ejecutándose${NC}"
+    echo -e "${YELLOW}Ejecuta primero: ./scripts/start-ministack.sh${NC}"
+    exit 1
 fi
-echo -e "${GREEN}MiniStack está ejecutándose${NC}"
 
-if ! command -v terraform >/dev/null 2>&1; then
-  echo -e "${RED}terraform no encontrado en PATH${NC}"
-  exit 1
+# Verificar que tflocal está disponible
+if command -v tflocal &> /dev/null; then
+    TF_VERSION=$(tflocal --version 2>&1 | head -n 1)
+    echo -e "${GREEN}tflocal: ${TF_VERSION}${NC}"
+else
+    echo -e "${RED}Error: tflocal no está disponible${NC}"
+    echo -e "${YELLOW}Instala con: pip install terraform-local${NC}"
+    exit 1
 fi
 
 # Lista de módulos
-ALL_MODULES=("network" "compute" "data" "edge" "async")
-if [ "$MODULE_FILTER" = "all" ]; then
-  MODULES=("${ALL_MODULES[@]}")
+if [ "$MODULE" != "all" ]; then
+    MODULES=("$MODULE")
 else
-  MODULES=("$MODULE_FILTER")
+    MODULES=("network" "compute" "data" "edge" "async")
 fi
 
-FAILED=()
-PASSED=()
+FAILED_TESTS=()
+PASSED_TESTS=()
+ORIGINAL_DIR="$(pwd)"
 
 for mod in "${MODULES[@]}"; do
-  TEST_DIR="$PROJECT_ROOT/terraform/modules/$mod/tests"
-  MODULE_DIR="$PROJECT_ROOT/terraform/modules/$mod"
+    TEST_DIR="${PROJECT_ROOT}/terraform/modules/${mod}/tests"
+    MODULE_DIR="${PROJECT_ROOT}/terraform/modules/${mod}"
+    PROVIDER_FILE="${MODULE_DIR}/localstack_providers_override.tf"
 
-  if [ ! -d "$TEST_DIR" ]; then
-    echo -e "\n${YELLOW}Saltando $mod - directorio de tests no encontrado${NC}"
-    continue
-  fi
-
-  echo -e "\n${CYAN}=== Testeando módulo: $mod ===${NC}"
-
-  # Usar provider de MiniStack si existe uno dedicado; si no, el genérico
-  PROVIDER_SRC=""
-  if [ -f "$MODULE_DIR/ministack-provider.tf" ]; then
-    echo -e "${GRAY}Usando provider existente en el módulo${NC}"
-    PROVIDER_SRC=""
-  elif [ -f "$PROJECT_ROOT/terraform/tests/ministack-provider.tf" ]; then
-    PROVIDER_SRC="$PROJECT_ROOT/terraform/tests/ministack-provider.tf"
-  fi
-
-  PROVIDER_FILE=""
-  if [ -n "$PROVIDER_SRC" ]; then
-    PROVIDER_FILE="$MODULE_DIR/ministack-provider.tf"
-    cp "$PROVIDER_SRC" "$PROVIDER_FILE"
-  fi
-
-  set +e
-  (
-    cd "$MODULE_DIR"
-    echo -e "${GRAY}Inicializando...${NC}"
-    terraform init -backend=false >/dev/null 2>&1
-    INIT_RC=$?
-    if [ $INIT_RC -ne 0 ]; then
-      echo -e "${RED}tflocal/terraform init falló${NC}"
-      exit 1
+    if [ ! -d "$TEST_DIR" ]; then
+        echo -e "\n${YELLOW}Saltando ${mod} - directorio de tests no encontrado${NC}"
+        continue
     fi
-    echo -e "${GRAY}Ejecutando tests...${NC}"
-    terraform test 2>&1
-  )
-  RC=$?
-  set -e
 
-  # Limpiar provider temporal si lo creamos
-  if [ -n "$PROVIDER_SRC" ] && [ -f "$PROVIDER_FILE" ]; then
-    # Solo borrar si lo creamos nosotros (comparar con src)
-    rm -f "$PROVIDER_FILE"
-  fi
+    echo -e "\n${CYAN}=== Testeando módulo: ${mod} ===${NC}"
 
-  if [ $RC -eq 0 ]; then
-    PASSED+=("$mod")
-    echo -e "${GREEN}✓ Tests de $mod pasaron${NC}"
-  else
-    FAILED+=("$mod")
-    echo -e "${RED}✗ Tests de $mod fallaron${NC}"
-  fi
+    # Copiar configuración de MiniStack al directorio del módulo
+    cp "${PROJECT_ROOT}/terraform/tests/ministack-provider.tf" "$PROVIDER_FILE"
+
+    cd "$MODULE_DIR" || continue
+
+    # Inicializar tflocal
+    echo -e "${GRAY}Inicializando...${NC}"
+    if tflocal init -backend=false > /dev/null 2>&1; then
+        echo -e "${GRAY}Ejecutando tests...${NC}"
+        
+        # Ejecutar tflocal test
+        if tflocal test "$TEST_DIR"; then
+            PASSED_TESTS+=("$mod")
+            echo -e "${GREEN}✓ Tests de ${mod} pasaron${NC}"
+        else
+            FAILED_TESTS+=("$mod")
+            echo -e "${RED}✗ Tests de ${mod} fallaron${NC}"
+        fi
+    else
+        FAILED_TESTS+=("$mod")
+        echo -e "${RED}✗ Error en ${mod} : tflocal init falló${NC}"
+    fi
+
+    # Limpiar archivo de override
+    if [ -f "$PROVIDER_FILE" ]; then
+        rm -f "$PROVIDER_FILE"
+    fi
+
+    cd "$ORIGINAL_DIR" || exit 1
 done
 
+# Resumen
 echo -e "\n${CYAN}=== Resumen ===${NC}"
-echo -e "${GREEN}Tests pasados: ${#PASSED[@]}${NC}"
-echo -e "${RED}Tests fallidos: ${#FAILED[@]}${NC}"
+echo -e "${GREEN}Tests pasados: ${#PASSED_TESTS[@]}${NC}"
+echo -e "${RED}Tests fallidos: ${#FAILED_TESTS[@]}${NC}"
 
-if [ ${#FAILED[@]} -gt 0 ]; then
-  echo -e "\n${RED}Módulos con errores:${NC}"
-  for m in "${FAILED[@]}"; do echo -e "  ${RED}- $m${NC}"; done
-  exit 1
+if [ ${#FAILED_TESTS[@]} -gt 0 ]; then
+    echo -e "\n${RED}Módulos con errores:${NC}"
+    for mod in "${FAILED_TESTS[@]}"; do
+        echo -e "${RED}  - ${mod}${NC}"
+    done
+    exit 1
 else
-  echo -e "\n${GREEN}¡Todos los tests pasaron!${NC}"
-  exit 0
+    echo -e "\n${GREEN}¡Todos los tests pasaron!${NC}"
+    exit 0
 fi

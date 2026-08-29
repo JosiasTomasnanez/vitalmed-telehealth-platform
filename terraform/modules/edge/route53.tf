@@ -1,10 +1,5 @@
-data "aws_route53_zone" "selected" {
-  name         = "miapp.com"
-  private_zone = false
-}
-
 resource "aws_route53_record" "cloudfront_a" {
-  zone_id = data.aws_route53_zone.selected.zone_id
+  zone_id = var.zona_route53_id
   name    = var.dominio
   type    = "A"
 
@@ -16,7 +11,7 @@ resource "aws_route53_record" "cloudfront_a" {
 }
 
 resource "aws_route53_record" "cloudfront_aaaa" {
-  zone_id = data.aws_route53_zone.selected.zone_id
+  zone_id = var.zona_route53_id
   name    = var.dominio
   type    = "AAAA"
 

@@ -20,7 +20,7 @@ resource "aws_security_group" "aurora" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "aurora-${local.nombre}" }
+  tags = { Name = "sg-aurora-${local.nombre}" }
 }
 
 resource "aws_db_subnet_group" "aurora" {

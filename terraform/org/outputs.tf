@@ -1,6 +1,11 @@
-output "account_ids" {
-  description = "Mapa <pais>-<entorno> => account_id, para que cada environments/<pais>/<entorno> sepa en qué cuenta desplegar"
-  value       = { for k, v in aws_organizations_account.workload : k => v.id }
+output "prod_account_ids" {
+  description = "Mapa <pais> => account_id de la cuenta de producción de ese país"
+  value       = { for k, v in aws_organizations_account.prod : k => v.id }
+}
+
+output "preprod_account_id" {
+  description = "Account ID de la única cuenta de preproducción (general, no por país)"
+  value       = aws_organizations_account.preprod.id
 }
 
 output "shared_account_id" {

@@ -1,0 +1,1269 @@
+{
+  "id": "af647068-a741-493f-820c-a733069ba34e",
+  "name": "Diplo",
+  "createdAt": "23 de agosto de 2026 a las 16:28 (UTC-3:00)",
+  "expiresAt": "23 de septiembre de 2027 a las 16:28 (UTC-3:00)",
+  "rateType": "BEFORE_DISCOUNTS",
+  "rateTimestamp": "23 de agosto de 2026 a las 16:28 (UTC-3:00)",
+  "status": "VALID",
+  "totalCostHistorical": 0,
+  "totalCostEstimated": 1409.0170805534246,
+  "currency": "USD",
+  "exportCreatedAt": "26 de agosto de 2026 a las 13:42 (UTC-3:00)",
+  "items": [
+    {
+      "serviceCode": "AmazonCloudWatch",
+      "usageType": "USE1-CW:DatabaseInsights-vCPU-Hours",
+      "operation": "Aurora-PostgreSQL:Provisioned",
+      "location": "us-east-1",
+      "usageId": "00859682-ad95-472d-9773-5344db0248bb",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "vCPU-Hours",
+        "amount": 2920
+      },
+      "costSummary": {
+        "cost": 36.5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSLambda",
+      "usageType": "Lambda-GB-Second-ARM",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "178c18e0-1c92-4244-85c3-a3ef1a0e741f",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Computo",
+      "quantity": {
+        "unit": "Lambda-GB-Second",
+        "amount": 200000
+      },
+      "costSummary": {
+        "cost": 2.66668,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSXRay",
+      "usageType": "USE1-XRay-TracesAccessed",
+      "operation": "XRay-Traces-Scanned",
+      "location": "us-east-1",
+      "usageId": "17dc53d8-1b6d-4e91-be91-25bf73da87f7",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "traces",
+        "amount": 206000
+      },
+      "costSummary": {
+        "cost": 0.103,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudWatch",
+      "usageType": "DashboardsUsageHour-Basic",
+      "operation": "DashboardHour",
+      "location": "",
+      "usageId": "1cee98b1-56fa-4983-820e-9940a8a0f715",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Dashboards",
+        "amount": 2
+      },
+      "costSummary": {
+        "cost": 6,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "awswaf",
+      "usageType": "USE1-RuleV2",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "1d41bcc2-934e-474b-8c24-11f13a0bbc96",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Red",
+      "quantity": {
+        "unit": "Month",
+        "amount": 5
+      },
+      "costSummary": {
+        "cost": 5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "awswaf",
+      "usageType": "USE1-RequestV2-Tier1",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "1dbaaa7a-4bd9-4678-902d-ba8a1970655d",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Red",
+      "quantity": {
+        "unit": "Request",
+        "amount": 2000000
+      },
+      "costSummary": {
+        "cost": 1.2,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudWatch",
+      "usageType": "CW:MetricMonitorUsage",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "1e41bab2-cbd9-4486-805b-97657adf0ccc",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Metrics",
+        "amount": 30
+      },
+      "costSummary": {
+        "cost": 9,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonRoute53",
+      "usageType": "Global-RRSets",
+      "operation": "",
+      "location": "",
+      "usageId": "22104b23-0894-45b5-b9ca-7eea7a488d4a",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Red",
+      "quantity": {
+        "unit": "Mo",
+        "amount": 1
+      },
+      "costSummary": {
+        "cost": 0.0015,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSDataTransfer",
+      "usageType": "DataTransfer-Out-Bytes",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "223e1e26-ba59-4ec0-8ad0-7daa7cea6bd5",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "GB",
+        "amount": 200
+      },
+      "costSummary": {
+        "cost": 18,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonS3",
+      "usageType": "TimedStorage-ByteHrs",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "25d2ae65-3f9c-4e58-8397-652e3c7486f4",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "GB-Mo",
+        "amount": 500
+      },
+      "costSummary": {
+        "cost": 11.5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSConfig",
+      "usageType": "USE1-ConfigRuleEvaluations",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "273b0a8a-2326-472f-b9b7-80b2f94a6c6f",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "ConfigRuleEvaluations",
+        "amount": 5000
+      },
+      "costSummary": {
+        "cost": 5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonElastiCache",
+      "usageType": "USE1-CachedData:Redis",
+      "operation": "CreateServerlessCache",
+      "location": "us-east-1",
+      "usageId": "2fb6345f-fb93-4f8c-a535-8d71ecece501",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "GB-Hours",
+        "amount": 731
+      },
+      "costSummary": {
+        "cost": 91.375,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSXRay",
+      "usageType": "USE1-XRay-TracesAccessed",
+      "operation": "XRay-Traces-Retrieved",
+      "location": "us-east-1",
+      "usageId": "3155b0c7-65b4-440c-afc6-b8d086cf31a5",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "traces",
+        "amount": 500000
+      },
+      "costSummary": {
+        "cost": 0.25,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonGuardDuty",
+      "usageType": "USE1-PaidEventsAnalyzed-Bytes",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "338ddf56-36af-4366-af39-27edf83567e8",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "GB",
+        "amount": 30
+      },
+      "costSummary": {
+        "cost": 30,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSSecurityHub",
+      "usageType": "USE1-RuleEvaluation",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "40927363-ebb7-4e44-9268-0c9e09503ac9",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Rule Evaluation Event",
+        "amount": 112504
+      },
+      "costSummary": {
+        "cost": 0,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudFront",
+      "usageType": "SA-DataTransfer-Out-Bytes",
+      "operation": "",
+      "location": "",
+      "usageId": "4650834d-b572-4215-b4ea-4503a20b9f66",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Red",
+      "quantity": {
+        "unit": "GB",
+        "amount": 200
+      },
+      "costSummary": {
+        "cost": 22,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonRDS",
+      "usageType": "Aurora:StorageUsage",
+      "operation": "CreateDBInstance:0021",
+      "location": "us-east-1",
+      "usageId": "4f82701a-24b1-4add-9067-a1fd5dab7668",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "GB-Mo",
+        "amount": 100
+      },
+      "costSummary": {
+        "cost": 10,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudWatch",
+      "usageType": "CW:CompositeAlarmMonitorUsage",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "5022eaa7-3123-4690-840f-50abbc632f5b",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Alarms",
+        "amount": 2
+      },
+      "costSummary": {
+        "cost": 1,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "awswaf",
+      "usageType": "USE1-WebACLV2",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "532e1779-7992-42a4-95a3-ece7ed7c9cfc",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Red",
+      "quantity": {
+        "unit": "Month",
+        "amount": 1
+      },
+      "costSummary": {
+        "cost": 5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonGuardDuty",
+      "usageType": "USE1-PaidEventsAnalyzed",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "57a619a6-4ff5-4537-9be1-4d22b44fe6e2",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Events",
+        "amount": 1000000
+      },
+      "costSummary": {
+        "cost": 4,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSConfig",
+      "usageType": "ConfigurationItemRecorded",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "58ceeb56-5daf-4d41-b42e-6acd0632a50d",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "ConfigurationItemRecorded",
+        "amount": 1500
+      },
+      "costSummary": {
+        "cost": 4.5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonGuardDuty",
+      "usageType": "USE1-PaidRDSACUMonitored",
+      "operation": "CreateDBInstance",
+      "location": "us-east-1",
+      "usageId": "63b757c5-a6ee-4167-8f2d-158b77876843",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "ACU-Months",
+        "amount": 4
+      },
+      "costSummary": {
+        "cost": 1,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "awskms",
+      "usageType": "us-east-1-KMS-Keys",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "649c305d-a9c9-431c-b5a2-0a212f8e7a44",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Organizacion",
+      "quantity": {
+        "unit": "Keys",
+        "amount": 1
+      },
+      "costSummary": {
+        "cost": 1,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudWatch",
+      "usageType": "USE1-CW:DatabaseInsights-vCPU-Hours",
+      "operation": "Aurora-PostgreSQL:Provisioned",
+      "location": "us-east-1",
+      "usageId": "66900357-6f89-4a21-a59c-d62d70741ddd",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "vCPU-Hours",
+        "amount": 2920
+      },
+      "costSummary": {
+        "cost": 36.5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSSecurityHub",
+      "usageType": "USE1-OtherProduct:PaidFindingsIngestion",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "6e426672-88e4-4a56-b304-90bf8d4ff66c",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Finding Ingestion Events",
+        "amount": 5004
+      },
+      "costSummary": {
+        "cost": 0,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonRoute53",
+      "usageType": "Health-Check-AWS",
+      "operation": "",
+      "location": "NoRegion",
+      "usageId": "6ecfd4be-d582-40fa-aa41-97cdcc12b8d3",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Red",
+      "quantity": {
+        "unit": "Mo",
+        "amount": 2
+      },
+      "costSummary": {
+        "cost": 0,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonECS",
+      "usageType": "USE1-Fargate-ARM-vCPU-Hours:perCPU",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "77f6d107-bcb0-418a-85a9-723b25554dc1",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Computo",
+      "quantity": {
+        "unit": "hours",
+        "amount": 5839.92
+      },
+      "costSummary": {
+        "cost": 189.0966096,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonSNS",
+      "usageType": "DeliveryAttempts-SMTP",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "7a87c6f0-f5a1-4a2f-92c9-f252753a35c1",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Notifications",
+        "amount": 50000
+      },
+      "costSummary": {
+        "cost": 1,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSDataTransfer",
+      "usageType": "DataTransfer-Out-Bytes",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "7e11a31c-6c1c-46ba-b0f4-79a9392b7eff",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Computo",
+      "quantity": {
+        "unit": "GB",
+        "amount": 150
+      },
+      "costSummary": {
+        "cost": 13.5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSLambda",
+      "usageType": "Request-ARM",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "85b675dd-4ac2-4ab7-958a-a2fde1c1704f",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Computo",
+      "quantity": {
+        "unit": "Requests",
+        "amount": 500000
+      },
+      "costSummary": {
+        "cost": 0.1,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSSecurityHub",
+      "usageType": "USE1-PaidComplianceCheck",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "8b4c54d8-66b8-4b38-9afe-dba8d6ef5acb",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Security Checks",
+        "amount": 2504
+      },
+      "costSummary": {
+        "cost": 2.504,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSQueueService",
+      "usageType": "Requests-FIFO-RBP",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "8bb1b902-6352-466d-b7e0-194628bb1da2",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "IntegracionAsincronica",
+      "quantity": {
+        "unit": "Requests",
+        "amount": 500000
+      },
+      "costSummary": {
+        "cost": 0.25,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSBackup",
+      "usageType": "USE1-WarmStorage-ByteHrs-S3",
+      "operation": "Storage",
+      "location": "us-east-1",
+      "usageId": "8dae395e-d520-41d4-b6f6-4302dc093786",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "GB-month",
+        "amount": 777.4109589041095
+      },
+      "costSummary": {
+        "cost": 38.87054794520548,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudWatch",
+      "usageType": "CW:Requests",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "927181b0-0c8e-478e-9916-7e9693009944",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Requests",
+        "amount": 100000
+      },
+      "costSummary": {
+        "cost": 1,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonChime",
+      "usageType": "USE1-Chime-SDK-attendee-minutes",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "9a711b17-b7dc-4f97-a112-edbebb0de521",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Media",
+      "quantity": {
+        "unit": "minutes",
+        "amount": 160000
+      },
+      "costSummary": {
+        "cost": 272,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSXRay",
+      "usageType": "USE1-XRay-TracesStored",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "9b5a272d-df4c-462b-b8dc-db900c1c00e9",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "traces",
+        "amount": 150000
+      },
+      "costSummary": {
+        "cost": 0.75,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonRDS",
+      "usageType": "Aurora:SnapshotExportToS3",
+      "operation": "CreateDBInstance:0021",
+      "location": "us-east-1",
+      "usageId": "9de9a204-301d-4492-800e-2d13de40387a",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "GB",
+        "amount": 100
+      },
+      "costSummary": {
+        "cost": 1,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudWatch",
+      "usageType": "USE1-DataScanned-Bytes",
+      "operation": "StartQuery",
+      "location": "us-east-1",
+      "usageId": "a6cdd807-e844-44f0-9d36-43e3eceb356b",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "GB",
+        "amount": 20
+      },
+      "costSummary": {
+        "cost": 0.1,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSConfig",
+      "usageType": "USE1-ConfigurationItemRecordedDaily",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "a703e5c5-9203-48c6-9379-4e6d2962e6d1",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "ConfigurationItemRecordedDaily",
+        "amount": 1
+      },
+      "costSummary": {
+        "cost": 0.012,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "awskms",
+      "usageType": "us-east-1-KMS-Requests",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "aa841ba3-8df9-43c1-b198-f13cd36b27d0",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Organizacion",
+      "quantity": {
+        "unit": "Requests",
+        "amount": 1000000
+      },
+      "costSummary": {
+        "cost": 3,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSSecretsManager",
+      "usageType": "USE1-AWSSecretsManager-Secrets",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "aaa1708d-8101-4790-8681-119e4b705503",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Organizacion",
+      "quantity": {
+        "unit": "Secrets",
+        "amount": 5
+      },
+      "costSummary": {
+        "cost": 2,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonECS",
+      "usageType": "USE1-Fargate-ARM-GB-Hours",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "aaff660b-2a72-40a1-bc0e-59cd588fc15a",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Computo",
+      "quantity": {
+        "unit": "hours",
+        "amount": 5839.92
+      },
+      "costSummary": {
+        "cost": 20.7901152,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonRoute53",
+      "usageType": "DNS-Queries",
+      "operation": "",
+      "location": "NoRegion",
+      "usageId": "b1ba2322-5857-4bf2-9afd-029b17267246",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Red",
+      "quantity": {
+        "unit": "Queries",
+        "amount": 1000000
+      },
+      "costSummary": {
+        "cost": 0.4,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSCloudTrail",
+      "usageType": "USE1-DataEventsRecorded",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "b958db4c-92e4-4ac5-afaf-c33ba6a3d720",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Events",
+        "amount": 2100000
+      },
+      "costSummary": {
+        "cost": 2.1,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonS3",
+      "usageType": "Requests-Tier1",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "ba8d4ccd-87b4-4483-a43c-ae06e607e367",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "Requests",
+        "amount": 50
+      },
+      "costSummary": {
+        "cost": 0.00025,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonGuardDuty",
+      "usageType": "USE1-PaidFargatevCPUMonitored",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "bf68fc5f-a28c-4922-9931-0b0e9fd52653",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "vCPU-Months",
+        "amount": 4
+      },
+      "costSummary": {
+        "cost": 6,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonRDS",
+      "usageType": "InstanceUsage:db.r6g.large",
+      "operation": "CreateDBInstance:0021",
+      "location": "us-east-1",
+      "usageId": "bff49172-c805-4bc4-a32c-c852128cdd0b",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "Hrs",
+        "amount": 1460
+      },
+      "costSummary": {
+        "cost": 379.6,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSQueueService",
+      "usageType": "Requests-RBP",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "c2ce8952-3fff-4627-bc18-f4a3115b0bf0",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "IntegracionAsincronica",
+      "quantity": {
+        "unit": "Requests",
+        "amount": 2000000
+      },
+      "costSummary": {
+        "cost": 0.8,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonGuardDuty",
+      "usageType": "USE1-PaidS3DataEventsAnalyzed",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "c3fb25d3-3f32-4a0a-a5c1-9b11ed94de5e",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Events",
+        "amount": 1000000
+      },
+      "costSummary": {
+        "cost": 0.8,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudWatch",
+      "usageType": "USE1-DataProcessing-Bytes",
+      "operation": "PutLogEvents",
+      "location": "us-east-1",
+      "usageId": "cdc4805d-ed32-4c29-bc52-fe36480868c4",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "GB",
+        "amount": 30
+      },
+      "costSummary": {
+        "cost": 15,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudFront",
+      "usageType": "SA-Requests-HTTPS-Proxy",
+      "operation": "",
+      "location": "",
+      "usageId": "d5f251a6-3902-41da-938a-37355a028a89",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Red",
+      "quantity": {
+        "unit": "Requests",
+        "amount": 1500000
+      },
+      "costSummary": {
+        "cost": 3.3,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonElastiCache",
+      "usageType": "USE1-ElastiCacheProcessingUnits:Redis",
+      "operation": "CreateServerlessCache",
+      "location": "us-east-1",
+      "usageId": "d7f8b0a2-d1c9-4c3e-8216-f66ce9c8464a",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "ElastiCacheProcessingUnit",
+        "amount": 788400000
+      },
+      "costSummary": {
+        "cost": 2.68056,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudFront",
+      "usageType": "US-DataTransfer-Out-OBytes",
+      "operation": "",
+      "location": "",
+      "usageId": "d84d97ab-2648-4a08-bb60-93f7580c5003",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Red",
+      "quantity": {
+        "unit": "GB",
+        "amount": 10
+      },
+      "costSummary": {
+        "cost": 0.2,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonRDS",
+      "usageType": "USE1-RDS:ProxyUsage",
+      "operation": "CreateDBProxy:0021",
+      "location": "us-east-1",
+      "usageId": "dcafc14f-4df5-4a64-ac89-e6c2610f101e",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "Hrs",
+        "amount": 2920
+      },
+      "costSummary": {
+        "cost": 43.8,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonSNS",
+      "usageType": "DeliveryAttempts-HTTP",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "dd15d5ec-d29c-4ee8-8156-f76dc1dd4f43",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Notifications",
+        "amount": 1000000
+      },
+      "costSummary": {
+        "cost": 0.6,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonRDS",
+      "usageType": "Aurora:StorageIOUsage",
+      "operation": "CreateDBInstance:0021",
+      "location": "us-east-1",
+      "usageId": "dd17a815-e4d3-48b4-b5d6-9cf1c1bfad02",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "IOs",
+        "amount": 266040000
+      },
+      "costSummary": {
+        "cost": 53.208,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudFront",
+      "usageType": "SA-DataTransfer-Out-OBytes",
+      "operation": "",
+      "location": "",
+      "usageId": "dd26ba38-fe39-48cd-bd20-766f9329535d",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Red",
+      "quantity": {
+        "unit": "GB",
+        "amount": 40
+      },
+      "costSummary": {
+        "cost": 5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSConfig",
+      "usageType": "USE1-ConformancePackEvaluations",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "e0b374e1-d567-4e2b-9c21-1ca3aaecfbc5",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "ConformancePackEvaluations",
+        "amount": 2500
+      },
+      "costSummary": {
+        "cost": 2.5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSDataTransfer",
+      "usageType": "DataTransfer-In-Bytes",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "e0c3c768-cb60-40de-aa6c-2716e031e7d9",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "GB",
+        "amount": 100
+      },
+      "costSummary": {
+        "cost": 0,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AWSSecretsManager",
+      "usageType": "USE1-AWSSecretsManagerAPIRequest",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "e29bf395-af0c-4328-ab28-68e4828dd828",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Organizacion",
+      "quantity": {
+        "unit": "API Requests",
+        "amount": 50000
+      },
+      "costSummary": {
+        "cost": 0.25,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonS3",
+      "usageType": "Requests-Tier2",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "e575f61f-6d1d-4821-aaa5-5f5a4e25fba1",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "Requests",
+        "amount": 250
+      },
+      "costSummary": {
+        "cost": 0.0001,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudWatch",
+      "usageType": "CW:AlarmMonitorUsage",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "e9a8332b-d066-482d-90fb-56173eda2e2c",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "Alarms",
+        "amount": 15
+      },
+      "costSummary": {
+        "cost": 1.5,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonGuardDuty",
+      "usageType": "USE1-PaidRDSvCPUMonitored",
+      "operation": "CreateDBInstance",
+      "location": "us-east-1",
+      "usageId": "f0504f7d-fa92-4da2-ae06-a1518a893a6e",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "vCPU-Months",
+        "amount": 4
+      },
+      "costSummary": {
+        "cost": 4,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonGuardDuty",
+      "usageType": "USE1-PaidLambdaNetworkLogsAnalyzed-Bytes",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "f9095bb9-46c7-45ee-b672-12cda3b43295",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "GB",
+        "amount": 2
+      },
+      "costSummary": {
+        "cost": 2,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonCloudWatch",
+      "usageType": "USE1-TimedStorage-ByteHrs",
+      "operation": "",
+      "location": "us-east-1",
+      "usageId": "fe9d6b44-4067-4824-8921-4f6cffcb0e20",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Obsevabilidad",
+      "quantity": {
+        "unit": "GB-Mo",
+        "amount": 4.5
+      },
+      "costSummary": {
+        "cost": 0.135,
+        "currency": "USD",
+        "status": "new"
+      }
+    },
+    {
+      "serviceCode": "AmazonRDS",
+      "usageType": "Aurora:BackupUsage",
+      "operation": "CreateDBInstance:0021",
+      "location": "us-east-1",
+      "usageId": "ffba076d-2967-4d73-9780-2418f14f4b20",
+      "usageAccountId": 682563173037,
+      "accountName": "",
+      "group": "Datos",
+      "quantity": {
+        "unit": "GB-Mo",
+        "amount": 1789.2246575342465
+      },
+      "costSummary": {
+        "cost": 37.57371780821918,
+        "currency": "USD",
+        "status": "new"
+      }
+    }
+  ]
+}

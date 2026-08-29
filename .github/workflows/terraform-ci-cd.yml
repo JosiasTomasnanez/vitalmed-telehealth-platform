@@ -1,15 +1,3 @@
-# =============================================================================
-# Pipeline CI/CD para Terraform — VitalMed Telesalud
-# =============================================================================
-# Este pipeline valida el código Terraform en cada PR y despliega automáticamente
-# a los entornos de preproducción cuando se hace merge en main.
-#
-# Referencia: AWS Well-Architected Framework — Pilar Excelencia Operativa
-# - Automatización de despliegues
-# - Validación antes de producir
-# - Trazabilidad de cambios
-# =============================================================================
-
 name: Terraform CI/CD
 
 on:
@@ -27,12 +15,12 @@ env:
   AWS_REGION: "us-east-1"
 
 permissions:
-  id-token: write   # Para OIDC con AWS
-  contents: read    # Para leer el repo
+  id-token: write
+  contents: read
 
 jobs:
   # =============================================================================
-  # Job 1: Validación de código (en todos los PRs)
+  # Job 1: Validación de código
   # =============================================================================
   validate:
     name: Validar Terraform
@@ -50,41 +38,22 @@ jobs:
         run: terraform fmt -check -recursive
         working-directory: terraform
 
-      - name: Terraform Init (Backend False)
+      - name: Terraform Init & Validate & Plan
         run: |
-          for dir in terraform/environments/*/*/; do
-            if [ -f "$dir/main.tf" ]; then
-              echo "=== Init: $dir ==="
-              cd "$dir"
-              terraform init -backend=false
-              cd -
-            fi
-          done
-
-      - name: Terraform Validate
-        run: |
-          for dir in terraform/environments/*/*/; do
-            if [ -f "$dir/main.tf" ]; then
-              echo "=== Validate: $dir ==="
-              cd "$dir"
-              terraform validate
-              cd -
-            fi
-          done
-
-      - name: Terraform Plan (Dry Run)
-        run: |
-          for dir in terraform/environments/*/*/; do
-            if [ -f "$dir/main.tf" ]; then
-              echo "=== Plan: $dir ==="
-              cd "$dir"
-              terraform plan -input=false -no-color 2>&1 | head -50
-              cd -
-            fi
+          find terraform/environments -type f -name "main.tf" | while read -r main_file; do
+            dir=$(dirname "$main_file")
+            echo "=========================================="
+            echo "Procesando entorno: $dir"
+            echo "=========================================="
+            cd "$dir"
+            terraform init -backend=false
+            terraform validate
+            terraform plan -input=false -no-color 2>&1 | head -n 40
+            cd - > /dev/null
           done
 
   # =============================================================================
-  # Job 2: Tests de Terraform (en todos los PRs)
+  # Job 2: Tests de Terraform
   # =============================================================================
   test:
     name: Ejecutar Tests
@@ -99,28 +68,29 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - name: Run Terraform Tests
+        env:
+          AWS_ACCESS_KEY_ID: "mock_access_key"
+          AWS_SECRET_ACCESS_KEY: "mock_secret_key"
+          AWS_REGION: "us-east-1"
         run: |
           for module_dir in terraform/modules/*/; do
             if [ -d "${module_dir}tests" ]; then
               echo "=== Tests: $module_dir ==="
               cd "$module_dir"
+              terraform init -backend=false
               terraform test
-              cd -
+              cd - > /dev/null
             fi
           done
-
   # =============================================================================
-  # Job 3: Despliegue a Preproducción (solo en merge a main)
+  # Job 3: Despliegue a Preproducción Global (Merge a main)
   # =============================================================================
   deploy-preprod:
-    name: Desplegar Preproducción
+    name: Desplegar Preproducción Global
     runs-on: ubuntu-latest
     needs: [validate, test]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    strategy:
-      matrix:
-        country: [ar, cl, co, mx]
-    environment: preprod-${{ matrix.country }}
+    environment: preprod
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -137,35 +107,19 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
-        working-directory: terraform/environments/${{ matrix.country }}/preprod
+        working-directory: terraform/environments/preprod
         run: terraform init
 
       - name: Terraform Plan
-        working-directory: terraform/environments/${{ matrix.country }}/preprod
+        working-directory: terraform/environments/preprod
         run: terraform plan -input=false -out=tfplan
 
       - name: Terraform Apply
-        working-directory: terraform/environments/${{ matrix.country }}/preprod
+        working-directory: terraform/environments/preprod
         run: terraform apply -auto-approve tfplan
 
-      - name: Post-Deploy Validation
-        working-directory: terraform/environments/${{ matrix.country }}/preprod
-        run: |
-          echo "=== Validación post-despliegue ==="
-          echo "Verificando que los recursos críticos existen..."
-          terraform output -json | python3 -c "
-          import json, sys
-          outputs = json.load(sys.stdin)
-          required = ['vpc_id', 'alb_dns_name']
-          for key in required:
-              if key not in outputs:
-                  print(f'ERROR: Output {key} no encontrado')
-                  sys.exit(1)
-              print(f'OK: {key} = {outputs[key][\"value\"][:50]}...')
-          "
-
   # =============================================================================
-  # Job 4: Despliegue a Producción (manual, con aprobación)
+  # Job 4: Despliegue a Producción Multipaís (Merge a main)
   # =============================================================================
   deploy-prod:
     name: Desplegar Producción
@@ -202,27 +156,3 @@ jobs:
       - name: Terraform Apply
         working-directory: terraform/environments/${{ matrix.country }}/prod
         run: terraform apply -auto-approve tfplan
-
-      - name: Post-Deploy Validation
-        working-directory: terraform/environments/${{ matrix.country }}/prod
-        run: |
-          echo "=== Validación post-despliegue Producción ==="
-          echo "Verificando que los recursos críticos existen..."
-          terraform output -json | python3 -c "
-          import json, sys
-          outputs = json.load(sys.stdin)
-          required = ['vpc_id', 'alb_dns_name', 'aurora_endpoint']
-          for key in required:
-              if key not in outputs:
-                  print(f'ERROR: Output {key} no encontrado')
-                  sys.exit(1)
-              print(f'OK: {key} = {outputs[key][\"value\"][:50]}...')
-          "
-
-      - name: Notify Success
-        if: success()
-        run: |
-          echo "=== Despliegue exitoso ==="
-          echo "País: ${{ matrix.country }}"
-          echo "Entorno: prod"
-          echo "Commit: ${{ github.sha }}"

@@ -33,6 +33,13 @@ resource "aws_organizations_organizational_unit" "pais" {
   parent_id = aws_organizations_organizational_unit.workloads.id
 }
 
+# Preprod ya no se organiza por país: es una única OU general que aloja
+# la cuenta de preproducción compartida entre todos los países.
+resource "aws_organizations_organizational_unit" "preprod" {
+  name      = "Preprod"
+  parent_id = aws_organizations_organization.this.roots[0].id
+}
+
 resource "aws_organizations_organizational_unit" "shared" {
   name      = "Shared"
   parent_id = aws_organizations_organization.this.roots[0].id

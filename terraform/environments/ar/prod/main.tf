@@ -44,7 +44,7 @@ provider "aws" {
 }
 
 module "network" {
-  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/network"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/network?ref=v1.0"
 
   pais    = "ar"
   entorno = "prod"
@@ -58,7 +58,7 @@ module "network" {
 }
 
 module "edge_cert" {
-  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/edge-cert"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/edge-cert?ref=v1.0"
 
   pais            = "ar"
   entorno         = "prod"
@@ -67,7 +67,7 @@ module "edge_cert" {
 }
 
 module "compute" {
-  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/compute"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/compute?ref=v1.0"
 
   pais    = "ar"
   entorno = "prod"
@@ -80,7 +80,7 @@ module "compute" {
 }
 
 module "data" {
-  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/data"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/data?ref=v1.0"
 
   pais    = "ar"
   entorno = "prod"
@@ -91,7 +91,7 @@ module "data" {
 }
 
 module "async" {
-  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/async"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/async?ref=v1.0"
 
   pais        = "ar"
   entorno     = "prod"
@@ -99,7 +99,7 @@ module "async" {
 }
 
 module "edge" {
-  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/edge"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/edge?ref=v1.0"
 
   pais    = "ar"
   entorno = "prod"
@@ -114,7 +114,7 @@ module "edge" {
 # Bucket S3 aparte para el build estático del frontend (no lleva datos de
 # pacientes, por eso no vive en modules/data junto a estudios/adjuntos).
 module "frontend_bucket" {
-  source = "D:/Archivos de programa D/GDrive/vitalmed-telehealth-platform/terraform/modules/frontend-bucket"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/frontend-bucket?ref=v1.0"
 
   pais    = "ar"
   entorno = "prod"

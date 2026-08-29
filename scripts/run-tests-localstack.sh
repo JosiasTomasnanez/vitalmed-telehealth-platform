@@ -1,105 +1,103 @@
 #!/usr/bin/env bash
-# ==============================================================================
-# run-tests-localstack.sh — Ejecuta tests de Terraform con LocalStack
-# Uso: ./scripts/run-tests-localstack.sh [network|compute|data|edge|async]
-# Requisitos: terraform o tflocal, LocalStack en http://localhost:4566
-# Nota: Preferir run-tests-ministack.sh (MiniStack no requiere licencia)
-# ==============================================================================
-set -euo pipefail
 
-GREEN='\033[0;32m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; CYAN='\033[0;36m'; GRAY='\033[0;90m'; NC='\033[0m'
+# Script para ejecutar tests de Terraform con LocalStack
+# Uso: ./test-terraform.sh [nombre_modulo|all]
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+MODULE="${1:-all}"
 
-MODULE_FILTER="${1:-all}"
+# Colores para la consola
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GRAY='\033[0;90m'
+NC='\033[0m' # Sin color
 
-# Permitir override del comando terraform (tflocal si está instalado)
-TF_CMD="${TF_CMD:-terraform}"
-if command -v tflocal >/dev/null 2>&1 && [ "$TF_CMD" = "terraform" ]; then
-  TF_CMD="tflocal"
-fi
-
-echo -e "${CYAN}=== Ejecutando tests de Terraform con LocalStack ($TF_CMD) ===${NC}"
-
-if ! curl -sf http://localhost:4566/_localstack/health >/dev/null 2>&1; then
-  echo -e "${RED}Error: LocalStack no está ejecutándose${NC}"
-  echo -e "${YELLOW}Ejecuta primero: ./scripts/start-localstack.sh${NC}"
-  exit 1
-fi
-echo -e "${GREEN}LocalStack está ejecutándose${NC}"
-
-if ! command -v "$TF_CMD" >/dev/null 2>&1; then
-  echo -e "${RED}$TF_CMD no encontrado en PATH${NC}"
-  exit 1
-fi
-
-ALL_MODULES=("network" "compute" "data" "edge" "async")
-if [ "$MODULE_FILTER" = "all" ]; then
-  MODULES=("${ALL_MODULES[@]}")
+# Detección dinámica del directorio raíz del proyecto
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ "$(basename "$SCRIPT_DIR")" == "scripts" ]]; then
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 else
-  MODULES=("$MODULE_FILTER")
+    PROJECT_ROOT="$SCRIPT_DIR"
 fi
 
-FAILED=()
-PASSED=()
+echo -e "${CYAN}=== Ejecutando tests de Terraform con LocalStack ===${NC}"
+
+# Verificar que LocalStack está ejecutándose
+if curl -s -f "http://localhost:4566/_localstack/health" > /dev/null 2>&1; then
+    echo -e "${GREEN}LocalStack está ejecutándose${NC}"
+else
+    echo -e "${RED}Error: LocalStack no está ejecutándose${NC}"
+    echo -e "${YELLOW}Ejecuta primero: ./scripts/start-localstack.sh${NC}"
+    exit 1
+fi
+
+# Lista de módulos
+if [ "$MODULE" != "all" ]; then
+    MODULES=("$MODULE")
+else
+    MODULES=("network" "compute" "data" "edge" "async")
+fi
+
+FAILED_TESTS=()
+PASSED_TESTS=()
+ORIGINAL_DIR="$(pwd)"
 
 for mod in "${MODULES[@]}"; do
-  TEST_DIR="$PROJECT_ROOT/terraform/modules/$mod/tests"
-  MODULE_DIR="$PROJECT_ROOT/terraform/modules/$mod"
+    TEST_DIR="${PROJECT_ROOT}/terraform/modules/${mod}/tests"
+    MODULE_DIR="${PROJECT_ROOT}/terraform/modules/${mod}"
+    PROVIDER_FILE="${MODULE_DIR}/localstack_providers_override.tf"
 
-  if [ ! -d "$TEST_DIR" ]; then
-    echo -e "\n${YELLOW}Saltando $mod - directorio de tests no encontrado${NC}"
-    continue
-  fi
-
-  echo -e "\n${CYAN}=== Testeando módulo: $mod ===${NC}"
-
-  PROVIDER_SRC="$PROJECT_ROOT/terraform/tests/localstack-provider.tf"
-  PROVIDER_FILE="$MODULE_DIR/localstack_providers_override.tf"
-  CREATED_OVERRIDE=false
-  if [ -f "$PROVIDER_SRC" ] && [ ! -f "$PROVIDER_FILE" ]; then
-    cp "$PROVIDER_SRC" "$PROVIDER_FILE"
-    CREATED_OVERRIDE=true
-  fi
-
-  set +e
-  (
-    cd "$MODULE_DIR"
-    echo -e "${GRAY}Inicializando...${NC}"
-    $TF_CMD init -backend=false >/dev/null 2>&1
-    if [ $? -ne 0 ]; then
-      echo -e "${RED}$TF_CMD init falló${NC}"
-      exit 1
+    if [ ! -d "$TEST_DIR" ]; then
+        echo -e "\n${YELLOW}Saltando ${mod} - directorio de tests no encontrado${NC}"
+        continue
     fi
-    echo -e "${GRAY}Ejecutando tests...${NC}"
-    $TF_CMD test 2>&1
-  )
-  RC=$?
-  set -e
 
-  if [ "$CREATED_OVERRIDE" = true ]; then
-    rm -f "$PROVIDER_FILE"
-  fi
+    echo -e "\n${CYAN}=== Testeando módulo: ${mod} ===${NC}"
 
-  if [ $RC -eq 0 ]; then
-    PASSED+=("$mod")
-    echo -e "${GREEN}✓ Tests de $mod pasaron${NC}"
-  else
-    FAILED+=("$mod")
-    echo -e "${RED}✗ Tests de $mod fallaron${NC}"
-  fi
+    # Copiar configuración de LocalStack al directorio del módulo
+    cp "${PROJECT_ROOT}/terraform/tests/localstack-provider.tf" "$PROVIDER_FILE"
+
+    cd "$MODULE_DIR" || continue
+
+    # Inicializar tflocal
+    echo -e "${GRAY}Inicializando...${NC}"
+    if tflocal init -backend=false > /dev/null 2>&1; then
+        echo -e "${GRAY}Ejecutando tests...${NC}"
+        
+        # Ejecutar tflocal test
+        if tflocal test "$TEST_DIR"; then
+            PASSED_TESTS+=("$mod")
+            echo -e "${GREEN}✓ Tests de ${mod} pasaron${NC}"
+        else
+            FAILED_TESTS+=("$mod")
+            echo -e "${RED}✗ Tests de ${mod} fallaron${NC}"
+        fi
+    else
+        FAILED_TESTS+=("$mod")
+        echo -e "${RED}✗ Error en ${mod} : tflocal init falló${NC}"
+    fi
+
+    # Limpiar archivo de override
+    if [ -f "$PROVIDER_FILE" ]; then
+        rm -f "$PROVIDER_FILE"
+    fi
+
+    cd "$ORIGINAL_DIR" || exit 1
 done
 
+# Resumen
 echo -e "\n${CYAN}=== Resumen ===${NC}"
-echo -e "${GREEN}Tests pasados: ${#PASSED[@]}${NC}"
-echo -e "${RED}Tests fallidos: ${#FAILED[@]}${NC}"
+echo -e "${GREEN}Tests pasados: ${#PASSED_TESTS[@]}${NC}"
+echo -e "${RED}Tests fallidos: ${#FAILED_TESTS[@]}${NC}"
 
-if [ ${#FAILED[@]} -gt 0 ]; then
-  echo -e "\n${RED}Módulos con errores:${NC}"
-  for m in "${FAILED[@]}"; do echo -e "  ${RED}- $m${NC}"; done
-  exit 1
+if [ ${#FAILED_TESTS[@]} -gt 0 ]; then
+    echo -e "\n${RED}Módulos con errores:${NC}"
+    for mod in "${FAILED_TESTS[@]}"; do
+        echo -e "${RED}  - ${mod}${NC}"
+    done
+    exit 1
 else
-  echo -e "\n${GREEN}¡Todos los tests pasaron!${NC}"
-  exit 0
+    echo -e "\n${GREEN}¡Todos los tests pasaron!${NC}"
+    exit 0
 fi

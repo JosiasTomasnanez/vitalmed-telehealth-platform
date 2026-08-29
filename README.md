@@ -2,7 +2,7 @@
 
 [![AWS Well-Architected](https://img.shields.io/badge/AWS-Well--Architected-orange?logo=amazon-aws)](https://aws.amazon.com/architecture/well-architected/)
 [![IaC-Terraform](https://img.shields.io/badge/IaC-Terraform-purple?logo=terraform)](https://www.terraform.io/)
-[![DevOps-Group](https://img.shields.io/badge/Grupo-10-blue)](#-equipo-de-desarrollo)
+[![DevOps-Group](https://img.shields.io/badge/Grupo-9-blue)](#-equipo-de-desarrollo)
 
 > **Solución de Infraestructura como Código (IaC) para la escala continental de VitalMed Telesalud, diseñada bajo el pilar de Excelencia Operativa para conectar a +180,000 pacientes y 4,500 profesionales de la salud en Argentina, Chile, Colombia y México.**
 
@@ -31,7 +31,7 @@
 
 Inspirados en el pilar de **Excelencia Operativa del AWS Well-Architected Framework**, diseñamos una arquitectura resiliente, automatizada e impulsada por **Serverless**, minimizando el trabajo manual y eliminando la administración de servidores físicos o máquinas virtuales.
 
-<Image src="image_agent_tag_1" alt="Diagrama conceptual de la arquitectura AWS para VitalMed" caption="Arquitectura lógica multi-cuenta y desacoplada en AWS" />
+<Image src="./docs/data/Diagrama de Arquitectura Cloud.jpg" alt="Diagrama conceptual de la arquitectura AWS para VitalMed" caption="Arquitectura lógica multi-cuenta y desacoplada en AWS" />
 
 ### 💡 Decisiones Estratégicas Clave
 
@@ -122,7 +122,7 @@ terraform test
 ## 📖 Documentación Complementaria
 
 * 📋 **[Runbook de Despliegue](https://www.google.com/search?q=./docs/runbook.md):** Pasos detallados de configuración, orden de despliegue, rollback y validaciones.
-* 🛡️ **[Informe de Herramientas AWS y Cuentas](https://www.google.com/search?q=./docs/informe-herramientas.md):** Justificación en profundidad de los servicios elegidos.
+* 🛡️ **[Informe de Herramientas AWS y Cuentas](https://josiastomasnanez.github.io/vitalmed-telehealth-platform/):** Justificación en profundidad de los servicios elegidos.
 
 ---
 

@@ -6,7 +6,7 @@ resource "aws_security_group" "alb" {
   vpc_id = var.vpc_id
 
   ingress {
-    description = "HTTPS desde Internet"
+    description = "HTTPS desde Internet (o desde CloudFront si se restringe mas adelante)"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
