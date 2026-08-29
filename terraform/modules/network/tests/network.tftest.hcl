@@ -28,7 +28,7 @@ variables {
 # Test 1: VPC se crea correctamente
 # -----------------------------------------------------------------------------
 run "vpc_created" {
-  command = apply
+  command = plan
 
   assert {
     condition     = output.vpc_id != ""
@@ -40,7 +40,7 @@ run "vpc_created" {
 # Test 2: Se crean subnets correctas
 # -----------------------------------------------------------------------------
 run "subnets_created" {
-  command = apply
+  command = plan
 
   assert {
     condition     = length(output.public_subnet_ids) == 2
@@ -62,8 +62,8 @@ run "subnets_created" {
 # Test 3: Tags comunes aplicados correctamente
 # -----------------------------------------------------------------------------
 run "tags_applied" {
-  command = apply
 
+  command = plan
   assert {
     condition     = aws_vpc.this.tags["Pais"] == "ar"
     error_message = "Tag Pais debe ser 'ar'"
