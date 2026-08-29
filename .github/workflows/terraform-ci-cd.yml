@@ -68,6 +68,10 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - name: Run Terraform Tests
+        env:
+          AWS_ACCESS_KEY_ID: "mock_access_key"
+          AWS_SECRET_ACCESS_KEY: "mock_secret_key"
+          AWS_REGION: "us-east-1"
         run: |
           for module_dir in terraform/modules/*/; do
             if [ -d "${module_dir}tests" ]; then
@@ -78,7 +82,6 @@ jobs:
               cd - > /dev/null
             fi
           done
-
   # =============================================================================
   # Job 3: Despliegue a Preproducción Global (Merge a main)
   # =============================================================================
