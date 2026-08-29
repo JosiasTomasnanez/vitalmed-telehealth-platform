@@ -16,7 +16,7 @@ terraform {
   }
 
   backend "s3" {
-    
+
     bucket       = "tp-diplodevops-tfstate-mgmt"
     key          = "environments/preprod/terraform.tfstate"
     region       = "us-east-1"
