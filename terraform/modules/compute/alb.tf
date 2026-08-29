@@ -24,7 +24,7 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_security_group" "ecs_tasks" {
-  name   = "sg-ecs-${local.nombre}"
+  name   = "ecs-${local.nombre}"
   vpc_id = var.vpc_id
 
   ingress {
