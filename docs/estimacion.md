@@ -36,20 +36,25 @@ Para cumplir con las regulaciones de salud locales (tipo HIPAA y aislamiento de 
    * **Amazon Chime SDK (Media):** Opera en el Edge global bajo demanda. El costo depende de la cantidad total de minutos de consulta de toda la empresa sin requerir infraestructura fija duplicada ($272,00 USD / mes presupuestados para la demanda global inicial).
    * **AWS Organizations / CloudFront:** Gobernanza centralizada y distribución Anycast con capa gratuita consolidada.
 
+3. **Cuenta de Preproduccion:**
+   * Todo el stack de servicios es replicado en una cuenta compartida por todos los paises para realizar pruebas previas al paso a produccion.
+   * **Subtotal por parte de preproduccion:** **1.137,02 USD / mes**
+
 ---
 
-## 3. Proyección del Costo Total de la Plataforma (4 Países)
+## 3. Proyección del Costo Total de la Plataforma (4 Países + Preproduccion)
 
 | Componente | Cálculo | Total Mensual (USD) |
 | :--- | :--- | :--- |
-| **Infraestructura Replicada (4 Cuentas)** | $1.137,02 \times 4$ | **$4.548,08** |
+| **Infraestructura Replicada (4 Cuentas + preproduccion)** | $1.137,02 \times 5$ | **$5.685** |
 | **Servicio de Telemedicina Centralizado (Chime SDK)** | $272,00 \times 1$ | **$272,00** |
 
-**Total General Estimado :**  $4.820,08 USD / mes
+**Total General Estimado :**  $5.957,1 USD / mes
 
 ---
 
 ## 4. Conclusiones y Excelencia Operativa
 
+* **Eficiencia de Costos y Autoescalado Dinámico:** La arquitectura evita el sobreaprovisionamiento de instancias fijas y bases de datos sobredimensionadas. Gracias a **ECS Fargate (ARM/Graviton)** y **Aurora Serverless v2**, el cómputo y la memoria se ajustan automáticamente según la demanda (escalando ante picos de atención de 7 a 23 h y desescalandose al mínimo en horarios no pico), reduciendo el costo mensual de infraestructura en más de un 40% frente a esquemas estáticos tradicionales.
 * **Aislamiento y Blast Radius:** La duplicación de los entornos de datos y cómputo garantiza cumplimiento normativo estricto y asegura que un incidente o pico estacional en un país no degrade la operación de los demás.
 * **Mantenibilidad:** Toda la infraestructura replicada se gestiona mediante módulos unificados de Terraform (IaC) y servicios serverless/administrados (Fargate, Aurora, Backup), manteniendo la carga operativa dentro de la capacidad de un equipo reducido.
