@@ -25,14 +25,14 @@ variables {
 }
 
 # -----------------------------------------------------------------------------
-# Test 1: VPC se crea correctamente
+# Test 1: VPC configurada correctamente
 # -----------------------------------------------------------------------------
 run "vpc_created" {
   command = plan
 
   assert {
-    condition     = output.vpc_id != ""
-    error_message = "VPC debe ser creada y devolver un ID válido"
+    condition     = aws_vpc.this.cidr_block == var.vpc_cidr
+    error_message = "La VPC debe estar configurada con el CIDR correcto"
   }
 }
 
@@ -43,18 +43,18 @@ run "subnets_created" {
   command = plan
 
   assert {
-    condition     = length(output.public_subnet_ids) == 2
-    error_message = "Deben existir 2 subnets públicas"
+    condition     = length(aws_subnet.public) == 2
+    error_message = "Deben configurarse 2 subnets públicas"
   }
 
   assert {
-    condition     = length(output.private_subnet_ids) == 2
-    error_message = "Deben existir 2 subnets privadas"
+    condition     = length(aws_subnet.private) == 2
+    error_message = "Deben configurarse 2 subnets privadas"
   }
 
   assert {
-    condition     = length(output.data_subnet_ids) == 2
-    error_message = "Deben existir 2 subnets de datos"
+    condition     = length(aws_subnet.data) == 2
+    error_message = "Deben configurarse 2 subnets de datos"
   }
 }
 
@@ -62,8 +62,8 @@ run "subnets_created" {
 # Test 3: Tags comunes aplicados correctamente
 # -----------------------------------------------------------------------------
 run "tags_applied" {
-
   command = plan
+
   assert {
     condition     = aws_vpc.this.tags["Pais"] == "ar"
     error_message = "Tag Pais debe ser 'ar'"
