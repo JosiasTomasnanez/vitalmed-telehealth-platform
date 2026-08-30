@@ -1,6 +1,6 @@
 # =============================================================================
 # Tests: Módulo Compute — ECS Fargate, ECR, ALB, Auto Scaling
-# Ejecución: ./scripts/run-tests-localstack.ps1
+# Ejecución: ./scripts/run-tests-localstack.sh
 # =============================================================================
 
 provider "aws" {

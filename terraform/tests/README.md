@@ -15,7 +15,7 @@ Los tests de Terraform se ejecutan utilizando **MiniStack** como emulador local 
 ### 1. Iniciar MiniStack
 
 ```powershell
-.\scripts\start-ministack.ps1
+./scripts/start-ministack.sh
 ```
 
 O manualmente:
@@ -34,14 +34,14 @@ curl http://localhost:4566/_ministack/health
 
 ```powershell
 # Ejecutar todos los tests
-.\scripts\run-tests-ministack.ps1
+./scripts/run-tests-ministack.sh
 
 # Ejecutar tests de un módulo específico
-.\scripts\run-tests-ministack.ps1 -Module network
-.\scripts\run-tests-ministack.ps1 -Module compute
-.\scripts\run-tests-ministack.ps1 -Module data
-.\scripts\run-tests-ministack.ps1 -Module edge
-.\scripts\run-tests-ministack.ps1 -Module async
+./scripts/run-tests-ministack.sh -Module network
+./scripts/run-tests-ministack.sh -Module compute
+./scripts/run-tests-ministack.sh -Module data
+./scripts/run-tests-ministack.sh -Module edge
+./scripts/run-tests-ministack.sh -Module async
 ```
 
 O manualmente:
@@ -103,7 +103,7 @@ Asegúrese de que el archivo `provider.tf` existe en el módulo y está configur
 
 ### Error: "couldn't find resource" para Route53
 
-Los tests de Route53 requieren que el hosted zone exista. El script `start-ministack.ps1` crea automáticamente el hosted zone necesario.
+Los tests de Route53 requieren que el hosted zone exista. El script `start-ministack.sh` crea automáticamente el hosted zone necesario.
 
 ### Error: "Cannot index a set value"
 

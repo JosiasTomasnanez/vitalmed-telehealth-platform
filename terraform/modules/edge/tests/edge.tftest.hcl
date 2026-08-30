@@ -1,6 +1,6 @@
 # =============================================================================
 # Tests: Módulo Edge — CloudFront, WAF, Route53
-# Ejecución: ./scripts/run-tests-localstack.ps1
+# Ejecución: ./scripts/run-tests-localstack.sh
 # =============================================================================
 
 provider "aws" {

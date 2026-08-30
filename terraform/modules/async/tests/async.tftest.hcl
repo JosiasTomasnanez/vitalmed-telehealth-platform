@@ -1,6 +1,6 @@
 # =============================================================================
 # Tests: Módulo Async — SQS + Lambda
-# Ejecución: ./scripts/run-tests-localstack.ps1
+# Ejecución: ./scripts/run-tests-localstack.sh
 # =============================================================================
 provider "aws" {
   region                      = "us-east-1"

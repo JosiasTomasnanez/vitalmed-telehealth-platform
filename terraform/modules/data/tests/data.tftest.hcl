@@ -1,6 +1,6 @@
 # =============================================================================
 # Tests: Módulo Data — Aurora Serverless v2, S3, KMS, Secrets Manager
-# Ejecución: ./scripts/run-tests-localstack.ps1
+# Ejecución: ./scripts/run-tests-localstack.sh
 # =============================================================================
 
 provider "aws" {
