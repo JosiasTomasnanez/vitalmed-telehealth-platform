@@ -72,7 +72,7 @@ resource "aws_ecs_task_definition" "this" {
 
   container_definitions = jsonencode([
     {
-      name      = each.key
+      name = each.key
       # Imagen "latest" como placeholder: el pipeline de CI/CD la reemplaza
       # por el tag real (commit sha) en cada deploy.
       image     = "${aws_ecr_repository.this[each.key].repository_url}:latest"
@@ -107,15 +107,15 @@ resource "aws_ecs_service" "this" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets         = var.private_subnet_ids
-    security_groups = [aws_security_group.ecs_tasks.id]
+    subnets          = var.private_subnet_ids
+    security_groups  = [aws_security_group.ecs_tasks.id]
     assign_public_ip = false
   }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.this[each.key].arn
-    container_name    = each.key
-    container_port    = each.value.container_port
+    container_name   = each.key
+    container_port   = each.value.container_port
   }
 
   depends_on = [aws_lb_listener_rule.this]

@@ -2,11 +2,11 @@
 # Security Groups
 # -----------------------------------------------------------------------------
 resource "aws_security_group" "alb" {
-  name   = "sg-alb-${local.nombre}"
+  name   = "alb-${local.nombre}"
   vpc_id = var.vpc_id
 
   ingress {
-    description = "HTTPS desde Internet (o desde CloudFront si se restringe más adelante)"
+    description = "HTTPS desde Internet (o desde CloudFront si se restringe mas adelante)"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
@@ -24,7 +24,7 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_security_group" "ecs_tasks" {
-  name   = "sg-ecs-${local.nombre}"
+  name   = "ecs-${local.nombre}"
   vpc_id = var.vpc_id
 
   ingress {

@@ -16,11 +16,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tp-diplodevops-tfstate-mgmt"
-    key            = "environments/cl/prod/terraform.tfstate"
-    region         = "us-east-1"
-    use_lockfile   = true
-    encrypt        = true
+    bucket       = "tp-diplodevops-tfstate-mgmt"
+    key          = "environments/cl/prod/terraform.tfstate"
+    region       = "us-east-1"
+    use_lockfile = true
+    encrypt      = true
   }
 }
 

@@ -11,11 +11,11 @@ terraform {
   # Backend de estado dedicado para la cuenta de management.
   # Ver /global/state-backend para el bootstrap del bucket S3.
   backend "s3" {
-    bucket         = "tp-diplodevops-tfstate-mgmt"
-    key            = "org/terraform.tfstate"
-    region         = "us-east-1"
-    use_lockfile   = true
-    encrypt        = true
+    bucket       = "tp-diplodevops-tfstate-mgmt"
+    key          = "org/terraform.tfstate"
+    region       = "us-east-1"
+    use_lockfile = true
+    encrypt      = true
   }
 }
 
@@ -26,9 +26,9 @@ provider "aws" {
   # pertenecen a la cuenta de management de la Organization.
   default_tags {
     tags = {
-      Proyecto  = "diplodevops-tp"
+      Proyecto      = "diplodevops-tp"
       GestionadoPor = "terraform"
-      Capa      = "organizations"
+      Capa          = "organizations"
     }
   }
 }

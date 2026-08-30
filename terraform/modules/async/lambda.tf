@@ -36,7 +36,7 @@ resource "aws_iam_role_policy" "lambda_sqs" {
         "sqs:GetQueueAttributes",
       ]
       Resource = [for q in aws_sqs_queue.this : q.arn]
-    }, {
+      }, {
       Effect   = "Allow"
       Action   = ["kms:Decrypt", "kms:GenerateDataKey"]
       Resource = var.kms_key_arn

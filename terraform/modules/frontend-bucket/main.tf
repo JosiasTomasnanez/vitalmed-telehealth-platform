@@ -1,11 +1,3 @@
-variable "pais" {
-  type = string
-}
-
-variable "entorno" {
-  type = string
-}
-
 # -----------------------------------------------------------------------------
 # Bucket privado (sin acceso público directo) — solo CloudFront puede leerlo,
 # a través del Origin Access Control definido en modules/edge.
@@ -41,12 +33,4 @@ resource "aws_s3_bucket_policy" "frontend" {
       }
     }]
   })
-}
-
-output "bucket_name" {
-  value = aws_s3_bucket.frontend.bucket
-}
-
-output "bucket_regional_domain_name" {
-  value = aws_s3_bucket.frontend.bucket_regional_domain_name
 }
