@@ -252,9 +252,30 @@
               </p>
             </div>
           </div>
-          <button onclick="openMdModal()" 
+          <button onclick="openMdModal('./AWS-DOC.md', '📘 Especificación Técnica (AWS-DOC.md)')" 
                   class="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-4 py-2.5 rounded-xl transition cursor-pointer">
             <span>Ver Especificación Técnica</span>
+            <span>🔍</span>
+          </button>
+        </div>
+
+        <!-- Card 8: Runbook de Incidentes (Ocupa ancho completo, mismo estilo que la spec global) -->
+        <div class="bg-slate-900/80 border border-orange-500/30 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-orange-500/60 transition group lg:col-span-3">
+          <div class="flex items-center gap-4">
+            <span class="text-3xl bg-orange-500/10 p-2.5 rounded-xl border border-orange-500/20">🚨</span>
+            <div>
+              <div class="flex items-center gap-2 mb-0.5">
+                <h4 class="text-base font-bold text-white group-hover:text-orange-400 transition">Runbook de Incidentes</h4>
+                <span class="text-[9px] bg-orange-500/20 text-orange-300 font-mono px-2 py-0.5 rounded font-bold uppercase">Markdown Spec</span>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Procedimientos operativos paso a paso ante incidentes: detección, escalamiento, mitigación y postmortem.
+              </p>
+            </div>
+          </div>
+          <button onclick="openMdModal('./runbook.md', '🚨 Runbook de Incidentes (runbook.md)')" 
+                  class="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 text-xs font-semibold text-orange-400 hover:text-orange-300 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 px-4 py-2.5 rounded-xl transition cursor-pointer">
+            <span>Ver Runbook</span>
             <span>🔍</span>
           </button>
         </div>
@@ -320,7 +341,7 @@
       
       <!-- Modal Header -->
       <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/90">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+        <h3 id="md-modal-title" class="text-sm font-bold text-white flex items-center gap-2">
           <span>📘</span> Especificación Técnica (AWS-DOC.md)
         </h3>
         <button onclick="closeMdModal()" class="text-slate-400 hover:text-white text-xs bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 transition cursor-pointer">
@@ -342,14 +363,17 @@
   </footer>
 
   <script>
-    function openMdModal() {
+    function openMdModal(filePath = './AWS-DOC.md', title = '📘 Especificación Técnica (AWS-DOC.md)') {
       const modal = document.getElementById('md-modal');
       const content = document.getElementById('md-content');
+      const modalTitle = document.getElementById('md-modal-title');
+      modalTitle.innerHTML = title;
       modal.classList.remove('hidden');
+      content.innerHTML = '<div class="text-center py-8 text-slate-500">Cargando documentación...</div>';
 
-      fetch('./AWS-DOC.md')
+      fetch(filePath)
         .then(response => {
-          if (!response.ok) throw new Error('No se pudo cargar el archivo AWS-DOC.md');
+          if (!response.ok) throw new Error(`No se pudo cargar el archivo ${filePath}`);
           return response.text();
         })
         .then(markdownText => {
