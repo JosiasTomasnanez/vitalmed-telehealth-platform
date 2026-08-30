@@ -121,7 +121,7 @@ terraform test
 
 ## 📖 Documentación Complementaria
 
-* 📋 **[Runbook de Despliegue](https://www.google.com/search?q=./docs/runbook.md):** Pasos detallados de configuración, orden de despliegue, rollback y validaciones.
+* 📋 **[Runbook de Despliegue](./docs/runbook.md):** Pasos detallados de configuración, orden de despliegue, rollback y validaciones.
 * 🛡️ **[Informe de Herramientas AWS y Cuentas](https://josiastomasnanez.github.io/vitalmed-telehealth-platform/):** Justificación en profundidad de los servicios elegidos.
 
 ---
