@@ -1,7 +1,7 @@
 # =============================================================================
 # Tests: Módulo Network — VPC, Subnets, NAT Gateway, Route Tables
 # Requisito: Terraform >= 1.10.0 (terraform test integrado)
-# Ejecución: ./scripts/run-tests-localstack.sh
+# Ejecución: ./scripts/run-tests-localstack.ps1
 # =============================================================================
 
 provider "aws" {
