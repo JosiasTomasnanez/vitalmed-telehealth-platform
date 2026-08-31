@@ -111,13 +111,17 @@ terraform {
 
 ### 2.3 Variables de Entorno
 
+Cada entorno (`environments/<pais>/prod/` y `environments/preprod/`) declara **dos** variables en su `variables.tf`:
+
 | Variable | Descripción | Ejemplo |
 |----------|-------------|---------|
-| `pais` | Código de país | `ar`, `cl`, `co`, `mx` |
-| `entorno` | Entorno de despliegue | `prod`, `preprod` |
-| `account_id` | ID de la cuenta AWS del país | `123456789012` |
-| `vpc_cidr` | Rango CIDR de la VPC | `10.10.0.0/16` |
-| `aurora_max_acu` | Capacidad máxima de Aurora | `4` |
+| `account_id` | ID de la cuenta AWS destino (sale del output `prod_account_ids` o `preprod_account_id` del stack `org/`) | `123456789012` |
+| `zona_route53_id` | Hosted zone de Route 53 del dominio raíz (`miapp.com`) donde se crean los registros DNS del entorno | `Z0123456ABCDEF` |
+
+> **Aclaraciones**:
+> - `pais` y `entorno` **no son variables**: se pasan como literales a cada módulo en `main.tf` (ej. `pais = "ar"`, `entorno = "prod"`; en preprod `pais = "global"`).
+> - El `vpc_cidr` y los rangos de subnets también van inline en `main.tf`, no en `variables.tf`.
+> - Los valores por defecto de Aurora (ACU min/max), servicios ECS y colas SQS viven en los módulos (`modules/data`, `modules/compute`, `modules/async`), no en el entorno.
 
 ---
 
