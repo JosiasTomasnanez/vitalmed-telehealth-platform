@@ -274,12 +274,6 @@ psql -h <AURORA_ENDPOINT> -U hce_admin -d hce -c "SELECT 1;"
 ### 5.3 Validación de Seguridad
 
 ```bash
-# Verificar que CloudTrail está activo
-aws cloudtrail get-trail-status --name vitalmed-cloudtrail --query 'IsLogging' --output text
-
-# Verificar que GuardDuty está habilitado
-aws guardduty list-detectors --query 'DetectorIds[0]' --output text
-
 # Verificar que S3 buckets no son públicos
 aws s3api get-bucket-acl --bucket estudios-medicos-ar-prod --query 'Grants[?Grantee.Uri==`http://acs.amazonaws.com/groups/global/AllUsers`]' --output text
 ```
@@ -361,9 +355,6 @@ aws logs describe-log-groups --log-group-name-prefix "/ecs/ar-prod" --query 'log
 
 # Verificar que las alarmas de CloudWatch existen
 aws cloudwatch describe-alarms --alarm-name-prefix "ecs-ar-prod" --query 'MetricAlarms[*].AlarmName' --output table
-
-# Verificar que X-Ray está habilitado
-aws xray get-service-graph --start-time $(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%S) --end-time $(date -u +%Y-%m-%dT%H:%M:%S) --query 'ServiceGraph.Services[*].Name' --output table
 ```
 
 ### 7.2 Pruebas de Seguridad
@@ -469,6 +460,19 @@ Si se usa AWS Academy, las siguientes configuraciones pueden no estar disponible
 # - Subnets aisladas
 # - Security Groups restrictivos
 ```
+
+### 8.4 Servicios "Solo Diseño" (requieren cuenta real o trabajo futuro)
+
+Los siguientes servicios forman parte de la arquitectura pero **no están provisionados por el Terraform actual** (ver `terraform/README.md`), por lo que sus validaciones no aplican en un despliegue estándar y deben postergarse a cuando se despliegue en una cuenta real:
+
+| Servicio | Estado | Validación diferida |
+|----------|--------|---------------------|
+| **CloudTrail** (trail organizacional) | Solo diseño | `aws cloudtrail get-trail-status` (cuando se active el trail en la cuenta shared) |
+| **GuardDuty** | Solo diseño | `aws guardduty list-detectors` (requiere habilitar el detector por cuenta) |
+| **X-Ray** | Solo diseño | `aws xray get-service-graph` (requiere instrumentar el SDK en cada microservicio) |
+| **Security Hub** | Solo diseño | postura agregada tras habilitar GuardDuty/Config en cada cuenta |
+
+> Las validaciones de CloudWatch **sí aplican**: los log groups de ECS y el Container Insights están codeados en `modules/compute`.
 
 ---
 
