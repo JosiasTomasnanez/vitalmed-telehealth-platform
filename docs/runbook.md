@@ -285,35 +285,42 @@ aws s3api get-bucket-acl --bucket estudios-medicos-ar-prod --query 'Grants[?Gran
 ### 6.1 Rollback Manual
 
 ```bash
-# Si el despliegue falla, revertir el último cambio
+# Si un despliegue introdujo un problema, volver al último estado bueno.
 cd terraform/environments/ar/prod
 
-# Ver el último plan aplicado
-terraform show
+# 1. Revertir el CÓDIGO (la fuente de verdad) al commit anterior
+git revert <COMMIT_PROBLEMATICO>
 
-# Revertir al estado anterior (usando S3 versioning)
+# 2. Re-aplicar el código revertido
+terraform plan -out=tfplan
+terraform apply tfplan
+
+# 3. Si además el state quedó corrupto o incompleto, restaurar la versión
+#    anterior del state usando el versioning del bucket S3 (habilitado en
+#    global/state-backend):
 aws s3api get-object \
   --bucket tp-diplodevops-tfstate-mgmt \
   --key environments/ar/prod/terraform.tfstate \
   --version-id <VERSION_ID> \
   terraform.tfstate.backup
 
-# Aplicar el estado anterior
 terraform state push terraform.tfstate.backup
-terraform apply
 ```
+
+> Restaurar solo el state **no** revierte la infraestructura: hay que revertir el código (paso 1) y re-aplicar (paso 2) para que Terraform reconstruya el estado deseado.
 
 ### 6.2 Rollback Automático (CI/CD)
 
-El pipeline de GitHub Actions tiene protección de ambientes:
+El pipeline (`.github/workflows/terraform-ci-cd.yml`) encadena dos etapas tras un push a `main`:
 
-1. **Preproducción**: Se aplica automáticamente después de merge a main
-2. **Producción**: Requiere aprobación manual (environment protection rules)
+1. **Preproducción** (`deploy-preprod`): `terraform apply` automático a `environments/preprod`.
+2. **Producción** (`deploy-prod`): `terraform apply` automático a los 4 países, y **solo se ejecuta si preprod terminó OK** (`needs: [deploy-preprod]`).
 
-Si el despliegue a preproducción falla:
-- El pipeline se detiene
-- No se despliega a producción
-- Se crea un issue automáticamente
+Si preproducción falla:
+- El pipeline se detiene.
+- Producción **no** se despliega (dependencia entre jobs).
+
+> **Rollback en CI/CD**: revertir el commit que rompió (`git revert` + PR a `main`) y dejar que el pipeline re-aplique el estado anterior. Los entornos de GitHub (`preprod`, `prod-{ar,cl,co,mx}`) permiten configurar protección (required reviewers / aprobación manual), pero eso es configuración del repositorio, no del código.
 
 ### 6.3 Procedimiento de Emergencia
 
@@ -324,9 +331,11 @@ echo "ALERTA: Despliegue fallido en $PAIS $ENVIRON" | \
   --data '{"text":"ALERTA: Despliegue fallido"}' \
   $SLACK_WEBHOOK_URL
 
-# 2. Congelar despliegues
-git tag freeze-deploy-$(date +%Y%m%d)
-git push origin freeze-deploy-$(date +%Y%m%d)
+# 2. Congelar despliegues: desactivar el workflow o proteger main
+#    Opción A (UI): GitHub > Actions > "Terraform CI/CD" > Disable workflow
+#    Opción B (CLI): agregar regla de protección en la rama main
+#    (un `git tag freeze-*` NO detiene el pipeline, solo sirve de marcador)
+#    (el workflow se dispara por push a main con paths: terraform/**)
 
 # 3. Diagnosticar
 cd terraform/environments/$PAIS/$ENVIRON
@@ -338,9 +347,7 @@ terraform state show <RECURSO_FALLIDO>
 terraform plan -out=tfplan
 terraform apply tfplan
 
-# 5. Des-congelar despliegues
-git tag unfreeze-deploy-$(date +%Y%m%d)
-git push origin unfreeze-deploy-$(date +%Y%m%d)
+# 5. Des-congelar despliegues: re-habilitar el workflow / quitar la protección
 ```
 
 ---
