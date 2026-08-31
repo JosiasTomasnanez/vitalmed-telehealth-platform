@@ -42,7 +42,7 @@ Para ejecutar los comandos de este runbook, el usuario/rol debe tener:
       "Effect": "Allow",
       "Action": [
         "s3:*",
-        "dynamodb:*",
+        "organizations:*",
         "ecs:*",
         "ec2:*",
         "rds:*",
@@ -130,7 +130,7 @@ Cada entorno (`environments/<pais>/prod/` y `environments/preprod/`) declara **d
 ### 3.1 Despliegue Inicial (Primera Vez)
 
 ```bash
-# Paso 1: Bootstrap del state backend (S3 + DynamoDB)
+# Paso 1: Bootstrap del state backend (bucket S3 con locking nativo use_lockfile)
 # Se aplica UNA sola vez, con backend local (aún no existe el bucket remoto).
 cd terraform/global/state-backend
 terraform init
@@ -1057,7 +1057,7 @@ Crear incidente con:
 
 | Error | Causa | Solución |
 |-------|-------|----------|
-| `Error: Backend initialization` | Backend no configurado | Verificar bucket S3 y DynamoDB |
+| `Error: Backend initialization` | Backend no configurado | Verificar bucket S3 y credenciales (el lock es nativo del bucket, sin DynamoDB) |
 | `Error: Error acquiring the state lock` | Lock activo | `terraform force-unlock <LOCK_ID>` |
 | `Error: Provider configuration not present` | Falta provider block | Agregar provider en módulo o raíz |
 | `Error: Invalid for_each argument` | Mapa con keys dinámicas | Usar `toset()` o predefinir keys |
