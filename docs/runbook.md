@@ -275,7 +275,7 @@ psql -h <AURORA_ENDPOINT> -U hce_admin -d hce -c "SELECT 1;"
 
 ```bash
 # Verificar que S3 buckets no son públicos
-aws s3api get-bucket-acl --bucket estudios-medicos-ar-prod --query 'Grants[?Grantee.Uri==`http://acs.amazonaws.com/groups/global/AllUsers`]' --output text
+aws s3api get-bucket-acl --bucket diplodevops-ar-prod-estudios-medicos --query 'Grants[?Grantee.Uri==`http://acs.amazonaws.com/groups/global/AllUsers`]' --output text
 ```
 
 ---
@@ -375,7 +375,7 @@ aws s3api list-buckets --query 'Buckets[*].Name' --output text | \
 aws rds describe-db-clusters --db-cluster-identifier aurora-ar-prod --query 'DBClusters[0].StorageEncrypted' --output text
 
 # Verificar que Secrets Manager tiene las credenciales
-aws secretsmanager list-secrets --query 'SecretList[?contains(Name, `diplodevops/ar-prod/aurora`)].Name' --output text
+aws secretsmanager list-secrets --query 'SecretList[?contains(Name, `diplodevops/ar-prod/aurora-credentials`)].Name' --output text
 ```
 
 ### 7.3 Pruebas de Resiliencia
@@ -528,110 +528,102 @@ terraform destroy -target=module.compute
 | `servicio` | `ecs`, `aurora`, `s3`, `sqs`, `lambda`, `alb`, `cf`, `waf` | `ecs` |
 | `recurso` | Descriptivo | `turnos`, `pagos` |
 
-### 10.2 Ejemplos por Recurso
+### 10.2 Nombres Reales por Recurso
 
-| Recurso | Nombre | Ejemplo |
-|---------|--------|---------|
+Los nombres son los que genera el código (`local.nombre = {pais}-{entorno}`, ej. `ar-prod`). Úsese esta tabla como fuente de verdad:
+
+| Recurso | Patrón real | Ejemplo |
+|---------|-------------|---------|
 | VPC | `vpc-{pais}-{entorno}` | `vpc-ar-prod` |
-| Subnet pública | `subnet-{pais}-{entorno}-pub-{az}` | `subnet-ar-prod-pub-a` |
-| Subnet privada | `subnet-{pais}-{entorno}-priv-{az}` | `subnet-ar-prod-priv-a` |
-| Subnet datos | `subnet-{pais}-{entorno}-data-{az}` | `subnet-ar-prod-data-a` |
-| NAT Gateway | `nat-{pais}-{entorno}` | `nat-ar-prod` |
+| Subnets | `sn-{pub,priv,data}-{pais}-{entorno}-{az}` | `sn-pub-ar-prod-us-east-1a` |
+| Internet Gateway | `igw-{pais}-{entorno}` | `igw-ar-prod` |
+| NAT Gateway | `nat-{pais}-{entorno}-{i}` | `nat-ar-prod-0` |
+| Route tables | `rt-{pub,priv,data}-{pais}-{entorno}[-{az}]` | `rt-data-ar-prod` |
 | ALB | `alb-{pais}-{entorno}` | `alb-ar-prod` |
-| Security Group ALB | `sg-alb-{pais}-{entorno}` | `sg-alb-ar-prod` |
-| Security Group ECS | `sg-ecs-{pais}-{entorno}` | `sg-ecs-ar-prod` |
+| Security Groups | `sg-{alb,ecs,aurora}-{pais}-{entorno}` | `sg-ecs-ar-prod` |
 | ECS Cluster | `ecs-{pais}-{entorno}` | `ecs-ar-prod` |
-| ECS Service | `svc-{pais}-{entorno}-{servicio}` | `svc-ar-prod-turnos` |
-| Task Definition | `td-{pais}-{entorno}-{servicio}` | `td-ar-prod-turnos` |
-| ECR Repository | `ecr-{pais}-{entorno}-{servicio}` | `ecr-ar-prod-turnos` |
+| ECS Service / Task family | `{pais}-{entorno}-{servicio}` | `ar-prod-turnos` |
+| ECR Repository | `diplodevops/{pais}-{entorno}/{servicio}` | `diplodevops/ar-prod/turnos` |
 | Aurora Cluster | `aurora-{pais}-{entorno}` | `aurora-ar-prod` |
-| Aurora Instance | `aurora-{pais}-{entorno}-{n}` | `aurora-ar-prod-1` |
-| S3 Bucket | `{tipo}-{pais}-{entorno}` | `estudios-ar-prod` |
-| SQS Queue | `cola-{pais}-{entorno}-{servicio}` | `cola-ar-prod-turnos` |
-| Lambda Function | `fn-{pais}-{entorno}-{servicio}` | `fn-ar-prod-turnos` |
-| CloudFront | `cf-{pais}-{entorno}` | `cf-ar-prod` |
-| WAF WebACL | `waf-{pais}-{entorno}` | `waf-ar-prod` |
-| KMS Key | `kms-{pais}-{entorno}` | `kms-ar-prod` |
+| S3 Buckets (datos) | `diplodevops-{pais}-{entorno}-{tipo}` | `diplodevops-ar-prod-estudios-medicos` |
+| S3 Bucket (frontend) | `diplodevops-{pais}-{entorno}-frontend` | `diplodevops-ar-prod-frontend` |
+| SQS Queue (+DLQ) | `diplodevops-{pais}-{entorno}-{cola}` / `-dlq` | `diplodevops-ar-prod-procesamiento_recetas` |
+| Lambda Function | `diplodevops-{pais}-{entorno}-{fn}` | `diplodevops-ar-prod-procesamiento_recetas` |
+| KMS Alias | `alias/diplodevops-{pais}-{entorno}` | `alias/diplodevops-ar-prod` |
+| Secret (Aurora) | `diplodevops/{pais}-{entorno}/aurora-credentials` | `diplodevops/ar-prod/aurora-credentials` |
 | Log Group | `/ecs/{pais}-{entorno}/{servicio}` | `/ecs/ar-prod/turnos` |
+| CloudFront / WAF | sin nombre explícito (auto-generado) | — |
 
 ### 10.3 Reglas de Formato
 
-- **Minúsculas**: Todos los nombres en minúsculas
-- **Guiones**: Separador principal (`-`)
-- **Sin caracteres especiales**: No guiones bajos, puntos ni espacios
-- **Longitud máxima**: 63 caracteres (límite de AWS para la mayoría de recursos)
-- **Prefijos**: Usar prefijos estándar (`vpc-`, `subnet-`, `sg-`, etc.)
+- **Minúsculas**: todos los nombres en minúsculas.
+- **Guiones** como separador (`-`), salvo en rutas tipo `diplodevops/ar-prod/turnos` (ECR, Secret) que usan `/`.
+- **Prefijos estándar**: `vpc-`, `sn-`, `igw-`, `nat-`, `rt-`, `alb-`, `sg-`, `ecs-`, `aurora-`.
+- **Namespace global** `diplodevops-` (o `diplodevops/`) para recursos cuyo nombre debe ser único a nivel de cuenta (S3, SQS, Lambda, ECR, KMS, Secret).
+- **Longitud máxima**: 63 caracteres (límite de AWS).
+
+> **Excepción conocida**: las colas SQS y funciones Lambda usan guión bajo en `procesamiento_recetas` (y `notificaciones`), lo que contradice la regla de "solo guiones". Es un defecto del código actual, no del runbook — está pendiente de normalizar en un PR de Terraform futuro.
 
 ---
 
 ## 11. Tagging Strategy (Estrategia de Tags)
 
-### 11.1 Tags Obligatorios
+### 11.1 Tags Aplicados Hoy
 
-Todos los recursos DEBEN tener estos tags:
+El código aplica estos tags (via `default_tags` del provider y tags por recurso):
+
+| Tag | Origen | Valores |
+|-----|-------------|---------|
+| `Proyecto` | `default_tags` (provider) | `diplodevops-tp` |
+| `Pais` | `default_tags` + recurso | `ar`, `cl`, `co`, `mx`, `global` (preprod) |
+| `Entorno` | `default_tags` + recurso | `prod`, `preprod` |
+| `Tier` | módulo `network` | `public`, `private`, `data` |
+| `Servicio` | módulo `compute` (ECR) | `turnos`, `hce`, `facturacion` |
+
+### 11.2 Tags Propuestos a Futuro
 
 | Tag | Descripción | Ejemplo |
 |-----|-------------|---------|
-| `Pais` | Código del país | `ar`, `cl`, `co`, `mx` |
-| `Entorno` | Entorno de despliegue | `prod`, `preprod` |
 | `ManagedBy` | Herramienta de gestión | `terraform` |
-| `Project` | Nombre del proyecto | `vitalmed` |
-| `Team` | Equipo responsable | `devops` |
-| `CostCenter` | Centro de costo | `diplomatura-devops` |
-
-### 11.2 Tags Opcionales
-
-| Tag | Descripción | Ejemplo |
-|-----|-------------|---------|
-| `Service` | Microservicio asociado | `turnos`, `pagos` |
-| `Environment` | Alias de Entorno | `production`, `staging` |
 | `Owner` | Responsable del recurso | `equipo-devops` |
 | `Criticality` | Nivel de criticidad | `high`, `medium`, `low` |
 | `Backup` | Política de backup | `daily`, `weekly`, `none` |
-| `Expiration` | Fecha de expiración | `2026-12-31` |
 
 ### 11.3 Implementación en Terraform
 
 ```hcl
-# Provider con tags globales
+# Provider con tags globales (así está hoy en cada environment)
 provider "aws" {
   # ...
-
   default_tags {
     tags = {
-      Pais        = var.pais
-      Entorno     = var.entorno
-      ManagedBy   = "terraform"
-      Project     = "vitalmed"
-      Team        = "devops"
-      CostCenter  = "diplomatura-devops"
+      Proyecto = "diplodevops-tp"
+      Pais     = var.pais
+      Entorno  = var.entorno
     }
   }
 }
 
-# Tags adicionales por recurso
+# Tags por recurso
 resource "aws_ecs_cluster" "this" {
   name = "ecs-${local.nombre}"
 
-  tags = {
-    Service    = "general"
-    Criticality = "high"
-  }
+  tags = { Pais = var.pais, Entorno = var.entorno }
 }
 ```
 
 ### 11.4 Validación de Tags
 
 ```bash
-# Verificar que todos los recursos tienen tags obligatorios
+# Verificar que los recursos tienen los tags Pais y Entorno
 aws ec2 describe-instances \
-  --filters "Name=tag:ManagedBy,Values=terraform" \
+  --filters "Name=tag:Proyecto,Values=diplodevops-tp" \
   --query 'Reservations[*].Instances[*].[InstanceId,Tags[?Key==`Pais`].Value|[0],Tags[?Key==`Entorno`].Value|[0]]' \
   --output table
 
 # Recursos sin tag Pais
 aws ec2 describe-instances \
-  --filters "Name=tag:ManagedBy,Values=terraform" \
+  --filters "Name=tag:Proyecto,Values=diplodevops-tp" \
   --query 'Reservations[*].Instances[?!Tags[?Key==`Pais`]].InstanceId' \
   --output text
 ```
@@ -925,7 +917,7 @@ aws rds restore-db-cluster-from-snapshot \
 
 # 5. Restaurar S3 (si es necesario)
 aws s3api list-object-versions \
-  --bucket estudios-ar-prod \
+  --bucket diplodevops-ar-prod-estudios-medicos \
   --prefix <PATH> \
   --query 'Versions[0].VersionId' \
   --output text
@@ -1022,7 +1014,7 @@ aws logs filter-log-events \
 ```bash
 # Rotar credenciales expuestas
 aws secretsmanager rotate-secret \
-  --secret-id vitalmed/ar-prod/aurora/credentials
+  --secret-id diplodevops/ar-prod/aurora-credentials
 
 # Actualizar security groups
 aws ec2 authorize-security-group-ingress \
@@ -1103,12 +1095,12 @@ aws ec2 describe-security-groups \
 
 # 2. Verificar subnet
 aws ec2 describe-subnets \
-  --filters "Name=subnet-id,Values=subnet-data-ar-prod-1" \
+  --filters "Name=tag:Name,Values=sn-data-ar-prod-us-east-1a" \
   --query 'Subnets[*].[SubnetId,AvailabilityZone,DefaultForAz]'
 
 # 3. Verificar ruta
 aws ec2 describe-route-tables \
-  --filters "Name=association.subnet-id,Values=subnet-data-ar-prod-1" \
+  --filters "Name=association.subnet-id,Values=subnet-xxxx" \
   --query 'RouteTables[*].Routes'
 
 # Test de conectividad a ECS
