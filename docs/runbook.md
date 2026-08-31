@@ -10,17 +10,15 @@
 
 | Cuenta | Propósito | Account ID |
 |--------|-----------|------------|
-| **Management** | AWS Organizations, Control Tower, facturación central | `var.management_account_id` |
-| **Security** | GuardDuty, Security Hub, CloudTrail central | `var.security_account_id` |
-| **Network** | Transit Gateway, DNS compartido | `var.network_account_id` |
-| **ar-prod** | VitalMed Argentina (producción) | `var.ar_prod_account_id` |
-| **ar-preprod** | VitalMed Argentina (preproducción) | `var.ar_preprod_account_id` |
-| **cl-prod** | VitalMed Chile (producción) | `var.cl_prod_account_id` |
-| **cl-preprod** | VitalMed Chile (preproducción) | `var.cl_preprod_account_id` |
-| **co-prod** | VitalMed Colombia (producción) | `var.co_prod_account_id` |
-| **co-preprod** | VitalMed Colombia (preproducción) | `var.co_preprod_account_id` |
-| **mx-prod** | VitalMed México (producción) | `var.mx_prod_account_id` |
-| **mx-preprod** | VitalMed México (preproducción) | `var.mx_preprod_account_id` |
+| **Management** | AWS Organizations, facturación central, control de acceso | `var.management_account_id` |
+| **shared** | Bucket S3 del state de Terraform y logging centralizado de CloudTrail | `var.shared_account_id` |
+| **ar-prod** | VitalMed Argentina (producción) | `var.prod_account_ids.ar` |
+| **cl-prod** | VitalMed Chile (producción) | `var.prod_account_ids.cl` |
+| **co-prod** | VitalMed Colombia (producción) | `var.prod_account_ids.co` |
+| **mx-prod** | VitalMed México (producción) | `var.prod_account_ids.mx` |
+| **preprod** | Entorno de preproducción **único y global** (sin distinción de país) | `var.preprod_account_id` |
+
+> **Nota**: son 6 cuentas workload + 1 de management (7 en total con Organizations). No hay cuentas separadas de Security ni de Network, ni preproducción por país: GuardDuty/Security Hub/CloudTrail central quedan como trabajo futuro (ver §8), y la preproducción es una sola cuenta que comparten los cuatro países.
 
 ### 1.2 Permisos IAM Necesarios
 
@@ -81,26 +79,19 @@ Para ejecutar los comandos de este runbook, el usuario/rol debe tener:
 
 ### 2.1 Archivos de Variables por País/Entorno
 
-Cada entorno tiene su propio archivo `variables.tf`:
+Cada entorno tiene su propio `main.tf` + `variables.tf`:
 
 ```bash
 terraform/environments/
 ├── ar/
-│   ├── prod/
-│   │   ├── variables.tf      # Variables específicas de ar-prod
-│   │   └── main.tf           # Módulos y configuración
-│   └── preprod/
-│       ├── variables.tf
-│       └── main.tf
+│   └── prod/                 # VitalMed Argentina (producción)
 ├── cl/
-│   ├── prod/
-│   └── preprod/
+│   └── prod/                 # VitalMed Chile (producción)
 ├── co/
-│   ├── prod/
-│   └── preprod/
-└── mx/
-    ├── prod/
-    └── preprod/
+│   └── prod/                 # VitalMed Colombia (producción)
+├── mx/
+│   └── prod/                 # VitalMed México (producción)
+└── preprod/                  # preproducción única y global (sin país)
 ```
 
 ### 2.2 Variables de Backend (S3 State)
