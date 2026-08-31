@@ -449,7 +449,7 @@ aws cloudwatch get-metric-statistics \
 | Formato de código | `terraform fmt -check` | Ninguno |
 | Validación sintáctica | `terraform validate` | Solo `terraform init -backend=false` |
 | Tests unitarios | `terraform test` | Solo `terraform init -backend=false` |
-| Plan (dry run) | `terraform plan -backend=false` | Solo `terraform init -backend=false` |
+| Plan (dry run) | `terraform plan` | `terraform init -backend=false` + credenciales AWS (reales o mock) |
 
 ### 8.3 Configuración de AWS Academy
 
@@ -1237,7 +1237,7 @@ Al revisar un PR de Terraform:
 
 ```bash
 # 1. Clonar repositorio
-git clone https://github.com/grupo9-vitalmed/vitalmed-telehealth-platform.git
+git clone https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git
 cd vitalmed-telehealth-platform
 
 # 2. Configurar AWS CLI
@@ -1253,9 +1253,9 @@ cd terraform/modules/network
 terraform init -backend=false
 terraform validate
 
-# 5. Ejecutar tests
-.\scripts\start-ministack.ps1
-.\scripts\run-tests-ministack.ps1
+# 5. Ejecutar tests (con MiniStack; ver scripts/*.sh)
+./scripts/start-ministack.sh
+./scripts/run-tests-ministack.sh
 ```
 
 ### 17.3 Lecturas Recomendadas
