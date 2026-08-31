@@ -1165,23 +1165,23 @@ terraform fmt -check -recursive
 
 ### 16.1 Flujo de Trabajo Git
 
+El repo usa un flujo **trunk-based**: no hay rama `develop` ni `release/*`. Todas las ramas salen de `main` y vuelven a `main` vía PR.
+
 ```
-main (producción)
-├── develop (integración)
-│   ├── feat/xxx (features)
-│   ├── fix/xxx (bugfixes)
-│   └── docs/xxx (documentación)
-└── release/x.x.x (releases)
+main (única rama de larga vida)
+├── feat/xxx    (features)
+├── fix/xxx     (bugfixes)
+└── docs/xxx    (documentación)
 ```
 
 ### 16.2 Reglas de Ramas
 
 | Rama | Origen | Merge en | Despliegue |
 |------|--------|----------|------------|
-| `main` | - | - | Producción (manual) |
-| `develop` | `main` | `main` | Preproducción (auto) |
-| `feat/*` | `develop` | `develop` | - |
-| `fix/*` | `develop` | `develop` | - |
+| `main` | - | - | Preprod y prod **automático** (pipeline tras push) |
+| `feat/*` | `main` | `main` (PR) | - |
+| `fix/*` | `main` | `main` (PR) | - |
+| `docs/*` | `main` | `main` (PR) | - |
 
 ### 16.3 Convenciones de Commits
 
