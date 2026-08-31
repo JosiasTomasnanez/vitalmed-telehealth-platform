@@ -130,34 +130,32 @@ Cada entorno (`environments/<pais>/prod/` y `environments/preprod/`) declara **d
 ### 3.1 Despliegue Inicial (Primera Vez)
 
 ```bash
-# Paso 1: Desplegar AWS Organizations y cuentas
-cd terraform/org
-terraform init
-terraform plan -out=tfplan
-terraform apply tfplan
-
-# Paso 2: Desplegar state backend (S3 + DynamoDB)
+# Paso 1: Bootstrap del state backend (S3 + DynamoDB)
+# Se aplica UNA sola vez, con backend local (aún no existe el bucket remoto).
 cd terraform/global/state-backend
 terraform init
 terraform plan -out=tfplan
 terraform apply tfplan
 
-# Paso 3: Desplegar por país (ejemplo: Argentina prod)
+# Paso 2: Desplegar AWS Organizations y las cuentas (ya con backend remoto S3)
+cd terraform/org
+terraform init
+terraform plan -out=tfplan
+terraform apply tfplan
+
+# Paso 3: Desplegar cada país en producción (ejemplo: Argentina)
 cd terraform/environments/ar/prod
 terraform init
 terraform plan -out=tfplan
 terraform apply tfplan
 
-# Paso 4: Repetir para cada país
-for country in ar cl co mx; do
-  for env in preprod prod; do
-    cd terraform/environments/$country/$env
-    terraform init
-    terraform plan -out=tfplan
-    terraform apply tfplan
-    cd -
-  done
-done
+# Paso 4: Desplegar la preproducción global (una sola vez, sin país)
+cd terraform/environments/preprod
+terraform init
+terraform plan -out=tfplan
+terraform apply tfplan
+
+# Repetir el Paso 3 para los demás países (cl, co, mx)
 ```
 
 ### 3.2 Despliegue de Actualizaciones
