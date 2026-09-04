@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
     .tab-active {
       border-bottom: 2px solid #06b6d4;
       color: #ffffff;
@@ -15,6 +20,7 @@
     }
   </style>
 </head>
+
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
 
   <!-- Header / Navbar Central -->
@@ -22,7 +28,8 @@
     <div class="max-w-7xl mx-auto flex flex-row justify-between items-center gap-2">
       <div>
         <div class="flex items-center gap-2 mb-0.5">
-          <span class="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+          <span
+            class="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
             Data & Persistence
           </span>
           <span class="text-slate-400 text-[11px] hidden sm:inline">• VitalMed Cloud Platform</span>
@@ -30,28 +37,31 @@
         <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Panel de Persistencia por País</h1>
       </div>
       <div class="flex items-center gap-3">
-        <a href="../index.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+        <a href="../index.html"
+          class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
           <span>🏠</span> Volver al Hub
         </a>
       </div>
     </div>
 
     <!-- Navigation Tabs -->
-    <nav class="max-w-7xl mx-auto mt-2 flex overflow-x-auto border-b border-slate-800 gap-1 text-xs font-medium text-slate-400">
-      <button onclick="switchTab('tab-db')" id="btn-tab-db" class="tab-btn tab-active px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
-        <span>🗄️</span> 1. Bases de Datos
+    <nav
+      class="max-w-7xl mx-auto mt-2 flex overflow-x-auto border-b border-slate-800 gap-1 text-xs font-medium text-slate-400">
+      <button onclick="switchTab('tab-db')" id="btn-tab-db"
+        class="tab-btn tab-active px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>🗄️</span> 1. Bases de Datos y Caché
       </button>
-      <button onclick="switchTab('tab-cache')" id="btn-tab-cache" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
-        <span>⚡</span> 2. Caché en Memoria
+      <button onclick="switchTab('tab-storage')" id="btn-tab-storage"
+        class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>📦</span> 2. Almacenamiento, Backup & IaC
       </button>
-      <button onclick="switchTab('tab-storage')" id="btn-tab-storage" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
-        <span>📦</span> 3. Almacenamiento, Backup & IaC
+      <button onclick="switchTab('tab-diagram')" id="btn-tab-diagram"
+        class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 text-cyan-400 font-semibold border-cyan-500/30 whitespace-nowrap">
+        <span>🖼️</span> 3. Diagrama Visual
       </button>
-      <button onclick="switchTab('tab-diagram')" id="btn-tab-diagram" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 text-cyan-400 font-semibold border-cyan-500/30 whitespace-nowrap">
-        <span>🖼️</span> 4. Diagrama Visual
-      </button>
-      <button onclick="switchTab('tab-docs')" id="btn-tab-docs" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
-        <span>📘</span> 5. Decisiones & Criterios
+      <button onclick="switchTab('tab-docs')" id="btn-tab-docs"
+        class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>📘</span> 4. Decisiones & Criterios
       </button>
     </nav>
   </header>
@@ -61,62 +71,66 @@
 
     <!-- Tab 1: Database Design -->
     <section id="tab-db" class="tab-content space-y-6">
-      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4">
         <h2 class="text-lg font-semibold text-white flex items-center gap-2">
           <span>🗄️</span> Motor Relacional y Topología Aislada
         </h2>
         <p class="text-xs text-slate-400 mt-1">
-          Estrategia de persistencia principal utilizando Amazon Aurora en Subredes Aisladas para garantizar máxima seguridad y nula carga operativa.
+          Estrategia de persistencia principal utilizando Amazon Aurora en Subredes Aisladas para garantizar máxima
+          seguridad y nula carga operativa.
         </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Aurora Serverless -->
+          <div class="border border-cyan-500/30 rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span class="text-sm font-bold text-cyan-400 flex items-center gap-2">Aurora PostgreSQL Serverless
+                v2</span>
+              <span class="text-[10px] bg-cyan-900/50 text-cyan-300 px-2 py-0.5 rounded">RDBMS</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Base de datos relacional para Historias Clínicas Electrónicas (HCE), turnos y facturación. Escala su
+              capacidad (ACUs) automáticamente ante picos de demanda sin intervención manual.
+            </p>
+            <ul class="list-disc list-inside text-xs text-slate-400 space-y-1">
+              <li>Soporte nativo para JSONB (flexibilidad en datos clínicos).</li>
+              <li>Cifrado en reposo con <strong>AWS KMS (Customer Managed Key propia por cuenta/país)</strong> y en
+                tránsito (TLS).</li>
+              <li>Multi-AZ con failover automático en &lt; 30 seg.</li>
+              <li><strong>AWS Secrets Manager:</strong> credenciales de conexión rotadas automáticamente; ningún
+                microservicio ni pipeline las tiene hardcodeadas.</li>
+            </ul>
+          </div>
+
+          <!-- Isolated Tier Context -->
+          <div class="border border-emerald-500/30 rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span class="text-sm font-bold text-emerald-400 flex items-center gap-2">Ubicación: Isolated
+                Subnets</span>
+              <span class="text-[10px] bg-emerald-900/50 text-emerald-300 px-2 py-0.5 rounded">No Internet</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Los clusters de Aurora operan dentro de la Capa Aislada (Capa 3 de la VPC). No poseen rutas hacia Internet
+              Gateway (IGW) ni NAT Gateway.
+            </p>
+            <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs font-mono space-y-1">
+              <div class="text-emerald-300">AZ-a: 10.0.3.0/24 (Isolated DB)</div>
+              <div class="text-emerald-300">AZ-b: 10.0.13.0/24 (Isolated DB)</div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Aurora Serverless -->
-        <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-5 space-y-3">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <span class="text-sm font-bold text-cyan-400 flex items-center gap-2">Aurora PostgreSQL Serverless v2</span>
-            <span class="text-[10px] bg-cyan-900/50 text-cyan-300 px-2 py-0.5 rounded">RDBMS</span>
-          </div>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Base de datos relacional para Historias Clínicas Electrónicas (HCE), turnos y facturación. Escala su capacidad (ACUs) automáticamente ante picos de demanda sin intervención manual.
-          </p>
-          <ul class="list-disc list-inside text-xs text-slate-400 space-y-1">
-            <li>Soporte nativo para JSONB (flexibilidad en datos clínicos).</li>
-            <li>Cifrado en reposo con <strong>AWS KMS (Customer Managed Key propia por cuenta/país)</strong> y en tránsito (TLS).</li>
-            <li>Multi-AZ con failover automático en &lt; 30 seg.</li>
-            <li><strong>AWS Secrets Manager:</strong> credenciales de conexión rotadas automáticamente; ningún microservicio ni pipeline las tiene hardcodeadas.</li>
-          </ul>
-        </div>
-
-        <!-- Isolated Tier Context -->
-        <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-5 space-y-3">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <span class="text-sm font-bold text-emerald-400 flex items-center gap-2">Ubicación: Isolated Subnets</span>
-            <span class="text-[10px] bg-emerald-900/50 text-emerald-300 px-2 py-0.5 rounded">No Internet</span>
-          </div>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Los clusters de Aurora operan dentro de la Capa Aislada (Capa 3 de la VPC). No poseen rutas hacia Internet Gateway (IGW) ni NAT Gateway.
-          </p>
-          <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-xs font-mono space-y-1">
-            <div class="text-emerald-300">AZ-a: 10.0.3.0/24 (Isolated DB)</div>
-            <div class="text-emerald-300">AZ-b: 10.0.13.0/24 (Isolated DB)</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tab 2: Caching -->
-    <section id="tab-cache" class="tab-content hidden space-y-6">
-      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4">
         <h2 class="text-lg font-semibold text-white flex items-center gap-2">
           <span>⚡</span> Capa de Caching In-Memory
         </h2>
         <p class="text-xs text-slate-400 mt-1">
-          Reducción de latencia en consultas repetitivas (turnos, catálogos, sesiones) mediante tecnologías clave-valor, desplegadas en las mismas subredes aisladas.
+          Reducción de latencia en consultas repetitivas (turnos, catálogos, sesiones) mediante tecnologías clave-valor,
+          desplegadas en las mismas subredes aisladas.
         </p>
-      </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 max-w-3xl">
+        <!-- <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 max-w-3xl"> -->
         <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
           <span class="text-2xl">🚀</span>
           <div>
@@ -126,7 +140,9 @@
         </div>
         <div class="text-xs text-slate-300 space-y-2 leading-relaxed">
           <p>
-            Al utilizar la modalidad <strong>Serverless</strong>, el equipo de 12 personas no necesita planificar la capacidad ni aplicar parches de sistema operativo. Redis escala de manera dinámica según la carga de CPU y el consumo de memoria.
+            Al utilizar la modalidad <strong>Serverless</strong>, el equipo de 12 personas no necesita planificar la
+            capacidad ni aplicar parches de sistema operativo. Redis escala de manera dinámica según la carga de CPU y
+            el consumo de memoria.
           </p>
           <p><strong>Casos de Uso Principales:</strong></p>
           <ul class="list-disc list-inside text-slate-400 space-y-1 ml-2">
@@ -135,10 +151,12 @@
             <li>Prevención de colisiones al agendar el mismo turno médico (Distributed Locks).</li>
           </ul>
         </div>
+        <!-- </div> -->
+
       </div>
     </section>
 
-    <!-- Tab 3: Storage, Backup & Artifacts -->
+    <!-- Tab 2: Storage, Backup & Artifacts -->
     <section id="tab-storage" class="tab-content hidden space-y-6">
       <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
         <h2 class="text-lg font-semibold text-white flex items-center gap-2">
@@ -159,8 +177,10 @@
             Repositorio para archivos no estructurados (PDFs, estudios, adjuntos).
           </p>
           <ul class="list-disc list-inside text-xs text-slate-400 space-y-1">
-            <li><strong>S3 Lifecycle Rules:</strong> Mueve automáticamente documentos inactivos a <em>S3 Glacier Instant Retrieval</em> ahorrando costos sin esfuerzo manual.</li>
-            <li><strong>Object Lock (WORM):</strong> Garantiza la inmutabilidad legal para que ningún historial clínico pueda ser borrado o alterado antes de los 10 años reglamentarios.</li>
+            <li><strong>S3 Lifecycle Rules:</strong> Mueve automáticamente documentos inactivos a <em>S3 Glacier Instant
+                Retrieval</em> ahorrando costos sin esfuerzo manual.</li>
+            <li><strong>Object Lock (WORM):</strong> Garantiza la inmutabilidad legal para que ningún historial clínico
+              pueda ser borrado o alterado antes de los 10 años reglamentarios.</li>
           </ul>
         </div>
 
@@ -170,11 +190,14 @@
             <span>💾</span> AWS Backup (Respaldo Centralizado)
           </div>
           <p class="text-xs text-slate-300 leading-relaxed">
-            Servicio administrado que centraliza y automatiza los respaldos de Aurora y S3 mediante un único plan de políticas, en lugar de configurar snapshots aislados por servicio.
+            Servicio administrado que centraliza y automatiza los respaldos de Aurora y S3 mediante un único plan de
+            políticas, en lugar de configurar snapshots aislados por servicio.
           </p>
           <ul class="list-disc list-inside text-xs text-slate-400 space-y-1">
-            <li><strong>Política única de retención</strong> aplicada por cuenta/país, sin scripts personalizados de backup.</li>
-            <li>Reduce la carga operativa del equipo de 12 personas: no hay que mantener ni auditar mecanismos de backup nativos distintos por servicio.</li>
+            <li><strong>Política única de retención</strong> aplicada por cuenta/país, sin scripts personalizados de
+              backup.</li>
+            <li>Reduce la carga operativa del equipo de 12 personas: no hay que mantener ni auditar mecanismos de backup
+              nativos distintos por servicio.</li>
           </ul>
         </div>
 
@@ -187,8 +210,10 @@
             Frontera clara entre el desarrollo (código) y los artefactos de despliegue.
           </p>
           <ul class="list-disc list-inside text-xs text-slate-400 space-y-1">
-            <li><strong>Código & IaC:</strong> Los módulos de Terraform y el código fuente viven en repositorios Git externos (GitHub/GitLab).</li>
-            <li><strong>Amazon ECR:</strong> Utilizado exclusivamente como registry para las imágenes Docker finales de ECS, con escaneo automático de vulnerabilidades al hacer <em>push</em>.</li>
+            <li><strong>Código & IaC:</strong> Los módulos de Terraform y el código fuente viven en repositorios Git
+              externos (GitHub/GitLab).</li>
+            <li><strong>Amazon ECR:</strong> Utilizado exclusivamente como registry para las imágenes Docker finales de
+              ECS, con escaneo automático de vulnerabilidades al hacer <em>push</em>.</li>
           </ul>
         </div>
       </div>
@@ -196,7 +221,8 @@
 
     <!-- Tab 4: Diagrama Visual Embebido -->
     <section id="tab-diagram" class="tab-content hidden space-y-6">
-      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div
+        class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 class="text-lg font-semibold text-white flex items-center gap-2">
             <span>🖼️</span> Diagrama de Flujo de Persistencia
@@ -206,22 +232,22 @@
           </p>
         </div>
         <div class="flex items-center gap-2">
-          <a href="./diagramas/flujopersistencia.png" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-cyan-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+          <a href="./diagramas/flujopersistencia.png" target="_blank"
+            class="text-xs bg-slate-800 hover:bg-slate-700 text-cyan-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
             <span>🔗</span> Abrir en nueva pestaña
           </a>
         </div>
       </div>
 
       <!-- Image Viewer Wrapper -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center overflow-hidden flex flex-col items-center">
-        <div class="w-full overflow-auto max-h-[75vh] flex justify-center items-center bg-slate-950/80 rounded-xl p-2 border border-slate-800/50">
-          <img
-            src="./diagramas/flujopersistencia.png"
-            alt="Diagrama de Flujo de Persistencia VitalMed"
+      <div
+        class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center overflow-hidden flex flex-col items-center">
+        <div
+          class="w-full overflow-auto max-h-[75vh] flex justify-center items-center bg-slate-950/80 rounded-xl p-2 border border-slate-800/50">
+          <img src="./diagramas/flujopersistencia.png" alt="Diagrama de Flujo de Persistencia VitalMed"
             class="max-w-full h-auto object-contain rounded-lg shadow-2xl transition-transform duration-200"
             onerror="this.onerror=null; this.src='https://via.placeholder.com/900x400/0f172a/38bdf8?text=Diagrama+flujopersistencia.png+Pendiente';"
-            id="architecture-img"
-          />
+            id="architecture-img" />
         </div>
         <span class="text-[11px] text-slate-500 mt-3 font-mono">
           Ruta: docs/persistencia/diagramas/flujopersistencia.png
@@ -236,7 +262,8 @@
           <span>📘</span> Decisiones de Arquitectura Asociadas (ADRs) y Diseño
         </h2>
         <p class="text-xs text-cyan-200 mt-1">
-          Justificación de las elecciones en la capa de datos para un equipo reducido, priorizando cumplimiento sanitario.
+          Justificación de las elecciones en la capa de datos para un equipo reducido, priorizando cumplimiento
+          sanitario.
         </p>
       </div>
 
@@ -246,91 +273,131 @@
         <!-- ADR NET 1 -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-NET-001</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-NET-001</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
           <h4 class="text-sm font-bold text-white">Topología de 3 Capas y Aislamiento Estricto</h4>
           <div class="text-xs text-slate-400 space-y-2">
             <p><strong>Decisión:</strong> Ubicar Aurora y ElastiCache exclusivamente en <em>Isolated Subnets</em>.</p>
-            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Imposibilidad matemática de acceso directo desde la red pública a las HCE. Al carecer de salida a IGW o NAT Gateway, se cumple directamente con normativas sanitarias.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio:
+              Imposibilidad matemática de acceso directo desde la red pública a las HCE. Al carecer de salida a IGW o
+              NAT Gateway, se cumple directamente con normativas sanitarias.</p>
           </div>
         </div>
 
         <!-- ADR NET 4 -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-NET-004</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-cyan-500/20 text-cyan-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-NET-004</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
           <h4 class="text-sm font-bold text-white">Soberanía de Datos y Aislamiento por País</h4>
           <div class="text-xs text-slate-400 space-y-2">
-            <p><strong>Decisión:</strong> El aislamiento por país es <strong>doble</strong>: a nivel de red (VPC independiente por país, sin Peering ni Transit Gateway) y a nivel de cuenta (cada país opera en una <strong>cuenta de AWS separada dentro de AWS Organizations</strong>, con su propia Aurora, su propia llave KMS y sus propios permisos IAM).</p>
-            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: El aislamiento por cuenta impide la consolidación transfronteriza de la HCE incluso a nivel de permisos y facturación, no solo de red — refuerza el cumplimiento regulatorio ante legislaciones locales dispares, sin depender de multirregión.</p>
+            <p><strong>Decisión:</strong> El aislamiento por país es <strong>doble</strong>: a nivel de red (VPC
+              independiente por país, sin Peering ni Transit Gateway) y a nivel de cuenta (cada país opera en una
+              <strong>cuenta de AWS separada dentro de AWS Organizations</strong>, con su propia Aurora, su propia llave
+              KMS y sus propios permisos IAM).
+            </p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio:
+              El aislamiento por cuenta impide la consolidación transfronteriza de la HCE incluso a nivel de permisos y
+              facturación, no solo de red — refuerza el cumplimiento regulatorio ante legislaciones locales dispares,
+              sin depender de multirregión.</p>
           </div>
         </div>
 
         <!-- ADR DB 1 -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-DB-001</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-DB-001</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
           <h4 class="text-sm font-bold text-white">Priorización de Mínima Carga Operativa</h4>
           <div class="text-xs text-slate-400 space-y-2">
-            <p><strong>Decisión:</strong> Adoptar Aurora Serverless v2 y ElastiCache Redis Serverless para todas las cargas de trabajo relacionales y de caché.</p>
-            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Para un equipo reducido de 12 personas, se elimina el overhead de parcheo, reescalado manual y administración de shards, permitiendo foco en desarrollo.</p>
+            <p><strong>Decisión:</strong> Adoptar Aurora Serverless v2 y ElastiCache Redis Serverless para todas las
+              cargas de trabajo relacionales y de caché.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio:
+              Para un equipo reducido de 12 personas, se elimina el overhead de parcheo, reescalado manual y
+              administración de shards, permitiendo foco en desarrollo.</p>
           </div>
         </div>
 
         <!-- ADR DB 2 -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-DB-002</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-DB-002</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
           <h4 class="text-sm font-bold text-white">Selección de Motor: PostgreSQL sobre MySQL</h4>
           <div class="text-xs text-slate-400 space-y-2">
             <p><strong>Decisión:</strong> Seleccionar Aurora PostgreSQL como RDBMS principal.</p>
-            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Excelente soporte nativo para <code>JSONB</code>, permitiendo que las plantillas de historias clínicas evolucionen dinámicamente, manteniendo la rigidez ACID para facturación.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio:
+              Excelente soporte nativo para <code>JSONB</code>, permitiendo que las plantillas de historias clínicas
+              evolucionen dinámicamente, manteniendo la rigidez ACID para facturación.</p>
           </div>
         </div>
 
         <!-- ADR STO 1 -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-amber-500/20 text-amber-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-STO-001</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-amber-500/20 text-amber-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-STO-001</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
           <h4 class="text-sm font-bold text-white">Estrategia S3 Zero-Maintenance Lifecycle</h4>
           <div class="text-xs text-slate-400 space-y-2">
-            <p><strong>Decisión:</strong> Implementar <em>S3 Lifecycle Policies</em> nativas para transicionar datos de &gt;1 año a <em>Glacier Instant Retrieval</em>, en lugar de desarrollar crons o Lambdas personalizadas para mover archivos.</p>
-            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Garantiza la retención de 10 años requerida legalmente al menor costo posible, con 0% de código a mantener y auditabilidad automática.</p>
+            <p><strong>Decisión:</strong> Implementar <em>S3 Lifecycle Policies</em> nativas para transicionar datos de
+              &gt;1 año a <em>Glacier Instant Retrieval</em>, en lugar de desarrollar crons o Lambdas personalizadas
+              para mover archivos.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio:
+              Garantiza la retención de 10 años requerida legalmente al menor costo posible, con 0% de código a mantener
+              y auditabilidad automática.</p>
           </div>
         </div>
 
         <!-- ADR STO 2 (nuevo) -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-rose-500/20 text-rose-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-STO-002</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-rose-500/20 text-rose-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-STO-002</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
           <h4 class="text-sm font-bold text-white">Backup Centralizado en lugar de Nativo por Servicio</h4>
           <div class="text-xs text-slate-400 space-y-2">
-            <p><strong>Decisión:</strong> Usar AWS Backup como punto único de política de respaldo para Aurora y S3, en vez de configurar snapshots automáticos de forma aislada en cada servicio.</p>
-            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Un equipo de 12 personas gestiona una sola política de retención por cuenta/país, en lugar de auditar mecanismos de backup distintos por servicio.</p>
+            <p><strong>Decisión:</strong> Usar AWS Backup como punto único de política de respaldo para Aurora y S3, en
+              vez de configurar snapshots automáticos de forma aislada en cada servicio.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio:
+              Un equipo de 12 personas gestiona una sola política de retención por cuenta/país, en lugar de auditar
+              mecanismos de backup distintos por servicio.</p>
           </div>
         </div>
 
         <!-- ADR SEC 1 (nuevo) -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition md:col-span-2">
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-cyan-500/40 transition md:col-span-2">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-purple-500/20 text-purple-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-SEC-001</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-purple-500/20 text-purple-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-SEC-001</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
           <h4 class="text-sm font-bold text-white">Gestión de Credenciales vía Secrets Manager + KMS por Cuenta</h4>
           <div class="text-xs text-slate-400 space-y-2">
-            <p><strong>Decisión:</strong> Las credenciales de Aurora se gestionan con AWS Secrets Manager (rotación automática) y todo el cifrado en reposo (Aurora y S3) usa una Customer Managed Key de AWS KMS propia por cuenta/país.</p>
-            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Ninguna credencial queda hardcodeada en código ni en pipelines, y la separación de llaves KMS por país refuerza el aislamiento regulatorio a nivel criptográfico, no solo de red o de cuenta.</p>
+            <p><strong>Decisión:</strong> Las credenciales de Aurora se gestionan con AWS Secrets Manager (rotación
+              automática) y todo el cifrado en reposo (Aurora y S3) usa una Customer Managed Key de AWS KMS propia por
+              cuenta/país.</p>
+            <p class="text-cyan-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio:
+              Ninguna credencial queda hardcodeada en código ni en pipelines, y la separación de llaves KMS por país
+              refuerza el aislamiento regulatorio a nivel criptográfico, no solo de red o de cuenta.</p>
           </div>
         </div>
 
@@ -357,4 +424,5 @@
     }
   </script>
 </body>
+
 </html>

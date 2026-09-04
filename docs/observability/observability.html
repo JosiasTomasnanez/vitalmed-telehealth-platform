@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VitalMed - Observabilidad, Resiliencia y Runbook</title>
+  <title>VitalMed - Observabilidad y Resiliencia</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
     .tab-active {
       border-bottom: 2px solid #6366f1;
       color: #ffffff;
@@ -15,6 +20,7 @@
     }
   </style>
 </head>
+
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
 
   <!-- Header / Navbar Central -->
@@ -22,23 +28,25 @@
     <div class="max-w-7xl mx-auto flex flex-row justify-between items-center gap-2">
       <div>
         <div class="flex items-center gap-2 mb-0.5">
-          <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+          <span
+            class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
             Excelencia Operativa
           </span>
           <span class="text-slate-400 text-[11px] hidden sm:inline">• VitalMed Cloud Platform</span>
         </div>
-        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Observabilidad, Alertas & Respuesta a Incidentes</h1>
+        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Observabilidad, Alertas & Scaling</h1>
       </div>
 
       <!-- Acciones del Header -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <a href="../index.html" 
-           class="text-xs bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white px-3 py-1.5 rounded-lg border border-indigo-500/30 transition flex items-center gap-1.5 font-semibold">
-          <span>⬅</span> 
+        <a href="../index.html"
+          class="text-xs bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white px-3 py-1.5 rounded-lg border border-indigo-500/30 transition flex items-center gap-1.5 font-semibold">
+          <span>⬅</span>
           <span>Volver al Hub</span>
         </a>
 
-        <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700 hidden md:flex items-center gap-2">
+        <span
+          class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700 hidden md:flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>Equipo Técnico: 12 Personas</span>
         </span>
@@ -46,24 +54,23 @@
     </div>
 
     <!-- Navigation Tabs -->
-    <nav class="max-w-7xl mx-auto mt-2 flex overflow-x-auto border-b border-slate-800 gap-1 text-xs font-medium text-slate-400">
-      <button onclick="switchTab('tab-stack')" id="btn-tab-stack" class="tab-btn tab-active px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+    <nav
+      class="max-w-7xl mx-auto mt-2 flex overflow-x-auto border-b border-slate-800 gap-1 text-xs font-medium text-slate-400">
+      <button onclick="switchTab('tab-stack')" id="btn-tab-stack"
+        class="tab-btn tab-active px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
         <span>🛠️</span> 1. Stack Telemetría
       </button>
-      <button onclick="switchTab('tab-alarms')" id="btn-tab-alarms" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
-        <span>🔔</span> 2. Métricas & Alertas
+      <button onclick="switchTab('tab-alarms')" id="btn-tab-alarms"
+        class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>🔔</span> 2. Métricas, Alertas & Scaling
       </button>
-      <button onclick="switchTab('tab-scaling')" id="btn-tab-scaling" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
-        <span>📈</span> 3. Auto Scaling Proactivo
+      <button onclick="switchTab('tab-diagram')" id="btn-tab-diagram"
+        class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>🖼️</span> 3. Diagrama Visual
       </button>
-      <button onclick="switchTab('tab-runbook')" id="btn-tab-runbook" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
-        <span>🚨</span> 4. Runbook de Incidentes
-      </button>
-      <button onclick="switchTab('tab-diagram')" id="btn-tab-diagram" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
-        <span>🖼️</span> 5. Diagrama Visual
-      </button>
-      <button onclick="switchTab('tab-docs')" id="btn-tab-docs" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
-        <span>📘</span> 6. Decisiones & Criterios
+      <button onclick="switchTab('tab-docs')" id="btn-tab-docs"
+        class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
+        <span>📘</span> 4. Decisiones & Criterios
       </button>
     </nav>
   </header>
@@ -78,7 +85,8 @@
           <span>🛠️</span> Arquitectura de Observabilidad Serverless
         </h2>
         <p class="text-xs text-slate-400 mt-1">
-          Infraestructura de monitoreo sin servidores administrados para maximizar la visibilidad y minimizar la carga operativa del equipo de 12 personas.
+          Infraestructura de monitoreo sin servidores administrados para maximizar la visibilidad y minimizar la carga
+          operativa del equipo de 12 personas.
         </p>
       </div>
 
@@ -86,42 +94,48 @@
         <!-- CloudWatch -->
         <div class="bg-slate-900 border border-blue-500/30 rounded-2xl p-5 space-y-3">
           <div class="flex justify-between items-center">
-            <span class="text-xs bg-blue-500/20 text-blue-300 font-semibold px-2.5 py-1 rounded-full">Métricas & Logs</span>
+            <span class="text-xs bg-blue-500/20 text-blue-300 font-semibold px-2.5 py-1 rounded-full">Métricas &
+              Logs</span>
             <span class="text-[10px] text-slate-500 font-mono">AWS Native</span>
           </div>
           <h3 class="text-base font-bold text-white flex items-center gap-2">
             <span>📊</span> CloudWatch & Container Insights
           </h3>
           <p class="text-xs text-slate-400">
-            Recolecta automáticamente logs centralizados de ECS Fargate y métricas de rendimiento por microservicio a nivel de CPU, memoria y E/S de red.
+            Recolecta automáticamente logs centralizados de ECS Fargate y métricas de rendimiento por microservicio a
+            nivel de CPU, memoria y E/S de red.
           </p>
         </div>
 
         <!-- AWS X-Ray -->
         <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-5 space-y-3">
           <div class="flex justify-between items-center">
-            <span class="text-xs bg-cyan-500/20 text-cyan-300 font-semibold px-2.5 py-1 rounded-full">Trazabilidad Distribuida</span>
+            <span class="text-xs bg-cyan-500/20 text-cyan-300 font-semibold px-2.5 py-1 rounded-full">Trazabilidad
+              Distribuida</span>
             <span class="text-[10px] text-slate-500 font-mono">X-Ray SDK</span>
           </div>
           <h3 class="text-base font-bold text-white flex items-center gap-2">
             <span>🧬</span> AWS X-Ray
           </h3>
           <p class="text-xs text-slate-400">
-            Mapea la ruta completa de cada videoconsulta y consulta de HCE a través de los microservicios y bases de datos Aurora, permitiendo aislar cuellos de botella en segundos.
+            Mapea la ruta completa de cada videoconsulta y consulta de HCE a través de los microservicios y bases de
+            datos Aurora, permitiendo aislar cuellos de botella en segundos.
           </p>
         </div>
 
         <!-- EventBridge & SNS -->
         <div class="bg-slate-900 border border-purple-500/30 rounded-2xl p-5 space-y-3">
           <div class="flex justify-between items-center">
-            <span class="text-xs bg-purple-500/20 text-purple-300 font-semibold px-2.5 py-1 rounded-full">Notificaciones</span>
+            <span
+              class="text-xs bg-purple-500/20 text-purple-300 font-semibold px-2.5 py-1 rounded-full">Notificaciones</span>
             <span class="text-[10px] text-slate-500 font-mono">Pub/Sub</span>
           </div>
           <h3 class="text-base font-bold text-white flex items-center gap-2">
             <span>🔔</span> EventBridge + Amazon SNS
           </h3>
           <p class="text-xs text-slate-400">
-            Filtra eventos críticos de CloudWatch y los distribuye de forma inmediata a los canales de comunicación del equipo sin generar ruido o alertas falsas.
+            Filtra eventos críticos de CloudWatch y los distribuye de forma inmediata a los canales de comunicación del
+            equipo sin generar ruido o alertas falsas.
           </p>
         </div>
       </div>
@@ -129,142 +143,121 @@
 
     <!-- Tab 2: Metrics and Alarms -->
     <section id="tab-alarms" class="tab-content hidden space-y-6">
-      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-4">
         <h2 class="text-lg font-semibold text-white flex items-center gap-2">
           <span>🔔</span> Definición de Métricas Clave y Umbrales de Alerta
         </h2>
         <p class="text-xs text-slate-400 mt-1">
           Reglas de alerta proactivas para prevenir interrupciones en videoconsultas y microservicios críticos.
         </p>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+              <tr>
+                <th class="p-3.5">Componente / Servicio</th>
+                <th class="p-3.5">Métrica Monitoreada</th>
+                <th class="p-3.5">Umbral de Alarma</th>
+                <th class="p-3.5">Efecto / Objetivo Proactivo</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 font-mono">
+              <tr class="hover:bg-slate-800/50">
+                <td class="p-3.5 font-sans font-bold text-white">Videoconsultas (ALB)</td>
+                <td class="p-3.5 text-cyan-400">TargetResponseTime</td>
+                <td class="p-3.5 text-amber-400">&gt; 1.5s (durante 2 min)</td>
+                <td class="p-3.5 font-sans text-slate-400">Prevenir degradación en audio/video antes de la caída de la
+                  llamada.</td>
+              </tr>
+              <tr class="hover:bg-slate-800/50">
+                <td class="p-3.5 font-sans font-bold text-white">Microservicio HCE</td>
+                <td class="p-3.5 text-cyan-400">HTTPCode_Target_5XX_Count</td>
+                <td class="p-3.5 text-amber-400">&gt; 2% de peticiones</td>
+                <td class="p-3.5 font-sans text-slate-400">Detectar fallos en la consulta de historias clínicas
+                  electrónicas.</td>
+              </tr>
+              <tr class="hover:bg-slate-800/50">
+                <td class="p-3.5 font-sans font-bold text-white">Fargate Clusters</td>
+                <td class="p-3.5 text-cyan-400">CPU / MemoryUtilization</td>
+                <td class="p-3.5 text-amber-400">&gt; 70% asignado</td>
+                <td class="p-3.5 font-sans text-slate-400">Iniciar escalado automático antes de la saturación del
+                  contenedor.</td>
+              </tr>
+              <tr class="hover:bg-slate-800/50">
+                <td class="p-3.5 font-sans font-bold text-white">Base de Datos Aurora</td>
+                <td class="p-3.5 text-cyan-400">DatabaseConnections / CPU</td>
+                <td class="p-3.5 text-amber-400">&gt; 80% límite</td>
+                <td class="p-3.5 font-sans text-slate-400">Evitar bloqueos de lectura/escritura en los registros
+                  médicos.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-        <table class="w-full text-left text-xs text-slate-300">
-          <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
-            <tr>
-              <th class="p-3.5">Componente / Servicio</th>
-              <th class="p-3.5">Métrica Monitoreada</th>
-              <th class="p-3.5">Umbral de Alarma</th>
-              <th class="p-3.5">Efecto / Objetivo Proactivo</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-800 font-mono">
-            <tr class="hover:bg-slate-800/50">
-              <td class="p-3.5 font-sans font-bold text-white">Videoconsultas (ALB)</td>
-              <td class="p-3.5 text-cyan-400">TargetResponseTime</td>
-              <td class="p-3.5 text-amber-400">&gt; 1.5s (durante 2 min)</td>
-              <td class="p-3.5 font-sans text-slate-400">Prevenir degradación en audio/video antes de la caída de la llamada.</td>
-            </tr>
-            <tr class="hover:bg-slate-800/50">
-              <td class="p-3.5 font-sans font-bold text-white">Microservicio HCE</td>
-              <td class="p-3.5 text-cyan-400">HTTPCode_Target_5XX_Count</td>
-              <td class="p-3.5 text-amber-400">&gt; 2% de peticiones</td>
-              <td class="p-3.5 font-sans text-slate-400">Detectar fallos en la consulta de historias clínicas electrónicas.</td>
-            </tr>
-            <tr class="hover:bg-slate-800/50">
-              <td class="p-3.5 font-sans font-bold text-white">Fargate Clusters</td>
-              <td class="p-3.5 text-cyan-400">CPU / MemoryUtilization</td>
-              <td class="p-3.5 text-amber-400">&gt; 70% asignado</td>
-              <td class="p-3.5 font-sans text-slate-400">Iniciar escalado automático antes de la saturación del contenedor.</td>
-            </tr>
-            <tr class="hover:bg-slate-800/50">
-              <td class="p-3.5 font-sans font-bold text-white">Base de Datos Aurora</td>
-              <td class="p-3.5 text-cyan-400">DatabaseConnections / CPU</td>
-              <td class="p-3.5 text-amber-400">&gt; 80% límite</td>
-              <td class="p-3.5 font-sans text-slate-400">Evitar bloqueos de lectura/escritura en los registros médicos.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Tab 3: Proactive Auto Scaling -->
-    <section id="tab-scaling" class="tab-content hidden space-y-6">
-      <div class="bg-indigo-950/40 border border-indigo-500/30 p-5 rounded-2xl">
+      <div class="bg-slate-900 border border-slate-500/30 p-5 rounded-2xl space-y-4">
         <h2 class="text-lg font-semibold text-white flex items-center gap-2">
           <span>📈</span> Estrategia Híbrida de Auto Scaling
         </h2>
         <p class="text-xs text-indigo-200 mt-1">
-          Combinación de escalado por calendario (preventivo) y por métricas (reactivo) para responder a los picos estacionales de hasta 4x en consultas.
+          Combinación de escalado por calendario (preventivo) y por métricas (reactivo) para responder a los picos
+          estacionales de hasta 4x en consultas.
         </p>
-      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-3">
-          <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider">1. Scheduled Scaling (Cron Preventivo)</div>
-          <h3 class="text-sm font-bold text-white">Apertura de Horario de Atención (06:45 AM)</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            Programado con expresiones Cron para pre-calentar las tareas de Fargate a las 06:45 h en cada uso horario local (AR, CL, CO, MX) previo al inicio de atención (07:00 h), evitando latencia de arranque en frío.
-          </p>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="border border-slate-800 p-5 rounded-2xl space-y-3">
+            <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider">1. Scheduled Scaling (Cron
+              Preventivo)
+            </div>
+            <h3 class="text-sm font-bold text-white">Apertura de Horario de Atención (06:45 AM)</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Programado con expresiones Cron para pre-calentar las tareas de Fargate a las 06:45 h en cada uso horario
+              local (AR, CL, CO, MX) previo al inicio de atención (07:00 h), evitando latencia de arranque en frío.
+            </p>
+          </div>
 
-        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-3">
-          <div class="text-xs font-bold text-cyan-400 uppercase tracking-wider">2. Target Tracking (Basado en Demanda)</div>
-          <h3 class="text-sm font-bold text-white">Ajuste Dinámico durante Campañas o Picos</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            Mantiene el uso de CPU/RAM al 60% agregando o quitando tareas Fargate de forma automática durante brotes estacionales de enfermedades respiratorias, garantizando alta disponibilidad sin sobrecostos.
-          </p>
+          <div class="border border-slate-800 p-5 rounded-2xl space-y-3">
+            <div class="text-xs font-bold text-cyan-400 uppercase tracking-wider">2. Target Tracking (Basado en Demanda)
+            </div>
+            <h3 class="text-sm font-bold text-white">Ajuste Dinámico durante Campañas o Picos</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Mantiene el uso de CPU/RAM al 60% agregando o quitando tareas Fargate de forma automática durante brotes
+              estacionales de enfermedades respiratorias, garantizando alta disponibilidad sin sobrecostos.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Tab 4: Incident Runbook -->
-    <section id="tab-runbook" class="tab-content hidden space-y-6">
-      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
-        <h2 class="text-lg font-semibold text-white flex items-center gap-2">
-          <span>🚨</span> Runbook de Respuesta a Incidentes
-        </h2>
-        <p class="text-xs text-slate-400 mt-1">
-          Procedimiento operativo estandarizado para resolver fallas en horario de atención en menos de 10 minutos.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2">
-          <div class="text-xs font-bold text-indigo-400">Paso 1: Triaje (1-3 min)</div>
-          <p class="text-xs text-slate-300">Recepción de la alerta de SNS en el canal de guardia. Confirmación de estado en Dashboard general de CloudWatch.</p>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2">
-          <div class="text-xs font-bold text-indigo-400">Paso 2: Diagnóstico (3-5 min)</div>
-          <p class="text-xs text-slate-300">Apertura del mapa de servicio de AWS X-Ray para identificar si la falla está en Fargate, la base de datos o un tercero.</p>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2">
-          <div class="text-xs font-bold text-indigo-400">Paso 3: Mitigación (5-8 min)</div>
-          <p class="text-xs text-slate-300">Ejecución de escalado forzado, failover de Aurora o Rollback inmediato de versión en el pipeline de CI/CD.</p>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2">
-          <div class="text-xs font-bold text-indigo-400">Paso 4: Post-Mortem</div>
-          <p class="text-xs text-slate-300">Documentación de la causa raíz para retroalimentar las reglas de automatización y prevenir la recurrencia.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tab 5: Observability Diagram -->
+    <!-- Tab 3: Observability Diagram -->
     <section id="tab-diagram" class="tab-content hidden space-y-6">
-      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div
+        class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 class="text-lg font-semibold text-white flex items-center gap-2">
             <span>🖼️</span> Flujo de Detección y Respuesta a Incidentes
           </h2>
           <p class="text-xs text-slate-400 mt-1">
-            Visualización completa de la arquitectura de observabilidad, diagnóstico, auto-mitigación y estrategia de auto scaling de VitalMed.
+            Visualización completa de la arquitectura de observabilidad, diagnóstico, auto-mitigación y estrategia de
+            auto scaling de VitalMed.
           </p>
         </div>
         <div class="flex items-center gap-2">
-          <a href="./diagramas/observabilidadflujo.png" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-indigo-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+          <a href="./diagramas/observabilidadflujo.png" target="_blank"
+            class="text-xs bg-slate-800 hover:bg-slate-700 text-indigo-300 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
             <span>🔗</span> Abrir en nueva pestaña
           </a>
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center overflow-hidden flex flex-col items-center">
-        <div class="w-full overflow-auto max-h-[75vh] flex justify-center items-center bg-slate-950/80 rounded-xl p-2 border border-slate-800/50">
-          <img
-            src="./diagramas/observabilidadflujo.png"
-            alt="Flujo de detección y respuesta a incidentes - VitalMed"
+      <div
+        class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center overflow-hidden flex flex-col items-center">
+        <div
+          class="w-full overflow-auto max-h-[75vh] flex justify-center items-center bg-slate-950/80 rounded-xl p-2 border border-slate-800/50">
+          <img src="./diagramas/observabilidadflujo.png" alt="Flujo de detección y respuesta a incidentes - VitalMed"
             class="max-w-full h-auto object-contain rounded-lg shadow-2xl transition-transform duration-200"
-            id="observability-img"
-          />
+            id="observability-img" />
         </div>
         <span class="text-[11px] text-slate-500 mt-3 font-mono">
           Ruta: docs/observability/diagramas/observabilidadflujo.png
@@ -272,14 +265,15 @@
       </div>
     </section>
 
-    <!-- Tab 6: Decisions & Criteria (ADRs) -->
+    <!-- Tab 4: Decisions & Criteria (ADRs) -->
     <section id="tab-docs" class="tab-content hidden space-y-6">
       <div class="bg-indigo-950/40 border border-indigo-500/30 p-5 rounded-2xl">
         <h2 class="text-lg font-semibold text-white flex items-center gap-2">
           <span>📘</span> Criterios de Diseño, Racional de Telemetría y Decisiones de Arquitectura
         </h2>
         <p class="text-xs text-indigo-200 mt-1">
-          Fundamentos técnicos y operacionales que justifican el stack de observabilidad, estrategias de autoescalado y protocolos de respuesta a incidentes para VitalMed.
+          Fundamentos técnicos y operacionales que justifican el stack de observabilidad, estrategias de autoescalado y
+          protocolos de respuesta a incidentes para VitalMed.
         </p>
       </div>
 
@@ -289,7 +283,11 @@
           <span>🏥</span> Contexto Operativo y Reducción de Carga en el Equipo
         </h3>
         <p class="text-xs text-slate-300 leading-relaxed">
-          Con un equipo de solo <strong>12 personas operando plataformas críticas para 4 países</strong>, resultaba imposible mantener guardias operativas 24/7 basadas en monitoreo manual o servidores dedicados de observabilidad (p. ej., clústeres propios de Elasticsearch/Grafana). Era imperativo un modelo 100% Serverless con telemetría nativa, alertas automatizadas y autoescalado proactivo que mitigue fallas antes de que impacten a médicos y pacientes.
+          Con un equipo de solo <strong>12 personas operando plataformas críticas para 4 países</strong>, resultaba
+          imposible mantener guardias operativas 24/7 basadas en monitoreo manual o servidores dedicados de
+          observabilidad (p. ej., clústeres propios de Elasticsearch/Grafana). Era imperativo un modelo 100% Serverless
+          con telemetría nativa, alertas automatizadas y autoescalado proactivo que mitigue fallas antes de que impacten
+          a médicos y pacientes.
         </p>
       </div>
 
@@ -297,72 +295,111 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         <!-- ADR 1 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-OBS-001</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-OBS-001</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
-          <h4 class="text-sm font-bold text-white">Stack Nativo Serverless (CloudWatch + X-Ray) vs. Herramientas Mantenidas</h4>
+          <h4 class="text-sm font-bold text-white">Stack Nativo Serverless (CloudWatch + X-Ray) vs. Herramientas
+            Mantenidas</h4>
           <div class="text-xs text-slate-400 space-y-2">
-            <p><strong>Criterio evaluado:</strong> Minimización de la carga de mantenimiento (Toil) en la infraestructura de monitoreo.</p>
-            <p><strong>Decisión:</strong> Utilizar CloudWatch Container Insights y AWS X-Ray de forma nativa e integrada directamente en Fargate y Aurora.</p>
-            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Cero gestión de servidores de agentes o bases de datos de logs; escalabilidad automática al 100% en función de las métricas recibidas.</p>
+            <p><strong>Criterio evaluado:</strong> Minimización de la carga de mantenimiento (Toil) en la
+              infraestructura de monitoreo.</p>
+            <p><strong>Decisión:</strong> Utilizar CloudWatch Container Insights y AWS X-Ray de forma nativa e integrada
+              directamente en Fargate y Aurora.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓
+              Beneficio: Cero gestión de servidores de agentes o bases de datos de logs; escalabilidad automática al
+              100% en función de las métricas recibidas.</p>
           </div>
         </div>
 
         <!-- ADR 2 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-OBS-002</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-OBS-002</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
           <h4 class="text-sm font-bold text-white">Escalado Híbrido: Scheduled Cron + Target Tracking Dynamic</h4>
           <div class="text-xs text-slate-400 space-y-2">
-            <p><strong>Criterio evaluado:</strong> Eliminación del impacto de arranques en frío (cold starts) en picos matutinos vs. eficiencia presupuestaria.</p>
-            <p><strong>Decisión:</strong> Programar pre-calentamiento de contenedores a las 06:45 AM en cada zona horaria mediante Cron, complementado con escalado dinámico al 60% CPU/RAM.</p>
-            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Tiempo de respuesta instantáneo al abrir la atención clínica sin sobrepagar capacidad ociosa durante la noche.</p>
+            <p><strong>Criterio evaluado:</strong> Eliminación del impacto de arranques en frío (cold starts) en picos
+              matutinos vs. eficiencia presupuestaria.</p>
+            <p><strong>Decisión:</strong> Programar pre-calentamiento de contenedores a las 06:45 AM en cada zona
+              horaria mediante Cron, complementado con escalado dinámico al 60% CPU/RAM.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓
+              Beneficio: Tiempo de respuesta instantáneo al abrir la atención clínica sin sobrepagar capacidad ociosa
+              durante la noche.</p>
           </div>
         </div>
 
         <!-- ADR 3 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-OBS-003</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-OBS-003</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
           <h4 class="text-sm font-bold text-white">Filtros de Eventos en EventBridge para Control de Ruido</h4>
           <div class="text-xs text-slate-400 space-y-2">
-            <p><strong>Criterio evaluado:</strong> Evitar la fatiga por alertas (Alert Fatigue) dentro del equipo técnico.</p>
-            <p><strong>Decisión:</strong> Usar reglas de filtrado en EventBridge que solo publiquen hacia SNS las alarmas en estado ALARM que afecten la experiencia del usuario o el SLA médico.</p>
-            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Garantiza que cada notificación enviada requiera una acción inmediata, manteniendo un MTTR inferior a 10 minutos.</p>
+            <p><strong>Criterio evaluado:</strong> Evitar la fatiga por alertas (Alert Fatigue) dentro del equipo
+              técnico.</p>
+            <p><strong>Decisión:</strong> Usar reglas de filtrado en EventBridge que solo publiquen hacia SNS las
+              alarmas en estado ALARM que afecten la experiencia del usuario o el SLA médico.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓
+              Beneficio: Garantiza que cada notificación enviada requiera una acción inmediata, manteniendo un MTTR
+              inferior a 10 minutos.</p>
           </div>
         </div>
 
         <!-- ADR 4 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-OBS-004</span>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
+            <span
+              class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-OBS-004</span>
+            <span
+              class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">Aprobado</span>
           </div>
           <h4 class="text-sm font-bold text-white">Trazabilidad End-to-End con AWS X-Ray en Microservicios</h4>
           <div class="text-xs text-slate-400 space-y-2">
-            <p><strong>Criterio evaluado:</strong> Aislamiento de latencias en llamadas compuestas (ALB ➔ Microservicio ➔ DB/Terceros).</p>
-            <p><strong>Decisión:</strong> Propagación de encabezados de traza X-Ray en todas las solicitudes HTTP internas y consultas a bases de datos Aurora.</p>
-            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Identificación inmediata de cuellos de botella exactos durante videoconferencias o consultas de HCE sin revisar logs de forma manual.</p>
+            <p><strong>Criterio evaluado:</strong> Aislamiento de latencias en llamadas compuestas (ALB ➔ Microservicio
+              ➔ DB/Terceros).</p>
+            <p><strong>Decisión:</strong> Propagación de encabezados de traza X-Ray en todas las solicitudes HTTP
+              internas y consultas a bases de datos Aurora.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓
+              Beneficio: Identificación inmediata de cuellos de botella exactos durante videoconferencias o consultas de
+              HCE sin revisar logs de forma manual.</p>
           </div>
         </div>
 
         <!-- ADR 5 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition md:col-span-2">
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-indigo-500/40 transition md:col-span-2">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-OBS-005</span>
-            <span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded">Supuesto explícito</span>
+            <span
+              class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2.5 py-0.5 rounded font-bold">ADR-OBS-005</span>
+            <span
+              class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded">Supuesto
+              explícito</span>
           </div>
           <h4 class="text-sm font-bold text-white">Centralización Mono-Región de Logs vs. Exportación Multirregión</h4>
           <div class="text-xs text-slate-400 space-y-2">
-            <p><strong>Criterio evaluado:</strong> Concentración de logs en us-east-1 simplificando la analítica técnica versus dispersión geográfica.</p>
-            <p><strong>Decisión (supuesto):</strong> Todos los logs de auditoría y rendimiento de las 4 cuentas-país se canalizan y analizan dentro de la región <strong>us-east-1</strong> mediante CloudWatch Cross-Account Observability.</p>
-            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓ Beneficio: Visibilidad centralizada en un único panel para los 12 miembros del equipo, reduciendo significativamente la complejidad operativa. ⚠️ Trade-off: Dependencia de la conectividad interna de AWS hacia us-east-1 para la ingestión de métricas en tiempo real.</p>
+            <p><strong>Criterio evaluado:</strong> Concentración de logs en us-east-1 simplificando la analítica técnica
+              versus dispersión geográfica.</p>
+            <p><strong>Decisión (supuesto):</strong> Todos los logs de auditoría y rendimiento de las 4 cuentas-país se
+              canalizan y analizan dentro de la región <strong>us-east-1</strong> mediante CloudWatch Cross-Account
+              Observability.</p>
+            <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2 rounded border border-slate-800">✓
+              Beneficio: Visibilidad centralizada en un único panel para los 12 miembros del equipo, reduciendo
+              significativamente la complejidad operativa. ⚠️ Trade-off: Dependencia de la conectividad interna de AWS
+              hacia us-east-1 para la ingestión de métricas en tiempo real.</p>
           </div>
         </div>
 
@@ -385,4 +422,5 @@
     }
   </script>
 </body>
+
 </html>
