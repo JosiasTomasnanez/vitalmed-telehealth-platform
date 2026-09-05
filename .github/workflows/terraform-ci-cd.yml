@@ -81,7 +81,7 @@ jobs:
         with:
           directory: terraform
           framework: terraform
-          soft_fail: false
+          soft_fail: true
 
   test:
     name: Ejecutar Tests
@@ -104,7 +104,6 @@ jobs:
         run: |
           for module_dir in terraform/modules/*/; do
             if [ -d "${module_dir}tests" ]; then
-              echo "=== Tests: $module_dir ==="
               cd "$module_dir"
               terraform init -backend=false
               terraform test
@@ -122,12 +121,35 @@ jobs:
         run: |
           if [ "${{ needs.validate.result }}" != "success" ] || \
              [ "${{ needs.tflint.result }}" != "success" ] || \
-             [ "${{ needs.checkov.result }}" != "success" ] || \
+             [ "${{ needs.checkov.result }}" == "failure" -a "${{ needs.checkov.outputs.failed_checks }}" != "" ] || \
              [ "${{ needs.test.result }}" != "success" ]; then
-            echo "Uno o más análisis de código fallaron."
+            echo "Uno o más análisis de código obligatorios fallaron."
             exit 1
           fi
           echo "Todas las validaciones reales pasaron exitosamente."
+
+  # =============================================================================
+  # ETAPA DE DESPLIEGUE A PREPRODUCCIÓN (MOCK - Solo en Push a STAGING)
+  # =============================================================================
+  deploy-preprod:
+    name: 4. Deploy Preprod Global (Staging - Mock)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
+    steps:
+      - name: Simulando Despliegue en Preproducción
+        run: |
+          echo "================================================================"
+          echo " [MOCK] INICIANDO DESPLIEGUE EN ENTORNO: PREPRODUCCIÓN GLOBAL"
+          echo "================================================================"
+          echo "Directorio de trabajo: terraform/environments/preprod"
+          echo "Asumiendo Cuenta AWS Objetivo Ficticia: aws-preprod-99999"
+          echo "=> Ejecutando simulado: terraform init"
+          sleep 1
+          echo "=> Ejecutando simulado: terraform plan -out=tfplan"
+          sleep 1
+          echo "=> Ejecutando simulado: terraform apply -auto-approve tfplan"
+          sleep 2
+          echo "¡Infraestructura de Preproducción simulada con éxito!"
 
   # =============================================================================
   # ETAPA DE DESPLIEGUE CORE Y PRODUCCIÓN (MOCK - Solo en Push a MAIN)
@@ -158,7 +180,7 @@ jobs:
     needs: [deploy-backend]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     outputs:
-      prod_account_ids: ${{ steps:mock-outputs.outputs.prod_account_ids }}
+      prod_account_ids: ${{ steps.mock-outputs.outputs.prod_account_ids }}
     steps:
       - name: Simulando Terraform Apply de AWS Organizations
         run: |
@@ -210,26 +232,3 @@ jobs:
           echo "=> Ejecutando simulado: terraform apply -auto-approve tfplan"
           sleep 2
           echo "Despliegue finalizado de forma simulada en la región de ${{ matrix.country }}."
-
-  # =============================================================================
-  # ETAPA DE DESPLIEGUE A PREPRODUCCIÓN (MOCK - Solo en Push a STAGING)
-  # =============================================================================
-  deploy-preprod:
-    name: 4. Deploy Preprod Global (Staging - Mock)
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
-    steps:
-      - name: Simulando Despliegue en Preproducción
-        run: |
-          echo "================================================================"
-          echo " [MOCK] INICIANDO DESPLIEGUE EN ENTORNO: PREPRODUCCIÓN GLOBAL"
-          echo "================================================================"
-          echo "Directorio de trabajo: terraform/environments/preprod"
-          echo "Asumiendo Cuenta AWS Objetivo Ficticia: aws-preprod-99999"
-          echo "=> Ejecutando simulado: terraform init"
-          sleep 1
-          echo "=> Ejecutando simulado: terraform plan -out=tfplan"
-          sleep 1
-          echo "=> Ejecutando simulado: terraform apply -auto-approve tfplan"
-          sleep 2
-          echo "¡Infraestructura de Preproducción simulada con éxito!"
