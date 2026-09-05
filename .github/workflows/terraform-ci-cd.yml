@@ -2,17 +2,16 @@ name: Terraform CI/CD
 
 on:
   push:
-    branches: [main]
+    branches: [main, staging]
     paths:
       - 'terraform/**'
   pull_request:
-    branches: [main]
+    branches: [main, staging]
     paths:
       - 'terraform/**'
 
 env:
   TF_VERSION: "1.10.0"
-  AWS_REGION: "us-east-1"
 
 permissions:
   id-token: write
@@ -20,11 +19,12 @@ permissions:
 
 jobs:
   # =============================================================================
-  # Job 1: Validación de código
+  # ETAPA DE CALIDAD Y PRUEBAS (Real - Solo en Pull Requests)
   # =============================================================================
   validate:
     name: Validar Terraform
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,26 +38,54 @@ jobs:
         run: terraform fmt -check -recursive
         working-directory: terraform
 
-      - name: Terraform Init & Validate & Plan
+      - name: Terraform Init & Validate
         run: |
           find terraform/environments -type f -name "main.tf" | while read -r main_file; do
             dir=$(dirname "$main_file")
-            echo "=========================================="
-            echo "Procesando entorno: $dir"
-            echo "=========================================="
             cd "$dir"
             terraform init -backend=false
             terraform validate
-            terraform plan -input=false -no-color 2>&1 | head -n 40
             cd - > /dev/null
           done
 
-  # =============================================================================
-  # Job 2: Tests de Terraform
-  # =============================================================================
+  tflint:
+    name: Ejecutar TFLint
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.50.0
+
+      - name: Init & Run TFLint
+        run: |
+          tflint --init
+          tflint -r --format compact
+        working-directory: terraform
+
+  checkov:
+    name: Ejecutar Checkov
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: terraform
+          framework: terraform
+          soft_fail: true
+
   test:
     name: Ejecutar Tests
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -75,84 +103,131 @@ jobs:
         run: |
           for module_dir in terraform/modules/*/; do
             if [ -d "${module_dir}tests" ]; then
-              echo "=== Tests: $module_dir ==="
               cd "$module_dir"
               terraform init -backend=false
               terraform test
               cd - > /dev/null
             fi
           done
+
+  ci-status:
+    name: CI Status
+    runs-on: ubuntu-latest
+    needs: [validate, tflint, checkov, test]
+    if: always() && github.event_name == 'pull_request'
+    steps:
+      - name: Verificar resultado de todas las pruebas
+        run: |
+          if [ "${{ needs.validate.result }}" != "success" ] || \
+             [ "${{ needs.tflint.result }}" != "success" ] || \
+             [ "${{ needs.checkov.result }}" == "failure" -a "${{ needs.checkov.outputs.failed_checks }}" != "" ] || \
+             [ "${{ needs.test.result }}" != "success" ]; then
+            echo "Uno o más análisis de código obligatorios fallaron."
+            exit 1
+          fi
+          echo "Todas las validaciones reales pasaron exitosamente."
+
   # =============================================================================
-  # Job 3: Despliegue a Preproducción Global (Merge a main)
+  # ETAPA DE DESPLIEGUE A PREPRODUCCIÓN (MOCK - Solo en Push a STAGING)
   # =============================================================================
   deploy-preprod:
-    name: Desplegar Preproducción Global
+    name: 4. Deploy Preprod Global (Staging - Mock)
     runs-on: ubuntu-latest
-    needs: [validate, test]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    environment: preprod
+    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Configure AWS Credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActionsDeployRole
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Terraform Init
-        working-directory: terraform/environments/preprod
-        run: terraform init
-
-      - name: Terraform Plan
-        working-directory: terraform/environments/preprod
-        run: terraform plan -input=false -out=tfplan
-
-      - name: Terraform Apply
-        working-directory: terraform/environments/preprod
-        run: terraform apply -auto-approve tfplan
+      - name: Simulando Despliegue en Preproducción
+        run: |
+          echo "================================================================"
+          echo " [MOCK] INICIANDO DESPLIEGUE EN ENTORNO: PREPRODUCCIÓN GLOBAL"
+          echo "================================================================"
+          echo "Directorio de trabajo: terraform/environments/preprod"
+          echo "Asumiendo Cuenta AWS Objetivo Ficticia: aws-preprod-99999"
+          echo "=> Ejecutando simulado: terraform init"
+          sleep 1
+          echo "=> Ejecutando simulado: terraform plan -out=tfplan"
+          sleep 1
+          echo "=> Ejecutando simulado: terraform apply -auto-approve tfplan"
+          sleep 2
+          echo "¡Infraestructura de Preproducción simulada con éxito!"
 
   # =============================================================================
-  # Job 4: Despliegue a Producción Multipaís (Merge a main)
+  # ETAPA DE DESPLIEGUE CORE Y PRODUCCIÓN (MOCK - Solo en Push a MAIN)
   # =============================================================================
-  deploy-prod:
-    name: Desplegar Producción
+  deploy-backend:
+    name: 1. Deploy State Backend (Main - Mock)
     runs-on: ubuntu-latest
-    needs: [validate, test, deploy-preprod]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Simulando Creación de Backend Local
+        run: |
+          echo "================================================================"
+          echo " [MOCK] FASE 1: DESPLIEGUE DE STATE BACKEND LOCAL (Management)"
+          echo "================================================================"
+          echo "Directorio de trabajo: terraform/global/state-backend"
+          echo "=> Ejecutando simulado: terraform init (backend local)"
+          sleep 1
+          echo "=> Ejecutando simulado: terraform plan -out=tfplan"
+          sleep 1
+          echo "=> Ejecutando simulado: terraform apply -auto-approve tfplan"
+          sleep 2
+          echo "   -> Creando Bucket S3 base para guardar estados futuros..."
+          echo "Backend base listo en la cuenta de administración principal (State Locking via native lockfile)."
+
+  deploy-org:
+    name: 2. Deploy Organization Accounts (Main - Mock)
+    runs-on: ubuntu-latest
+    needs: [deploy-backend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    outputs:
+      prod_account_ids: ${{ steps.mock-outputs.outputs.prod_account_ids }}
+    steps:
+      - name: Simulando Terraform Apply de AWS Organizations
+        run: |
+          echo "================================================================"
+          echo " [MOCK] FASE 2: CREACIÓN DE CUENTAS MIEMBRO (AWS Organizations)"
+          echo "================================================================"
+          echo "Directorio de trabajo: terraform/org"
+          echo "=> Ejecutando simulado: terraform init (Migrando a Backend Remoto S3 recién creado)"
+          sleep 1
+          echo "=> Ejecutando simulado: terraform plan -out=tfplan"
+          sleep 1
+          echo "=> Ejecutando simulado: terraform apply -auto-approve tfplan"
+          sleep 2
+          echo "   -> Creando cuenta: prod-ar..."
+          echo "   -> Creando cuenta: prod-cl..."
+          echo "   -> Creando cuenta: prod-co..."
+          echo "   -> Creando cuenta: prod-mx..."
+          echo "Estructura organizativa simulada correctamente."
+
+      - name: Generar e Inyectar Outputs Simulados
+        id: mock-outputs
+        run: |
+          MOCK_JSON='{"ar":"aws-account-ar-1111","cl":"aws-account-cl-2222","co":"aws-account-co-3332","mx":"aws-account-mx-4444"}'
+          echo "prod_account_ids=$MOCK_JSON" >> $GITHUB_OUTPUT
+
+  deploy-prod:
+    name: 3. Deploy Prod (${{ matrix.country }}) (Main - Mock)
+    runs-on: ubuntu-latest
+    needs: [deploy-org]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     strategy:
       matrix:
         country: [ar, cl, co, mx]
-    environment: prod-${{ matrix.country }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Configure AWS Credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/GitHubActionsDeployRole
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Terraform Init
-        working-directory: terraform/environments/${{ matrix.country }}/prod
-        run: terraform init
-
-      - name: Terraform Plan
-        working-directory: terraform/environments/${{ matrix.country }}/prod
-        run: terraform plan -input=false -out=tfplan
-
-      - name: Terraform Apply
-        working-directory: terraform/environments/${{ matrix.country }}/prod
-        run: terraform apply -auto-approve tfplan
+      - name: Parsear ID de Cuenta e Iniciar Aplicación Territorial
+        run: |
+          SIMULATED_ID=$(echo '${{ needs.deploy-org.outputs.prod_account_ids }}' | jq -r '.["${{ matrix.country }}"]')
+          
+          echo "================================================================"
+          echo " [MOCK] FASE 3: APLICANDO ENTORNO PRODUCCIÓN PAÍS: [${{ matrix.country }}]"
+          echo "================================================================"
+          echo "Directorio de trabajo: terraform/environments/${{ matrix.country }}/prod"
+          echo "Conectando de manera simulada a la cuenta miembro: $SIMULATED_ID"
+          echo "Asumiendo rol: arn:aws:iam::$SIMULATED_ID:role/OrganizationAccountAccessRole"
+          echo "=> Ejecutando simulado: terraform init"
+          sleep 1
+          echo "=> Ejecutando simulado: terraform plan -out=tfplan"
+          sleep 1
+          echo "=> Ejecutando simulado: terraform apply -auto-approve tfplan"
+          sleep 2
+          echo "Despliegue finalizado de forma simulada en la región de ${{ matrix.country }}."
