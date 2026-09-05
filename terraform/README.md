@@ -34,12 +34,22 @@ Total: **6 cuentas AWS** (4 prod + 1 preprod + 1 shared), sin contar la de manag
 
 ## Orden de aplicación (importante)
 
-1. `global/state-backend/` — con backend local. Se aplica una única vez, en la cuenta shared. Crea solo el bucket S3, con locking nativo (`use_lockfile`, disponible desde Terraform 1.10).
-2. `org/` — crea las 4 cuentas de producción (una por país), la cuenta preprod y la cuenta shared. A partir de acá ya se puede usar el backend remoto S3.
+1. `global/state-backend/` — con backend local (todavía no existe el bucket remoto). Se aplica con las credenciales — normalmente las de la cuenta de management, porque en este punto **las cuentas prod/preprod/shared todavía no existen**.
+2. `org/` — crea las 4 cuentas de producción (una por país), la cuenta preprod y la cuenta shared. A partir de acá ya se puede usar el backend remoto S3, y cada cuenta miembro ya tiene disponible el rol `OrganizationAccountAccessRole` que los `environments/` necesitan para el `assume_role`.
 3. Por cada `environments/<pais>/prod/` — pasando el `account_id` correspondiente (output `prod_account_ids` de `org/`) y el `zona_route53_id` del dominio raíz.
 4. `environments/preprod/` — una sola vez, pasando el `account_id` de la cuenta preprod (output `preprod_account_id` de `org/`).
 
+Los pasos 3 y 4 no dependen entre sí (podrían aplicarse en cualquier orden, incluso en paralelo); están numerados así solo por claridad de lectura. Lo que sí es estrictamente secuencial es 1 → 2 → (3 y 4): sin el bucket no hay dónde guardar el state remoto, y sin las cuentas de `org/` no existen ni el `account_id` ni el rol que cada environment necesita.
+
 Dentro de cada environment, el orden interno de dependencias entre módulos ya está resuelto por Terraform vía referencias (`module.x.output`) — no hace falta aplicarlos por separado. El único punto no trivial es que `edge-cert` (ACM) se separó de `edge` (CloudFront/WAF/Route53) para evitar una dependencia circular: `compute` necesita el certificado antes de que exista el ALB, y `edge` necesita el DNS del ALB para armar el origin de CloudFront.
+
+### Por qué no un solo `apply` desde la raíz
+
+Podría parecer más simple unificar todo en un único root module y dejar que `depends_on` ordene las cosas, pero hay dos bloqueos duros que `depends_on` no resuelve, y una razón de diseño por la que tampoco convendría aunque se pudiera:
+
+- **El backend no se puede autocrear.** El bloque `backend "s3" { ... }` se resuelve en `terraform init`, antes de que Terraform arme el grafo de recursos. Ningún `depends_on` evita que el bucket tenga que existir *antes* de que ese mismo `apply` intente escribir su state ahí — por eso `global/state-backend` queda aparte, con backend local.
+- **El provider no puede depender de un recurso creado en la misma corrida.** Cada `environments/<pais>/prod` configura su provider con `assume_role` hacia el `account_id` de esa cuenta. Si todo viviera en una sola raíz, ese `account_id` saldría de un output de `module.org` que no existe hasta que la cuenta ya fue creada — y un provider no puede depender de un valor "unknown" que recién se conoce en el `apply`. En la práctica esto rompe con errores del tipo *"Invalid provider configuration"*, o fuerza a aplicar en dos pasadas igual (primero la cuenta con `-target`, después el resto), que es lo mismo que ya hacemos con comandos separados, pero de forma menos prolija.
+- **Aunque no existieran esos dos bloqueos, no convendría.** Meter las 6 cuentas en una sola raíz significa un único state y un único blast radius: un error de sintaxis en el módulo de un país bloquearía el `apply` de todos los demás, y se pierde el aislamiento por cuenta que es justamente el objetivo de este diseño. Por eso las cuentas se encadenan por *outputs* entre stacks separados, no por un árbol de dependencias único — es el mismo motivo por el que existen Organizations/Control Tower en AWS.
 
 ## Por qué algunos servicios quedan "solo diseño"
 
