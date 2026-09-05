@@ -64,7 +64,7 @@ jobs:
       - name: Init & Run TFLint
         run: |
           tflint --init
-          tflint -r --format compact
+          tflint --recursive
         working-directory: terraform
 
   checkov:
