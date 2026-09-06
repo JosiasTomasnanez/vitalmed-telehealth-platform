@@ -60,10 +60,11 @@ jobs:
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
         with:
-          tflint_version: v0.50.0
+          tflint_version: v0.64.0
 
       - name: Init & Run TFLint
         run: |
+          tflint --version
           tflint --init
           tflint --recursive
         working-directory: terraform
