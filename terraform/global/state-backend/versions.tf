@@ -6,6 +6,6 @@ terraform {
       version = "~> 5.0"
     }
   }
-   # Backend local a propósito: bootstrap.
 }
+# Backend local a propósito: bootstrap.
 
