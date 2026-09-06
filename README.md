@@ -32,6 +32,7 @@
 Inspirados en el pilar de **Excelencia Operativa del AWS Well-Architected Framework**, diseñamos una arquitectura resiliente, automatizada e impulsada por **Serverless**, minimizando el trabajo manual y eliminando la administración de servidores físicos o máquinas virtuales.
 
 <Image src="./docs/data/Diagrama de Arquitectura Cloud.jpg" alt="Diagrama conceptual de la arquitectura AWS para VitalMed" caption="Arquitectura lógica multi-cuenta y desacoplada en AWS" />
+<figcaption><em>Diagrama de arquitectura de servicios y flujo de datos resumido.</em></figcaption>
 
 ### 💡 Decisiones Estratégicas Clave
 
