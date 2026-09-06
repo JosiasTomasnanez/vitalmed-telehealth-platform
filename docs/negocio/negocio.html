@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +9,13 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
   </style>
 </head>
+
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
 
   <!-- Header / Navbar Central -->
@@ -18,17 +23,19 @@
     <div class="max-w-7xl mx-auto flex flex-row justify-between items-center gap-2">
       <div>
         <div class="flex items-center gap-2 mb-0.5">
-          <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+          <span
+            class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
             Caso de Negocio & Contexto
           </span>
           <span class="text-slate-400 text-[11px] hidden sm:inline">• VitalMed Cloud Platform</span>
         </div>
-        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Por qué VitalMed necesita una arquitectura elástica</h1>
+        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Por qué VitalMed necesita una arquitectura
+          elástica</h1>
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3">
         <a href="../index.html"
-           class="text-xs bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white px-3 py-1.5 rounded-lg border border-indigo-500/30 transition flex items-center gap-1.5 font-semibold">
+          class="text-xs bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white px-3 py-1.5 rounded-lg border border-indigo-500/30 transition flex items-center gap-1.5 font-semibold">
           <span>⬅</span>
           <span>Volver al Hub</span>
         </a>
@@ -41,13 +48,16 @@
 
     <!-- Hero -->
     <section class="bg-slate-900/60 border border-slate-800 p-6 sm:p-8 rounded-2xl relative overflow-hidden">
-      <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none">
+      </div>
       <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">
         VitalMed Telesalud: un negocio de salud con demanda muy estacional
       </h2>
       <p class="text-sm text-slate-400 max-w-3xl leading-relaxed">
-        VitalMed conecta a más de 180.000 pacientes con una red de 4.500 profesionales en Argentina, Chile, Colombia y México,
-        ofreciendo videoconsultas, recetas digitales, resultados de laboratorio e historia clínica electrónica compartida.
+        VitalMed conecta a más de 180.000 pacientes con una red de 4.500 profesionales en Argentina, Chile, Colombia y
+        México,
+        ofreciendo videoconsultas, recetas digitales, resultados de laboratorio e historia clínica electrónica
+        compartida.
         Todo esto lo sostiene un equipo de tecnología de apenas 12 personas para los cuatro países, bajo el pilar de
         <span class="text-amber-300 font-semibold">Excelencia Operativa</span> del AWS Well-Architected Framework.
       </p>
@@ -83,7 +93,8 @@
         <div class="bg-slate-900 border border-slate-800 border-l-4 border-l-blue-500 rounded-2xl p-5 space-y-2">
           <h4 class="text-base font-bold text-white flex items-center gap-2"><span>🏗️</span> Arquitectura</h4>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Un esquema pensado para capacidad fija, dimensionado para la carga habitual, obligaría a la empresa a comprar
+            Un esquema pensado para capacidad fija, dimensionado para la carga habitual, obligaría a la empresa a
+            comprar
             y mantener servidores durante todo el año pensando en un pico que solo ocurre unas semanas al año.
           </p>
         </div>
@@ -93,7 +104,8 @@
           <h4 class="text-base font-bold text-white flex items-center gap-2"><span>⚠️</span> Problema</h4>
           <p class="text-xs text-slate-400 leading-relaxed">
             En temporada de enfermedades respiratorias y campañas de vacunación, las videoconsultas y la carga sobre
-            turnos e historia clínica se multiplican por 4. Sobredimensionar todo el año encarece la operación; no hacerlo
+            turnos e historia clínica se multiplican por 4. Sobredimensionar todo el año encarece la operación; no
+            hacerlo
             arriesga caídas justo cuando un paciente está en medio de una consulta.
           </p>
         </div>
@@ -118,17 +130,22 @@
       </h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2 hover:border-indigo-500/40 transition">
-          <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2 py-0.5 rounded font-bold">Cómputo</span>
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2 hover:border-indigo-500/40 transition">
+          <span
+            class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2 py-0.5 rounded font-bold">Cómputo</span>
           <h4 class="text-sm font-bold text-white mt-1">ECS Fargate + Auto Scaling</h4>
           <p class="text-xs text-slate-400">
-            Los microservicios escalan solos según demanda real (peticiones/CPU) y con reglas programadas antes de las 07:00,
+            Los microservicios escalan solos según demanda real (peticiones/CPU) y con reglas programadas antes de las
+            07:00,
             sin que el equipo aprovisione servidores a mano.
           </p>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2 hover:border-indigo-500/40 transition">
-          <span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2 py-0.5 rounded font-bold">Asincronismo</span>
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2 hover:border-indigo-500/40 transition">
+          <span
+            class="text-[10px] bg-indigo-500/20 text-indigo-300 font-mono px-2 py-0.5 rounded font-bold">Asincronismo</span>
           <h4 class="text-sm font-bold text-white mt-1">EventBridge + SQS</h4>
           <p class="text-xs text-slate-400">
             Facturación, PDFs y sincronización de HCE se amortiguan en colas, absorbiendo el pico de x4 sin tumbar los
@@ -145,88 +162,27 @@
           </p>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2 hover:border-purple-500/40 transition">
-          <span class="text-[10px] bg-purple-500/20 text-purple-300 font-mono px-2 py-0.5 rounded font-bold">Observabilidad</span>
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-2 hover:border-purple-500/40 transition">
+          <span
+            class="text-[10px] bg-purple-500/20 text-purple-300 font-mono px-2 py-0.5 rounded font-bold">Observabilidad</span>
           <h4 class="text-sm font-bold text-white mt-1">CloudWatch + Alertas Proactivas</h4>
           <p class="text-xs text-slate-400">
-            Alarmas sobre latencia y saturación avisan antes de que un paciente pierda una videoconsulta, con visibilidad
+            Alarmas sobre latencia y saturación avisan antes de que un paciente pierda una videoconsulta, con
+            visibilidad
             de punta a punta para un equipo chico.
           </p>
         </div>
 
       </div>
-
-      <p class="text-xs text-slate-500 leading-relaxed pt-2">
-        Resultado: la capacidad se paga en función del uso real (ver
-        <button onclick="openEstimacionModal()" class="text-amber-400 hover:text-amber-300 underline underline-offset-2 cursor-pointer">estimación de costos</button>),
-        el equipo de 12 personas mantiene visibilidad y control sobre los 4 países, y la arquitectura queda lista para sumar un quinto país
-        replicando el mismo módulo de infraestructura como código.
-      </p>
     </section>
 
   </main>
-
-  <!-- Modal para ver el Markdown Renderizado -->
-  <div id="md-modal" onclick="closeMdModalOnOut(event)" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-
-      <!-- Modal Header -->
-      <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/90">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <span>💰</span> Estimación de Costos (estimacion.md)
-        </h3>
-        <button onclick="closeMdModal()" class="text-slate-400 hover:text-white text-xs bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 transition cursor-pointer">
-          ✕ Cerrar
-        </button>
-      </div>
-
-      <!-- Modal Body (Renderizado) -->
-      <div id="md-content" class="p-6 overflow-y-auto space-y-4 text-slate-300 text-sm leading-relaxed prose prose-invert max-w-none prose-headings:text-amber-400 prose-a:text-cyan-400 prose-table:border-slate-800">
-        <div class="text-center py-8 text-slate-500">Cargando documentación...</div>
-      </div>
-
-    </div>
-  </div>
 
   <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
     VitalMed Platform Architecture • Caso de Negocio & Contexto
   </footer>
 
-  <script>
-    function openEstimacionModal() {
-      const modal = document.getElementById('md-modal');
-      const content = document.getElementById('md-content');
-      modal.classList.remove('hidden');
-
-      fetch('../estimacion.md')
-        .then(response => {
-          if (!response.ok) throw new Error('No se pudo cargar el archivo estimacion.md');
-          return response.text();
-        })
-        .then(markdownText => {
-          content.innerHTML = marked.parse(markdownText);
-        })
-        .catch(err => {
-          content.innerHTML = `<div class="text-red-400 font-semibold p-4">Error al cargar la documentación: ${err.message}<br><br><span class="text-xs text-slate-400">Si estás probando de manera local, inicia un servidor con <b>python3 -m http.server</b> dentro de la carpeta docs.</span></div>`;
-        });
-    }
-
-    function closeMdModal() {
-      document.getElementById('md-modal').classList.add('hidden');
-    }
-
-    function closeMdModalOnOut(event) {
-      if (event.target.id === 'md-modal') {
-        closeMdModal();
-      }
-    }
-
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape') {
-        closeMdModal();
-      }
-    });
-  </script>
-
 </body>
+
 </html>
