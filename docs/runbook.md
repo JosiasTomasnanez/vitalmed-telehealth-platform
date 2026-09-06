@@ -167,19 +167,23 @@ git checkout -b feat/nuevo-recurso
 # 2. Hacer cambios en terraform/
 # ...
 
-# 3. Validar localmente
-cd terraform/environments/ar/prod
-terraform fmt -check
-terraform init -backend=false
-terraform validate
-terraform test
+# 3. Validar localmente (lo mismo que correrá el PR en CI)
+cd terraform
+terraform fmt -check -recursive
+tflint --init && tflint --recursive
+checkov -d terraform --framework terraform
+for dir in terraform/environments/*/*/; do
+  [ -f "$dir/main.tf" ] && (cd "$dir" && terraform init -backend=false && terraform validate)
+done
 
-# 4. Crear PR y esperar aprobación
+# 4. Crear PR y esperar aprobación (el pipeline corre validate -> tflint -> checkov -> test -> ci-status)
 git add .
 git commit -m "feat: agregar recurso X"
 git push origin feat/nuevo-recurso
 
-# 5. Después del merge a main, el pipeline CI/CD despliega automáticamente
+# 5. Tras el merge, el pipeline despliega en modo simulado:
+#    - push a staging -> deploy-preprod (mock)
+#    - push a main    -> deploy-backend -> deploy-org -> deploy-prod (mock, matrix ar/cl/co/mx)
 ```
 
 ---
@@ -202,14 +206,23 @@ for dir in terraform/environments/*/*/; do
   fi
 done
 
-# Ejecutar tests
+# Ejecutar tests (con credenciales AWS mock, sin cuenta real)
 for module_dir in terraform/modules/*/; do
   if [ -d "${module_dir}tests" ]; then
     cd "$module_dir"
+    terraform init -backend=false
     terraform test
     cd -
   fi
 done
+
+# Linting con TFLint
+cd terraform
+tflint --init
+tflint --recursive
+
+# Análisis de seguridad estático (SCA) con Checkov
+checkov -d terraform --framework terraform
 ```
 
 ### 4.2 Validación de Seguridad
@@ -311,16 +324,25 @@ terraform state push terraform.tfstate.backup
 
 ### 6.2 Rollback Automático (CI/CD)
 
-El pipeline (`.github/workflows/terraform-ci-cd.yml`) encadena dos etapas tras un push a `main`:
+El pipeline (`.github/workflows/terraform-ci-cd.yml`) tiene dos grandes etapas:
 
-1. **Preproducción** (`deploy-preprod`): `terraform apply` automático a `environments/preprod`.
-2. **Producción** (`deploy-prod`): `terraform apply` automático a los 4 países, y **solo se ejecuta si preprod terminó OK** (`needs: [deploy-preprod]`).
+**A. Calidad (real, en Pull Requests a `main`/`staging`):**
 
-Si preproducción falla:
-- El pipeline se detiene.
-- Producción **no** se despliega (dependencia entre jobs).
+1. `validate` — `terraform fmt -check -recursive` + `init -backend=false` + `validate` por entorno.
+2. `tflint` — linting estático.
+3. `checkov` — análisis de seguridad estático (SCA).
+4. `test` — `terraform test` con credenciales AWS mock.
+5. `ci-status` — consolida el resultado de los cuatro anteriores; es el **único check obligatorio** en la branch protection de `main` y `staging`. Si cualquiera falla, el merge queda bloqueado.
 
-> **Rollback en CI/CD**: revertir el commit que rompió (`git revert` + PR a `main`) y dejar que el pipeline re-aplique el estado anterior. Los entornos de GitHub (`preprod`, `prod-{ar,cl,co,mx}`) permiten configurar protección (required reviewers / aprobación manual), pero eso es configuración del repositorio, no del código.
+**B. Despliegue (simulado, en push):**
+
+- **Push a `staging`** → job único `deploy-preprod` (mock sobre `environments/preprod`).
+- **Push a `main`** → secuencia encadenada con `needs`:
+  1. `deploy-backend` (mock de `terraform/global/state-backend`).
+  2. `deploy-org` (mock de `terraform/org`; genera e inyecta los `prod_account_ids` simulados).
+  3. `deploy-prod` (matrix `ar`, `cl`, `co`, `mx`; consume los IDs inyectados y simula el `assume_role` a `OrganizationAccountAccessRole`).
+
+> **Rollback en CI/CD**: revertir el commit que rompió (`git revert` + PR a `main`) y dejar que el pipeline re-aplique el estado anterior. Al ser despliegues simulados, no hay infraestructura real que revertir: la protección real es el gate `ci-status`, que impide que código no validado llegue a `main`/`staging`.
 
 ### 6.3 Procedimiento de Emergencia
 
@@ -331,11 +353,11 @@ echo "ALERTA: Despliegue fallido en $PAIS $ENVIRON" | \
   --data '{"text":"ALERTA: Despliegue fallido"}' \
   $SLACK_WEBHOOK_URL
 
-# 2. Congelar despliegues: desactivar el workflow o proteger main
+# 2. Congelar despliegues: desactivar el workflow o proteger las ramas main y staging
 #    Opción A (UI): GitHub > Actions > "Terraform CI/CD" > Disable workflow
-#    Opción B (CLI): agregar regla de protección en la rama main
+#    Opción B (CLI): agregar regla de protección en las ramas main y staging
 #    (un `git tag freeze-*` NO detiene el pipeline, solo sirve de marcador)
-#    (el workflow se dispara por push a main con paths: terraform/**)
+#    (el workflow se dispara por push a main/staging con paths: terraform/**)
 
 # 3. Diagnosticar
 cd terraform/environments/$PAIS/$ENVIRON
@@ -518,6 +540,6 @@ terraform state list
 
 ---
 
-**Última actualización**: 2026-08-31
-**Versión**: 2.1
+**Última actualización**: 2026-09-06
+**Versión**: 2.2
 **Autor**: Grupo 9 — Diplomatura DevOps
