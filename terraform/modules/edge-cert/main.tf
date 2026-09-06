@@ -1,7 +1,3 @@
-locals {
-  nombre = "${var.pais}-${var.entorno}"
-}
-
 # -----------------------------------------------------------------------------
 # ACM — certificado público, validado automáticamente por DNS.
 # Al estar todo en us-east-1, el mismo certificado sirve tanto para el

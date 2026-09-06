@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Account Factory
+# Account Factory (Test)
 # -----------------------------------------------------------------------------
 # - 1 cuenta de PRODUCCIÓN por país (dentro de la OU de su país): mantiene
 #   el aislamiento total entre países en el entorno que realmente importa
