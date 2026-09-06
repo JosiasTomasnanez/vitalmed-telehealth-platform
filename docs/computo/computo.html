@@ -60,7 +60,7 @@
         <span>🖼️</span> 4. Diagrama Visual
       </button>
       <button onclick="switchTab('tab-cicd')" id="btn-tab-cicd" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
-        <span>🔄</span> 5. Despliegue CI/CD & Rollbacks
+        <span>🔄</span> 5. Despliegue & Rollbacks
       </button>
       <button onclick="switchTab('tab-docs')" id="btn-tab-docs" class="tab-btn px-3 py-2 rounded-t-lg transition flex items-center gap-1.5 whitespace-nowrap">
         <span>📘</span> 6. Decisiones & Criterios (ADRs)
@@ -188,7 +188,7 @@
           </p>
           <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 space-y-1">
             <div class="text-slate-500">// Stack & Infra:</div>
-            <div class="text-indigo-400">Python (FastAPI) • ECS Task (0.5 vCPU / 1GB)</div>
+            <div class="text-indigo-400">Python (FastAPI) • Lamda</div>
           </div>
         </div>
 
@@ -206,7 +206,7 @@
           </p>
           <div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 space-y-1">
             <div class="text-slate-500">// Stack & Infra:</div>
-            <div class="text-indigo-400">Node.js • ECS Task / SQS Worker</div>
+            <div class="text-indigo-400">Node.js • Lamda/ SQS Worker</div>
           </div>
         </div>
 
@@ -476,7 +476,7 @@
             <p><strong>Criterio evaluado:</strong> Prevención de saturación por picos I/O y eliminación de demoras por Cold Start.</p>
             <p><strong>Decisión:</strong> Combinar reglas Target Tracking (Peticiones ALB + CPU) con Scheduled Scaling matutino.</p>
             <p class="text-indigo-300 font-mono text-[11px] bg-slate-950 p-2.5 rounded border border-slate-800">
-              El escalado por peticiones responde velozmente a picos web, mientras que el escalado programado precarga capacidad antes del inicio del horario clínico (07:00 hs), evitando que los primeros usuarios sufran latencia de arranque.
+              El escalado responde velozmente a picos web y alertas de cpu o memoria, mientras que el escalado programado precarga capacidad antes del inicio del horario clínico (07:00 hs), evitando que los primeros usuarios sufran latencia de arranque.
             </p>
           </div>
         </div>
