@@ -63,10 +63,8 @@ Podría parecer más simple unificar todo en un único root module y dejar que `
 
 ## Estructura del repo
 
-> Esta carpeta se llama `infra/` acá, pero en tu repositorio Git corresponde a `terraform/` — los `source` de los módulos ya apuntan a `terraform/modules/<nombre>` dentro del repo.
-
 ```
-infra/                             # == terraform/ en el repositorio Git
+terraform/                        
 ├── global/state-backend/         # bootstrap: bucket S3 con locking nativo (use_lockfile)
 ├── org/                          # cuenta management: Organizations + account factory
 ├── modules/                      # cada uno se referencia por Git+tag desde environments/, no por path local
