@@ -19,10 +19,18 @@ for dir in terraform/environments/*/*/; do
   [ -f "$dir/main.tf" ] && (cd "$dir" && terraform init -backend=false && terraform validate)
 done
 
-# Ejecutar todos los tests
+# Ejecutar todos los tests (con credenciales AWS mock, sin cuenta real)
 for module_dir in terraform/modules/*/; do
-  [ -d "${module_dir}tests" ] && (cd "$module_dir" && terraform test)
+  [ -d "${module_dir}tests" ] && (cd "$module_dir" && terraform init -backend=false && terraform test)
 done
+
+# Linting con TFLint
+cd terraform
+tflint --init
+tflint --recursive
+
+# Análisis de seguridad estático (SCA) con Checkov
+checkov -d terraform --framework terraform
 
 # Ver estado de un entorno
 cd terraform/environments/ar/prod
@@ -419,7 +427,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
 ### 5.4 Procedimiento de Recovery
 
 ```bash
-# 1. Detener despliegues: desactivar el workflow o proteger main (ver runbook §6.3)
+# 1. Detener despliegues: desactivar el workflow o proteger main y staging (ver runbook §6.3)
 
 # 2. Restaurar estado de Terraform
 cd terraform/environments/ar/prod
@@ -680,10 +688,11 @@ terraform fmt -check -recursive
 
 ### 8.1 Flujo de Trabajo Git
 
-El repo usa un flujo **trunk-based**: no hay rama `develop` ni `release/*`. Todas las ramas salen de `main` y vuelven a `main` vía PR.
+El repo usa un flujo **trunk-based** con una única rama de integración (`main`) y una rama de preproducción (`staging`). No hay rama `develop` ni `release/*`. Las ramas de trabajo salen de `main` y vuelven a `main` vía PR.
 
 ```
-main (única rama de larga vida)
+main    (rama de producción — despliegue simulado backend + org + prod)
+staging (rama de preproducción — despliegue simulado de preprod)
 ├── feat/xxx    (features)
 ├── fix/xxx     (bugfixes)
 └── docs/xxx    (documentación)
@@ -691,12 +700,15 @@ main (única rama de larga vida)
 
 ### 8.2 Reglas de Ramas
 
-| Rama | Origen | Merge en | Despliegue |
+| Rama | Origen | Merge en | Despliegue (pipeline tras push) |
 |------|--------|----------|------------|
-| `main` | - | - | Preprod y prod **automático** (pipeline tras push) |
+| `main` | - | - | `deploy-backend` → `deploy-org` → `deploy-prod` (matrix ar/cl/co/mx), **mock** |
+| `staging` | `main` | `main` (PR) | `deploy-preprod`, **mock** |
 | `feat/*` | `main` | `main` (PR) | - |
 | `fix/*` | `main` | `main` (PR) | - |
 | `docs/*` | `main` | `main` (PR) | - |
+
+> `main` y `staging` tienen **branch protection**: sin push directo, y el merge solo se habilita cuando el status check consolidado `ci-status` (que agrupa `validate` → `tflint` → `checkov` → `test`) está en verde.
 
 ### 8.3 Convenciones de Commits
 
@@ -725,6 +737,8 @@ Al revisar un PR de Terraform:
 - [ ] `terraform fmt -check` pasa
 - [ ] `terraform validate` pasa
 - [ ] `terraform test` pasa
+- [ ] `tflint` pasa
+- [ ] `checkov` (SCA) no introduce hallazgos críticos
 - [ ] No hay credenciales hardcodeadas
 - [ ] Tags obligatorios están presentes
 - [ ] Naming conventions se cumplen

@@ -76,9 +76,14 @@ Cada entorno (`environments/<pais>/prod/` y `environments/preprod/`) declara **d
 ### 3.2 Despliegue de Actualizaciones
 
 Flujo de trabajo colaborativo para cambios o nuevas funcionalidades:
+
 1. **Rama de feature**: Se crea una rama a partir de `main` y se realizan las modificaciones en `terraform/`.
-2. **Pull Request (PR)**: Se abre un PR hacia `main` para revisión de pares (peer review).
-3. **Despliegue por CI/CD**: Una vez aprobado el PR y realizado el merge a `main`, el pipeline de CI/CD despliega los cambios automáticamente.
+2. **Pull Request (PR)**: Se abre un PR hacia `main` (o `staging`) para revisión de pares (peer review). El pipeline corre una cadena de gates **reales** que debe quedar en verde antes del merge: `validate` (`fmt` + `init` + `validate`) → `tflint` (linting) → `checkov` (SCA) → `test` (`terraform test` con credenciales AWS mock). Todo se consolida en un único status check, **`ci-status`**, obligatorio por branch protection.
+3. **Despliegue por CI/CD**: Una vez aprobado el PR y realizado el merge, el pipeline despliega de forma **simulada (mock)**, respetando el orden del runbook:
+   - **Push a `staging`**: job único `deploy-preprod` (mock sobre `environments/preprod`).
+   - **Push a `main`**: `deploy-backend` → `deploy-org` (inyecta los IDs de cuenta) → `deploy-prod` (matrix `ar`, `cl`, `co`, `mx`), encadenados con `needs`.
+
+> Los despliegues son simulados porque la consigna no exige `terraform apply` real y no se dispone de cuenta de AWS con cuotas comerciales. La etapa de calidad del PR sí es real y bloqueante.
 
 ## 4. Validaciones
 
@@ -101,23 +106,36 @@ for dir in terraform/environments/*/*/; do
 done
 ```
 
-3. **Testing**:
+3. **Testing** (con credenciales AWS mock, sin cuenta real):
 ```bash
 for module_dir in terraform/modules/*/; do
   if [ -d "${module_dir}tests" ]; then
     cd "$module_dir"
+    terraform init -backend=false
     terraform test
     cd -
   fi
 done
 ```
 
-4. **Validación de Seguridad**:
+4. **Linting con TFLint**:
+```bash
+cd terraform
+tflint --init
+tflint --recursive
+```
+
+5. **Análisis de seguridad estático (SCA) con Checkov**:
+```bash
+checkov -d terraform --framework terraform
+```
+
+6. **Validación de Seguridad**:
    - Verificación de ausencia de credenciales hardcodeadas en archivos `.tf`.
    - Verificación de claves KMS asignadas y habilitadas por país.
    - Verificación de cifrado habilitado en todos los buckets S3.
 
-5. **Validación de Arquitectura**:
+7. **Validación de Arquitectura**:
    - Verificación de Aurora en modo Serverless v2.
    - Verificación de tareas ECS sobre Fargate (sin instancias EC2).
    - Verificación de subnets de datos completamente aisladas sin ruta a Internet.
@@ -161,16 +179,23 @@ terraform state push terraform.tfstate.backup
 
 ### 5.2 Rollback Automático (CI/CD)
 
-El pipeline (`.github/workflows/terraform-ci-cd.yml`) encadena dos etapas tras un push a `main`:
+El pipeline (`.github/workflows/terraform-ci-cd.yml`) tiene dos grandes etapas:
 
-1. **Preproducción** (`deploy-preprod`): `terraform apply` automático a `environments/preprod`.
-2. **Producción** (`deploy-prod`): `terraform apply` automático a los 4 países, y **solo se ejecuta si preprod terminó OK** (`needs: [deploy-preprod]`).
+**A. Calidad (real, en Pull Requests a `main`/`staging`):**
+1. `validate` — `terraform fmt -check -recursive` + `init -backend=false` + `validate` por entorno.
+2. `tflint` — linting estático.
+3. `checkov` — análisis de seguridad estático (SCA).
+4. `test` — `terraform test` con credenciales AWS mock.
+5. `ci-status` — job que consolida el resultado de los cuatro anteriores y es el **único check obligatorio** configurado en la branch protection de `main` y `staging`: si cualquiera falla, el merge queda bloqueado.
 
-Si preproducción falla:
-- El pipeline se detiene.
-- Producción **no** se despliega (dependencia entre jobs).
+**B. Despliegue (simulado, en push):**
+- **Push a `staging`** → job único `deploy-preprod` (mock sobre `environments/preprod`).
+- **Push a `main`** → secuencia encadenada con `needs`:
+  1. `deploy-backend` (mock de `terraform/global/state-backend`).
+  2. `deploy-org` (mock de `terraform/org`; genera e inyecta los `prod_account_ids` simulados).
+  3. `deploy-prod` (matrix `ar`, `cl`, `co`, `mx`; consume los IDs inyectados y simula el `assume_role` a `OrganizationAccountAccessRole`).
 
-> **Rollback en CI/CD**: revertir el commit que rompió (`git revert` + PR a `main`) y dejar que el pipeline re-aplique el estado anterior. Los entornos de GitHub (`preprod`, `prod-{ar,cl,co,mx}`) permiten configurar protección (required reviewers / aprobación manual), pero eso es configuración del repositorio, no del código.
+> **Rollback en CI/CD**: revertir el commit que rompió (`git revert` + PR a `main`) y dejar que el pipeline re-aplique el estado anterior. Al ser despliegues simulados, no hay infraestructura real que revertir: la protección real es el gate `ci-status`, que impide que código no validado llegue a `main`/`staging`.
 
 ## 6. Pruebas de Excelencia Operativa
 
