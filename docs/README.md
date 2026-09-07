@@ -8,7 +8,7 @@
 * **Lautaro Castro**
 * **Jeronimo Massaro**
 * **Maximiliano Cravero**
-* **Gabriel**
+* **Gabriel Oliva**
 
 ---
 
