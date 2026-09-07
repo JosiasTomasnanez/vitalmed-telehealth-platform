@@ -2,6 +2,14 @@
 
 **Grupo 9 · Diplomatura DevOps · Pilar: Excelencia Operativa**
 
+### Integrantes
+
+* **Josias Ñañez**
+* **Lautaro Castro**
+* **Jeronimo Massaro**
+* **Maximiliano Cravero**
+* **Gabriel**
+
 ---
 
 ## 1. Caso de Negocio y Contexto
@@ -27,6 +35,10 @@ VitalMed conecta a más de **180.000 pacientes** con una red de **4.500 profesio
 ---
 
 ## 2. IAM, Organización y Gobierno de Accesos
+
+![Arquitectura AWS Organizations e IAM](IAM%20%26%20Organization%20policy/diagramas/AWS%20Organizationdrawio.drawio.png)
+
+
 
 ### 2.1 Estructura de AWS Organizations
 
@@ -72,6 +84,10 @@ RBAC para los 12 integrantes del equipo técnico, con **MFA obligatorio**:
 
 ## 3. Redes y Arquitectura VPC
 
+![Arquitectura completa de VPC](vpc/diagramas/vitalmed_arquitectura_completa.jpg)
+
+
+
 ### 3.1 Topología de 3 capas (Multi-AZ, aislada por cuenta-país)
 
 Cada país tiene su propia VPC (ej. VPC-Argentina `10.0.0.0/16`) distribuida en 2 AZs (`us-east-1a`/`us-east-1b`):
@@ -104,6 +120,10 @@ Cada país tiene su propia VPC (ej. VPC-Argentina `10.0.0.0/16`) distribuida en 
 ---
 
 ## 4. Cómputo y Backend
+
+![Flujo de cómputo](computo/diagramas/flujocomputo.png)
+
+
 
 ### 4.1 Catálogo de microservicios en ECS Fargate
 
@@ -148,6 +168,12 @@ Flujo al finalizar una consulta: **Microservicio ECS** emite evento JSON a **Eve
 ---
 
 ## 5. Persistencia y Datos
+
+![Flujo de persistencia](persistencia/diagramas/flujopersistencia.png)
+
+![Diagrama de arquitectura cloud](data/Diagrama%20de%20Arquitectura%20Cloud.jpg)
+
+
 
 ### 5.1 Amazon Aurora Serverless v2 (Multi-AZ) — motor relacional principal
 
@@ -205,6 +231,10 @@ En lugar de backups nativos aislados por servicio (Aurora, S3, EBS):
 
 ## 6. Observabilidad, Alertas y Scaling
 
+![Flujo de observabilidad](observability/diagramas/observabilidadflujo.png)
+
+
+
 ### 6.1 Stack de telemetría serverless
 
 - **CloudWatch & Container Insights:** logs centralizados de ECS Fargate y métricas de CPU/memoria/red por microservicio.
@@ -230,6 +260,10 @@ En lugar de backups nativos aislados por servicio (Aurora, S3, EBS):
 ---
 
 ## 7. Seguridad, Auditoría y Cumplimiento
+
+![Flujo de seguridad y auditoría](seguridad-auditoria/diagramas/flujoauditoria.png)
+
+
 
 ### 7.1 Flujo de seguridad: Prevenir → Detectar → Centralizar
 
