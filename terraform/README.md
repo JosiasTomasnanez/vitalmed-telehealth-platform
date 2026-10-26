@@ -79,6 +79,6 @@ terraform/
     ├── ar/prod/
     ├── cl/prod/
     ├── co/prod/
-    ├── mx/prod/                  # una cuenta de producción por país, instancia los 7 módulos vía source = "git::...?ref=v1.0"
+    ├── mx/prod/                  # una cuenta de producción por país, instancia los 7 módulos vía source = "git::...?ref=v1.1"
     └── preprod/                  # única cuenta de preproducción, general (sin distinción de país)
 ```
