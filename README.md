@@ -1,135 +1,85 @@
-# 🩺 VitalMed Telesalud — Infraestructura en AWS & IaC
+# VitalMed Telesalud: infraestructura AWS multi-cuenta con Terraform
 
-[![AWS Well-Architected](https://img.shields.io/badge/AWS-Well--Architected-orange?logo=amazon-aws)](https://aws.amazon.com/architecture/well-architected/)
 [![IaC-Terraform](https://img.shields.io/badge/IaC-Terraform-purple?logo=terraform)](https://www.terraform.io/)
-[![DevOps-Group](https://img.shields.io/badge/Grupo-9-blue)](#-equipo-de-desarrollo)
+[![AWS Well-Architected](https://img.shields.io/badge/AWS-Well--Architected-orange?logo=amazon-aws)](https://aws.amazon.com/architecture/well-architected/)
 
-> **Solución de Infraestructura como Código (IaC) para la escala continental de VitalMed Telesalud, diseñada bajo el pilar de Excelencia Operativa para conectar a +180,000 pacientes y 4,500 profesionales de la salud en Argentina, Chile, Colombia y México.**
+Trabajo práctico grupal de la **Diplomatura en DevOps (FCEFyN, UNC)**, con foco en el pilar de **Excelencia Operativa** del AWS Well-Architected Framework.
 
----
+El caso es una empresa ficticia de telemedicina con 180.000 pacientes y 4.500 profesionales en **Argentina, Chile, Colombia y México**. Tiene picos estacionales de hasta 4x y datos de salud que cada país exige mantener aislados.
 
-## 📌 Contexto & El Desafío del Cliente
+![Arquitectura cloud](docs/data/Diagrama%20de%20Arquitectura%20Cloud.jpg)
 
-**VitalMed Telesalud** enfrenta un reto clásico de crecimiento acelerado en Latinoamérica: **escalar la operación regional quadruplicando la capacidad durante picos estacionales (otoño/invierno), garantizando cumplimiento regulatorio de datos de salud (HIPAA-equivalent) y disponibilidad continua (7:00 a 23:00 hs), todo esto gestionado por un equipo reducido de 12 personas.**
+## Decisiones de arquitectura
 
+1. **Una cuenta AWS por país** (AWS Organizations) en lugar de multi-región. El aislamiento regulatorio se logra con límites de cuenta, bases y claves KMS propias, sin el costo ni la complejidad de replicar entre regiones. Todo corre en `us-east-1`, más una cuenta **preprod** global y una **shared** para el state.
+2. **Cómputo sin servidores que administrar**: backend en **ECS Fargate** detrás de un **ALB**, con autoscaling para absorber los picos. Las tareas asíncronas (recetas, notificaciones) pasan por **SQS + Lambda**.
+3. **Datos**: **Aurora PostgreSQL Serverless v2**, que escala en ACUs según la demanda, y **S3** cifrado con **KMS** por país para estudios y archivos.
+4. **Borde**: **CloudFront + S3** para el frontend, **WAF**, **Route 53** y certificados **ACM**.
+5. **Videollamadas** con Amazon Chime SDK. Al ser un servicio solo de API, en Terraform se resuelve con los permisos IAM del task role del backend.
 
+## Qué está implementado en Terraform
+
+| Componente | Recursos | Ubicación |
+|---|---|---|
+| Organización | `aws_organizations_organization`, 4 OUs, cuentas por país, service access para CloudTrail y Security Hub | `terraform/org/` |
+| State remoto | Bucket S3 con versionado, cifrado y bloqueo nativo (`use_lockfile`, sin DynamoDB) | `terraform/global/state-backend/` |
+| `network` | VPC, subredes públicas, privadas y de datos en 2 AZ, IGW, NAT Gateway, route tables | `terraform/modules/network/` |
+| `compute` | ECR, ECS cluster y servicio Fargate, ALB + target group + listeners, security groups, autoscaling | `terraform/modules/compute/` |
+| `data` | Aurora PostgreSQL Serverless v2, KMS key por país, S3 con lifecycle y bloqueo de acceso público, Secrets Manager | `terraform/modules/data/` |
+| `async` | SQS (con DLQ) y Lambda con event source mapping | `terraform/modules/async/` |
+| `edge` / `edge-cert` / `frontend-bucket` | CloudFront con OAC, WAFv2, Route 53, ACM, bucket del frontend | `terraform/modules/edge*/`, `terraform/modules/frontend-bucket/` |
+| Entornos | Composición de módulos por país (`ar`, `cl`, `co`, `mx`) y `preprod`, versionados con `?ref=` | `terraform/environments/` |
+
+### Diseño propuesto, todavía no implementado en código
+
+Estos servicios forman parte del diseño del informe pero no tienen recursos en el repo:
+
+- AWS Control Tower y SCPs. La creación de cuentas que haría su Account Factory está resuelta con Terraform en `terraform/org/`.
+- IAM Identity Center.
+- ElastiCache.
+- AWS X-Ray.
+- AWS Backup.
+
+## Calidad y pruebas
+
+- **33 tests** con `terraform test` para 5 módulos (`network`, `compute`, `data`, `edge`, `async`), en `terraform/modules/*/tests/`.
+- **Ejecución local contra emuladores**: `scripts/run-tests-ministack.sh` y `scripts/run-tests-localstack.sh` inyectan un provider override temporal que apunta al emulador y lo borran al terminar.
+- **CI en cada PR** (`.github/workflows/terraform-ci-cd.yml`): `terraform fmt` y `validate`, **TFLint**, **Checkov** (en modo informativo, `soft_fail`) y `terraform test`. Un job `ci-status` consolida el resultado y falla si no pasan validate, TFLint o los tests.
+- **Despliegue**: los jobs de deploy del pipeline son **simulados**, porque el TP no contemplaba cuentas AWS reales. Muestran el orden de aplicación (state backend → organización → cuentas por país → preprod), y el procedimiento real está documentado en el runbook.
+
+### Validación rápida local
+
+```bash
+cd terraform/modules/network
+terraform init -backend=false
+terraform validate
+terraform test
 ```
 
-+-----------------------------------------------------------------------------------+
-|                           EL DESAFÍO VITALMED                                     |
-+------------------------------------+----------------------------------------------+
-| 👥 180,000+ Pacientes Activos      | 📈 Picos 4x por campañas/estaciones          |
-| 👨‍⚕️ 4,500 Profesionales de la Salud | 🌐 Operación en 4 países (AR, CL, CO, MX)    |
-| 👨‍💻 Equipo de IT: ~12 personas      | 🔐 Datos Médicos Sensibles (Ley HIPAA/Local) |
-+------------------------------------+----------------------------------------------+
-
-```
-
----
-
-## 🚀 Nuestra Solución: Arquitectura Serverless & Multi-Cuenta
-
-Inspirados en el pilar de **Excelencia Operativa del AWS Well-Architected Framework**, diseñamos una arquitectura resiliente, automatizada e impulsada por **Serverless**, minimizando el trabajo manual y eliminando la administración de servidores físicos o máquinas virtuales.
-
-<Image src="./docs/data/Diagrama de Arquitectura Cloud.jpg" alt="Diagrama conceptual de la arquitectura AWS para VitalMed" caption="Arquitectura lógica multi-cuenta y desacoplada en AWS" />
-<figcaption><em>Diagrama de arquitectura de servicios y flujo de datos resumido.</em></figcaption>
-
-### 💡 Decisiones Estratégicas Clave
-
-1. **Aislamiento Regulatorio Lógico (Multi-Cuenta con AWS Organizations):**
-   * *Desafío:* Separar estrictamente los datos de salud por normativa en Argentina, Chile, Colombia y México.
-   * *Decisión:* En lugar de desplegar en múltiples regiones con costos de transferencia prohibitivos y alta complejidad de gestión, centralizamos en la región `us-east-1` utilizando **cuentas de AWS totalmente aisladas por país**.
-   * *Resultado:* Cada país cuenta con su propia base de datos, sus llaves de cifrado en **AWS KMS** y un límite infranqueable de permisos.
-
-2. **Cómputo Serverless y Alta Disponibilidad (ECS Fargate + Lambda):**
-   * Eliminamos la administración de parches o SO corriendo contenedores en **Amazon ECS con AWS Fargate**.
-   * Absorción automática de picos estacionales (pases de 1x a 4x de tráfico) mediante Auto Scaling sin sobre-provisionar infraestructura en época baja.
-
-3. **Telemedicina de Ultra-Baja Latencia (Amazon Chime SDK):**
-   * La transmisión de video WebRTC fluye directamente entre médico y paciente a través de los Edge Locations globales de AWS. **Cero carga de video sobre los contenedores del backend.**
-
-4. **Escalabilidad para un Quinto País sin Rediseño:**
-   * Utilizando **AWS Control Tower (Account Factory)**, el onboarding de un nuevo país se reduce a aprovisionar un nuevo módulo de Terraform en minutos.
-
----
-
-## 🛠️ Stack Tecnológico & Servicios AWS
-
-| Capa | Servicios Seleccionados | Justificación de Negocio / Operativa |
-| :--- | :--- | :--- |
-| **Borde y Seguridad** | Route 53, CloudFront, AWS WAF, ACM | Carga ultra rápida del frontend, certificados SSL automáticos y mitigación de ataques web/DDoS. |
-| **Gobierno y Control** | AWS Organizations, Control Tower, SCPs, IAM Identity Center | Gobernanza centralizada multi-cuenta, acceso unificado (SSO) y reglas globales de cumplimiento. |
-| **Backend & APIs** | ALB, Amazon ECS Fargate, Amazon ECR | Microservicios (Turnos, HCE, Facturación) aislados en contenedores con autoscaling. |
-| **Procesos Asíncronos** | Amazon SQS, AWS Lambda | Procesamiento de recetas y notificaciones desvinculado del hilo principal del backend. |
-| **Persistencia de Datos**| Aurora Serverless v2, ElastiCache, S3, Cloud Backup | Base de datos relacional para HCE que escala automáticamente, almacenamiento masivo de estudios cifrado con KMS por país. |
-| **Videollamadas** | Amazon Chime SDK | Consultas médicas en vivo sin sobrecargar la red interna. |
-| **Observabilidad & Auditoría**| CloudWatch, AWS X-Ray, CloudTrail, Security Hub | Trazabilidad de accesos (quién vio qué HCE), métricas en vivo y alertas en Slack/PagerDuty antes de impactar la atención. |
-
----
-
-## 📈 Análisis de Costos (Habitual vs. Pico Estacional)
-
-Gracias al modelo **Pay-As-You-Go** e infraestructura Serverless (*Aurora Serverless v2 + Fargate*), VitalMed no paga por capacidad ociosa durante los meses de baja demanda.
-
-| Escenario | Estrategia de Cómputo / Base de Datos | Impacto de Costo Aproximado |
-| :--- | :--- | :--- |
-| **Operación Habitual** | Fargate y Aurora corriendo a capacidad base mínima (Mínimos ACU). | Base operativa optimizada |
-| **Pico Estacional (4x)** | Escalado automático horizontal de tareas ECS + Auto-scale de ACUs en Aurora. | Incremento temporal adaptado a la demanda real |
-
----
-
-## 📂 Estructura del Repositorio
-
-El repositorio está organizado para permitir una validación transparente y modular con Terraform:
+## Estructura
 
 ```text
 .
-├── .github/workflows/       # Pipelines de CI/CD para prueba y validación de IaC
-├── docs/                    # Documentación técnica extendida y Diagramas
-│   ├── arquitectura.png    # Diagrama de arquitectura de AWS
-│   ├── analisis-costos.pdf # Reporte exportado de AWS Calculator
-│   └── runbook.md          # Manual de operaciones y guía de despliegue
-├── terraform/               # Código de Infraestructura como Código
-│   ├── modules/            # Módulos reutilizables (VPC, ECS, Aurora, KMS)
-│   ├── environments/       # Configuraciones por país (AR, CL, CO, MX)
-│   └── tests/              # Pruebas integradas de Terraform (terraform test)
-└── README.md                # Presentación principal del proyecto
-
+├── .github/workflows/      # CI de Terraform (fmt, validate, TFLint, Checkov, tests)
+├── docs/                   # Informe por área, diagramas, runbooks y estimación de costos
+├── scripts/                # Emuladores (MiniStack/LocalStack) y ejecución de tests
+└── terraform/
+    ├── global/state-backend/
+    ├── org/                # AWS Organizations y cuentas
+    ├── modules/            # network, compute, data, async, edge, edge-cert, frontend-bucket
+    ├── environments/       # ar, cl, co, mx (prod) y preprod
+    └── tests/              # Providers de MiniStack/LocalStack para tests locales
 ```
 
----
+## Documentación
 
-## ⚡ Validación Rápida de Código (Local)
+- [Runbook de despliegue](docs/runbook.md): prerrequisitos, orden de aplicación, rollback y validaciones.
+- [Runbook de operaciones](docs/runbook-operaciones.md).
+- [Estimación de costos](docs/estimacion.md) y [calculadora de AWS](docs/calculadora-aws.json).
+- [Informe web por área](https://josiastomasnanez.github.io/vitalmed-telehealth-platform/): negocio, VPC, cómputo, persistencia, seguridad y observabilidad.
 
-El proyecto está preparado para ser evaluado sin necesidad de aprovisionar infraestructura real en AWS:
+## Equipo (Grupo 9)
 
-```bash
-# 1. Formato de código
-terraform fmt -check
+Josias Tomas Ñañez, Maximiliano Cravero, Gabriel Oliva, Jerónimo Massaro y Lautaro Castro.
 
-# 2. Inicialización del backend simulado
-terraform init -backend=false
-
-# 3. Validación sintáctica y lógica
-terraform validate
-
-# 4. Ejecución de suite de pruebas integradas
-terraform test
-
-```
-
----
-
-## 📖 Documentación Complementaria
-
-* 📋 **[Runbook de Despliegue](./docs/runbook.md):** Pasos detallados de configuración, orden de despliegue, rollback y validaciones.
-* 🛡️ **[Informe de Herramientas AWS y Cuentas](https://josiastomasnanez.github.io/vitalmed-telehealth-platform/):** Justificación en profundidad de los servicios elegidos.
-
----
-
-## 👥 Equipo de Desarrollo — Grupo 9
-
-Proyecto desarrollado dentro del marco de la **Diplomatura DevOps**, enfocado en la aplicación práctica del **AWS Well-Architected Framework (Excelencia Operativa)**.
-
-
-```
+Josias armó el pipeline de CI, la suite de 33 tests de Terraform, los scripts de testing con MiniStack/LocalStack y el runbook de despliegue.

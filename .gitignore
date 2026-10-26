@@ -30,3 +30,6 @@ __pycache__/
 
 # Local scripts output
 *.log
+
+# Provider overrides temporales de los scripts de tests
+*_override.tf
