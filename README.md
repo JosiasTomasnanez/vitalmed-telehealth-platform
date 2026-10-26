@@ -34,7 +34,7 @@ El caso es una empresa ficticia de telemedicina con 180.000 pacientes y 4.500 pr
 
 Estos servicios forman parte del diseño del informe pero no tienen recursos en el repo:
 
-- AWS Control Tower (Account Factory) y SCPs.
+- AWS Control Tower y SCPs. La creación de cuentas que haría su Account Factory está resuelta con Terraform en `terraform/org/`.
 - IAM Identity Center.
 - ElastiCache.
 - AWS X-Ray.
@@ -44,7 +44,7 @@ Estos servicios forman parte del diseño del informe pero no tienen recursos en 
 
 - **33 tests** con `terraform test` para 5 módulos (`network`, `compute`, `data`, `edge`, `async`), en `terraform/modules/*/tests/`.
 - **Ejecución local contra emuladores**: `scripts/run-tests-ministack.sh` y `scripts/run-tests-localstack.sh` inyectan un provider override temporal que apunta al emulador y lo borran al terminar.
-- **CI en cada PR** (`.github/workflows/terraform-ci-cd.yml`): `terraform fmt` y `validate`, **TFLint**, **Checkov** y `terraform test`. Un job `ci-status` consolida el resultado y falla si alguna validación obligatoria no pasa.
+- **CI en cada PR** (`.github/workflows/terraform-ci-cd.yml`): `terraform fmt` y `validate`, **TFLint**, **Checkov** (en modo informativo, `soft_fail`) y `terraform test`. Un job `ci-status` consolida el resultado y falla si no pasan validate, TFLint o los tests.
 - **Despliegue**: los jobs de deploy del pipeline son **simulados**, porque el TP no contemplaba cuentas AWS reales. Muestran el orden de aplicación (state backend → organización → cuentas por país → preprod), y el procedimiento real está documentado en el runbook.
 
 ### Validación rápida local

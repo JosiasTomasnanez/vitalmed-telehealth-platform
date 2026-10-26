@@ -5,7 +5,7 @@
 | Capa | Estado | Ubicación |
 | :--- | :--- | :--- |
 | Bootstrap del backend de Terraform | ✅ Codeado | `global/state-backend/` |
-| Organizations / Account Factory | ✅ Codeado | `org/` |
+| Organizations + creación de cuentas por país (reemplaza el Account Factory de Control Tower) | ✅ Codeado | `org/` |
 | Network (VPC por país+entorno) | ✅ Codeado | `modules/network/` |
 | Backend & APIs (ALB, ECS Fargate, ECR) | ✅ Codeado | `modules/compute/` |
 | Persistencia (Aurora Serverless v2, S3+KMS, Secrets Manager) | ✅ Codeado | `modules/data/` |
