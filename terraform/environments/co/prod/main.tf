@@ -41,7 +41,7 @@ provider "aws" {
 }
 
 module "network" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/network?ref=v1.0"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/network?ref=v1.1"
 
   pais    = "co"
   entorno = "prod"
@@ -55,7 +55,7 @@ module "network" {
 }
 
 module "edge_cert" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/edge-cert?ref=v1.0"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/edge-cert?ref=v1.1"
 
   pais            = "co"
   entorno         = "prod"
@@ -64,7 +64,7 @@ module "edge_cert" {
 }
 
 module "compute" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/compute?ref=v1.0"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/compute?ref=v1.1"
 
   pais    = "co"
   entorno = "prod"
@@ -77,7 +77,7 @@ module "compute" {
 }
 
 module "data" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/data?ref=v1.0"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/data?ref=v1.1"
 
   pais    = "co"
   entorno = "prod"
@@ -88,7 +88,7 @@ module "data" {
 }
 
 module "async" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/async?ref=v1.0"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/async?ref=v1.1"
 
   pais        = "co"
   entorno     = "prod"
@@ -96,14 +96,14 @@ module "async" {
 }
 
 module "frontend_bucket" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/frontend-bucket?ref=v1.0"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/frontend-bucket?ref=v1.1"
 
   pais    = "co"
   entorno = "prod"
 }
 
 module "edge" {
-  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/edge?ref=v1.0"
+  source = "git::https://github.com/JosiasTomasnanez/vitalmed-telehealth-platform.git//terraform/modules/edge?ref=v1.1"
 
   pais    = "co"
   entorno = "prod"

@@ -42,7 +42,7 @@ Estos servicios forman parte del diseño del informe pero no tienen recursos en 
 
 ## Calidad y pruebas
 
-- **33 tests** con `terraform test` para 5 módulos (`network`, `compute`, `data`, `edge`, `async`), en `terraform/modules/*/tests/`.
+- **32 tests** con `terraform test` para 5 módulos (`network`, `compute`, `data`, `edge`, `async`), en `terraform/modules/*/tests/`.
 - **Ejecución local contra emuladores**: `scripts/run-tests-ministack.sh` y `scripts/run-tests-localstack.sh` inyectan un provider override temporal que apunta al emulador y lo borran al terminar.
 - **CI en cada PR** (`.github/workflows/terraform-ci-cd.yml`): `terraform fmt` y `validate`, **TFLint**, **Checkov** (en modo informativo, `soft_fail`) y `terraform test`. Un job `ci-status` consolida el resultado y falla si no pasan validate, TFLint o los tests.
 - **Despliegue**: los jobs de deploy del pipeline son **simulados**, porque el TP no contemplaba cuentas AWS reales. Muestran el orden de aplicación (state backend → organización → cuentas por país → preprod), y el procedimiento real está documentado en el runbook.
@@ -82,4 +82,4 @@ terraform test
 
 Josias Tomas Ñañez, Maximiliano Cravero, Gabriel Oliva, Jerónimo Massaro y Lautaro Castro.
 
-Josias armó el pipeline de CI, la suite de 33 tests de Terraform, los scripts de testing con MiniStack/LocalStack y el runbook de despliegue.
+Josias armó el pipeline de CI, la suite de 32 tests de Terraform, los scripts de testing con MiniStack/LocalStack y el runbook de despliegue.
